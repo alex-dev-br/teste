@@ -42,7 +42,7 @@ public class UserService {
 
         try {
             user = repo.save(user);
-            addressRepository.save(address);
+            user.setAddress(addressRepository.save(address));
         } catch (DataIntegrityViolationException e) {
             // será tratado pelo GlobalExceptionHandler => retorna 409 Conflict
             throw e;
@@ -66,7 +66,7 @@ public class UserService {
                 u.getLogin(),
                 u.getRole(),
                 u.getUpdatedAt(),
-                new AddressDTO(u.getAddress())
+                u.getAddress() == null ? null : new AddressDTO(u.getAddress())
         );
     }
 }

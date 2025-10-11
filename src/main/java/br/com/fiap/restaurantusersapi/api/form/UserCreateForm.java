@@ -10,5 +10,5 @@ public record UserCreateForm(
     @NotBlank @Email @Schema(example = "maria.silva@mail.com") String email,
     @NotBlank @Schema(example = "mariasilva") String login,
     @NotBlank @Schema(example = "Senha Fort3!@#*") String password,
-    @NotBlank @Schema(implementation = AddressForm.class) AddressForm address
+    @Schema(implementation = AddressForm.class) AddressForm address
 ){}
