@@ -10,11 +10,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Optional;
 import java.util.UUID;
 
 @Tag(name = "Users", description = "Operações de gestão de usuários")
@@ -77,5 +79,26 @@ public class UserController {
     public ResponseEntity<UserDTO> findById(@PathVariable UUID id) {
         UserDTO out = service.findById(id);
         return ResponseEntity.ok(out);
+    }
+
+    // =====================================================
+    // GET /api/v1/users?name={name}
+    // =====================================================
+    @Operation(summary = "Busca um usuário pelo nome")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",
+                    description = "Usuário encontrado",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "400",
+                    description = "Parâmetro 'name' inválido",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "404",
+                    description = "Usuário não encontrado")
+    })
+    @GetMapping
+    public ResponseEntity<UserResponse> findByName(@RequestParam @NotBlank String name) {
+        var out = service.findByName(name);
+        return out.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
