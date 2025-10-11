@@ -1,7 +1,7 @@
 package br.com.fiap.restaurantusersapi.api;
 
-import br.com.fiap.restaurantusersapi.api.dto.UserCreateRequest;
-import br.com.fiap.restaurantusersapi.api.dto.UserResponse;
+import br.com.fiap.restaurantusersapi.api.form.UserCreateForm;
+import br.com.fiap.restaurantusersapi.api.dto.UserDTO;
 import br.com.fiap.restaurantusersapi.domain.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,7 +38,7 @@ public class UserController {
             @ApiResponse(responseCode = "201",
                     description = "Usuário criado com sucesso",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserResponse.class))),
+                            schema = @Schema(implementation = UserDTO.class))),
             @ApiResponse(responseCode = "400",
                     description = "Dados inválidos",
                     content = @Content(mediaType = "application/problem+json")),
@@ -50,8 +50,8 @@ public class UserController {
                     content = @Content(mediaType = "application/problem+json"))
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserResponse> create(@Valid @RequestBody UserCreateRequest in) {
-        UserResponse out = service.create(in);
+    public ResponseEntity<UserDTO> create(@Valid @RequestBody UserCreateForm in) {
+        UserDTO out = service.create(in);
         URI location = URI.create("/api/v1/users/" + out.id());
         return ResponseEntity.created(location).body(out);
     }
@@ -64,7 +64,7 @@ public class UserController {
             @ApiResponse(responseCode = "200",
                     description = "Usuário encontrado",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserResponse.class))),
+                            schema = @Schema(implementation = UserDTO.class))),
             @ApiResponse(responseCode = "400",
                     description = "ID inválido",
                     content = @Content(mediaType = "application/problem+json")),
@@ -76,8 +76,8 @@ public class UserController {
                     content = @Content(mediaType = "application/problem+json"))
     })
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> findById(@PathVariable UUID id) {
-        UserResponse out = service.findById(id);
+    public ResponseEntity<UserDTO> findById(@PathVariable UUID id) {
+        UserDTO out = service.findById(id);
         return ResponseEntity.ok(out);
     }
 
@@ -89,7 +89,7 @@ public class UserController {
             @ApiResponse(responseCode = "200",
                     description = "Usuário encontrado",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserResponse.class))),
+                            schema = @Schema(implementation = UserDTO.class))),
             @ApiResponse(responseCode = "400",
                     description = "Parâmetro 'name' inválido",
                     content = @Content(mediaType = "application/problem+json")),
@@ -97,7 +97,7 @@ public class UserController {
                     description = "Usuário não encontrado")
     })
     @GetMapping
-    public ResponseEntity<UserResponse> findByName(@RequestParam @NotBlank String name) {
+    public ResponseEntity<UserDTO> findByName(@RequestParam @NotBlank String name) {
         var out = service.findByName(name);
         return out.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
