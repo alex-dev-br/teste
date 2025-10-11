@@ -6,6 +6,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -40,6 +42,12 @@ public class UserService {
         var user = repo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         return toResponse(user);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<UserResponse> findByName(String name) {
+        var optionalUser = repo.findByNameIgnoreCase(name);
+        return optionalUser.map(this::toResponse);
     }
 
     private UserResponse toResponse(User u) {
