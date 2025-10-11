@@ -4,7 +4,7 @@ spring:
       on-profile: dev
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:${DB_PORT:5432}/${DB_NAME:app}}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:${DB_PORT:5432}/${DB_NAME:app}}
     username: ${SPRING_DATASOURCE_USERNAME:${DB_USER:app}}
     password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:app}}
     driver-class-name: org.postgresql.Driver
