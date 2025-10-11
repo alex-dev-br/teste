@@ -1,0 +1,35 @@
+services:
+  app-test:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+    image: restaurant-users-api:test
+    container_name: restaurant-users-api-test
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: "test"   # força H2
+      TZ: "${TZ}"
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/actuator/health | grep -q UP"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+#Como rodar:
+#
+## usando variáveis do .env.local (APP_PORT, TZ, etc.)
+#  docker compose -f infra/compose-test.yml --env-file infra/.env.local up -d
+#  docker compose -f infra/compose-test.yml logs -f
+#
+#
+#Checar:
+#
+#  http://localhost:8080/actuator/health → UP
+#
+#  http://localhost:8080/actuator/env → "activeProfiles":["test"]
+#
+#  http://localhost:8080/h2 (H2 console)
+#
+#  Não há Postgres aqui — o test usa H2.

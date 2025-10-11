@@ -1,0 +1,59 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: pg-restaurant-users
+    restart: unless-stopped
+    profiles: ["ide", "stack"]
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    environment:
+      POSTGRES_DB: "${DB_NAME}"
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      TZ: "${TZ:-America/Sao_Paulo}"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -h 127.0.0.1 -p 5432 -U ${DB_USER} -d ${DB_NAME}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+    image: restaurant-users-api:latest
+    container_name: restaurant-users-api
+    restart: unless-stopped
+    profiles: ["stack"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Defina no .env: SPRING_PROFILES_ACTIVE=dev (para seeds) ou =prod
+      SPRING_PROFILES_ACTIVE: "${SPRING_PROFILES_ACTIVE:-dev}"
+
+      # Datasource apontando para o serviço "postgres" (não localhost)
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/${DB_NAME}"
+      SPRING_DATASOURCE_USERNAME: "${DB_USER}"
+      SPRING_DATASOURCE_PASSWORD: "${DB_PASSWORD}"
+
+      # Para dev aplicar seeds do Flyway (db/migration-dev)
+      SPRING_FLYWAY_LOCATIONS: "classpath:db/migration,classpath:db/migration-dev"
+
+      # Flags JVM e timezone
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75 -XX:+UseSerialGC"
+      TZ: "${TZ:-America/Sao_Paulo}"
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/actuator/health | grep -q UP"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+volumes:
+  db_data: {}
