@@ -32,8 +32,8 @@ public class User {
     @Column(nullable = false, length = 20)
     private String role = "CLIENT";   // "OWNER" ou "CLIENT"   (Colocar Enum?)
 
-    @Column(name="address_summary", length = 255)
-    private String addressSummary;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Address address;
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
@@ -98,17 +98,15 @@ public class User {
         this.role = role;
     }
 
-    public String getAddressSummary() {
-        return addressSummary;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setAddressSummary(String addressSummary) {
-        this.addressSummary = addressSummary;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public Instant getUpdatedAt() {
         return updatedAt;
     }
-
-
 }
