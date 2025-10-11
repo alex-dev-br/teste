@@ -3,6 +3,7 @@ package br.com.fiap.restaurantusersapi.api.problem;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -112,12 +114,21 @@ public class GlobalExceptionHandler {
     // 500 - Genérico (pega tudo)
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ProblemDetail handleGeneric(Exception ex, HttpServletRequest request) {
+    public ProblemDetail handleGeneric(Exception ex, HttpServletRequest request) throws Exception{
         String path = request.getRequestURI();
         // Deixar o Actuator tratar os próprios endpoints:
         if (path != null && path.startsWith("/actuator")) {
             throw new RuntimeException(ex);   // repropagar para o handler padrão do Spring
         }
+
+        // Exceções que já possuem status definido (404, 405, etc) não devem virar 500
+        if (ex instanceof ResponseStatusException rse) {
+            throw rse;
+        }
+        if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null) {
+            throw ex;
+        }
+
 
         return problem(HttpStatus.INTERNAL_SERVER_ERROR,
                 TYPE_INTERNAL_ERROR,

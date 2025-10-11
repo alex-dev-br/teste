@@ -18,7 +18,7 @@ spring:
 
 logging:
   level:
-    root: info
+    root: debug
     org.hibernate.SQL: warn
 
 # Segurança de exposição em prod:

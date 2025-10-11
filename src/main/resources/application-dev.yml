@@ -17,6 +17,9 @@ spring:
     enabled: true
     locations: ${SPRING_FLYWAY_LOCATIONS:classpath:db/migration,classpath:db/migration-dev}
     baseline-on-migrate: false
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:${DB_PORT:5432}/${DB_NAME:app}}
+    user: ${SPRING_DATASOURCE_USERNAME:${DB_USER:app}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:app}}
 
 logging:
   level:
