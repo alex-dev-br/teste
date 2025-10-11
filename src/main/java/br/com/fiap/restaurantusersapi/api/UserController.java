@@ -89,7 +89,7 @@ public class UserController {
             @ApiResponse(responseCode = "200",
                     description = "Usuário encontrado",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserResponse.class))),
+                            schema = @Schema(implementation = UserDTO.class))),
             @ApiResponse(responseCode = "400",
                     description = "Parâmetro 'name' inválido",
                     content = @Content(mediaType = "application/problem+json")),
@@ -97,7 +97,7 @@ public class UserController {
                     description = "Usuário não encontrado")
     })
     @GetMapping
-    public ResponseEntity<UserResponse> findByName(@RequestParam @NotBlank String name) {
+    public ResponseEntity<UserDTO> findByName(@RequestParam @NotBlank String name) {
         var out = service.findByName(name);
         return out.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
