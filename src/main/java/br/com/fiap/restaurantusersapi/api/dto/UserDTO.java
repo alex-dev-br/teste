@@ -7,7 +7,7 @@ import java.util.UUID;
 
 
 @Schema(description = "Representação de usuário")
-public record UserResponse (
+public record UserDTO(
     @Schema(example = "2d4c0a1b-9c85-4d1e-9b6a-0a4e2db5b1f7") UUID id,
     @Schema(example = "Maria Silva") String name,
     @Schema(example = "maria.silva@mail.com") String email,

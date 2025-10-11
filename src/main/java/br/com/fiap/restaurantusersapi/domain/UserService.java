@@ -1,7 +1,7 @@
 package br.com.fiap.restaurantusersapi.domain;
 
-import br.com.fiap.restaurantusersapi.api.dto.UserCreateRequest;
-import br.com.fiap.restaurantusersapi.api.dto.UserResponse;
+import br.com.fiap.restaurantusersapi.api.form.UserCreateForm;
+import br.com.fiap.restaurantusersapi.api.dto.UserDTO;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +16,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse create(UserCreateRequest in) {
+    public UserDTO create(UserCreateForm in) {
         var user = new User();
         user.setName(in.name());
         user.setEmail(in.email());
@@ -36,14 +36,14 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserResponse findById(java.util.UUID id) {
+    public UserDTO findById(java.util.UUID id) {
         var user = repo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         return toResponse(user);
     }
 
-    private UserResponse toResponse(User u) {
-        return new UserResponse(
+    private UserDTO toResponse(User u) {
+        return new UserDTO(
                 u.getId(),
                 u.getName(),
                 u.getEmail(),
