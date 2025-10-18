@@ -3,6 +3,7 @@ package br.com.fiap.restaurantusersapi.domain;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -108,5 +109,17 @@ public class User {
 
     public Instant getUpdatedAt() {
         return updatedAt;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (!(o instanceof User user)) return false;
+
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

@@ -1,8 +1,15 @@
-package br.com.fiap.restaurantusersapi.domain;
+package br.com.fiap.restaurantusersapi.service;
 
 import br.com.fiap.restaurantusersapi.api.dto.AddressDTO;
 import br.com.fiap.restaurantusersapi.api.form.UserCreateForm;
 import br.com.fiap.restaurantusersapi.api.dto.UserDTO;
+import br.com.fiap.restaurantusersapi.domain.Address;
+import br.com.fiap.restaurantusersapi.domain.AddressRepository;
+import br.com.fiap.restaurantusersapi.domain.User;
+import br.com.fiap.restaurantusersapi.domain.UserRepository;
+import br.com.fiap.restaurantusersapi.domain.exception.BusinessValidationException;
+import br.com.fiap.restaurantusersapi.service.validator.Validator;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +22,13 @@ public class UserService {
     private final UserRepository repo;
     private final AddressRepository addressRepository;
 
-    public UserService(UserRepository repo, AddressRepository addressRepository) {
+    @Qualifier("userCreatorValidator")
+    private final Validator<User> userCreatorValidator;
+
+    public UserService(UserRepository repo, AddressRepository addressRepository, Validator<User> userCreatorValidator) {
         this.repo = repo;
         this.addressRepository = addressRepository;
+        this.userCreatorValidator = userCreatorValidator;
     }
 
     @Transactional
@@ -41,6 +52,11 @@ public class UserService {
         user.setRole("CLIENT");               // valor padrão inicial
 
         address.setUser(user);
+
+        var result = userCreatorValidator.validate(user);
+        if (result.isInvalid()) {
+            throw new BusinessValidationException(result);
+        }
 
         try {
             user = repo.save(user);

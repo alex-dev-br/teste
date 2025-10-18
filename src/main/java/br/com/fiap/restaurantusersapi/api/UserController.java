@@ -2,7 +2,7 @@ package br.com.fiap.restaurantusersapi.api;
 
 import br.com.fiap.restaurantusersapi.api.form.UserCreateForm;
 import br.com.fiap.restaurantusersapi.api.dto.UserDTO;
-import br.com.fiap.restaurantusersapi.domain.UserService;
+import br.com.fiap.restaurantusersapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
