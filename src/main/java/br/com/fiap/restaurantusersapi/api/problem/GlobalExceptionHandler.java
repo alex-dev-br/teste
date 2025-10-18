@@ -1,5 +1,6 @@
 package br.com.fiap.restaurantusersapi.api.problem;
 
+import br.com.fiap.restaurantusersapi.domain.exception.BusinessValidationException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Value;
@@ -134,6 +135,17 @@ public class GlobalExceptionHandler {
                 TYPE_INTERNAL_ERROR,
                 "Internal server error",
                 "An unexpected error occurred. Please contact support.",
+                ex, request);
+    }
+
+
+    @ExceptionHandler(BusinessValidationException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ProblemDetail handleValidationException(BusinessValidationException ex, HttpServletRequest request) {
+        return problem(HttpStatus.BAD_REQUEST,
+                TYPE_INVALID_ARGUMENT,
+                "Business rule",
+                ex.getValidationResult().errors().toString(),
                 ex, request);
     }
 
