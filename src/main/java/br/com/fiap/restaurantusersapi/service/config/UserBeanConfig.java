@@ -5,6 +5,7 @@ import br.com.fiap.restaurantusersapi.domain.UserRepository;
 import br.com.fiap.restaurantusersapi.service.validator.CreateUserValidator;
 import br.com.fiap.restaurantusersapi.service.validator.Validator;
 import br.com.fiap.restaurantusersapi.service.validator.rule.UserEmailUniquenessRule;
+import br.com.fiap.restaurantusersapi.service.validator.rule.UserLoginUniquenessRule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,6 +16,8 @@ public class UserBeanConfig {
 
     @Bean("userCreatorValidator")
     public Validator<User> createUserCreatorValidator(UserRepository userRepository) {
-        return new CreateUserValidator(List.of(new UserEmailUniquenessRule(userRepository)));
+        return new CreateUserValidator(
+            List.of(new UserEmailUniquenessRule(userRepository), new UserLoginUniquenessRule(userRepository))
+        );
     }
 }
