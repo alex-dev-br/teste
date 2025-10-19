@@ -1,8 +1,8 @@
 package br.com.fiap.restaurantusersapi.service;
 
 import br.com.fiap.restaurantusersapi.api.dto.AddressDTO;
-import br.com.fiap.restaurantusersapi.api.form.UserCreateForm;
 import br.com.fiap.restaurantusersapi.api.dto.UserDTO;
+import br.com.fiap.restaurantusersapi.api.form.UserCreateForm;
 import br.com.fiap.restaurantusersapi.domain.Address;
 import br.com.fiap.restaurantusersapi.domain.AddressRepository;
 import br.com.fiap.restaurantusersapi.domain.User;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -92,5 +93,10 @@ public class UserService {
                 u.getUpdatedAt(),
                 u.getAddress() == null ? null : new AddressDTO(u.getAddress())
         );
+    }
+
+    @Transactional
+    public void deleteByUuid(UUID uuid) {
+        repo.deleteById(uuid);
     }
 }
