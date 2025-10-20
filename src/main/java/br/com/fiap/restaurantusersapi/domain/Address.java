@@ -12,10 +12,10 @@ public class Address {
     private Long addressId;
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @Column(name = "street")
+    @Column(name = "street", length = 255)
     private String street;
 
     @Column(name = "number", length = 20)
