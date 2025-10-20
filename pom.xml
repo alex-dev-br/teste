@@ -95,19 +95,23 @@
             <version>${springdoc.version}</version>
         </dependency>
 
-        <!-- (Opcional) Spring Security: deixar comentado até implementar JWT -->
-        <!--
+        <!-- Spring Security: -->
         <dependency>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-starter-security</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        -->
 
         <!-- Testes -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>13.0</version>
+            <scope>compile</scope>
         </dependency>
         <!-- (Opcional) Somente se for testar Security depois
         <dependency>
