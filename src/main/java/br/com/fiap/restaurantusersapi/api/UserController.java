@@ -1,7 +1,7 @@
 package br.com.fiap.restaurantusersapi.api;
 
-import br.com.fiap.restaurantusersapi.api.form.UserCreateForm;
 import br.com.fiap.restaurantusersapi.api.dto.UserDTO;
+import br.com.fiap.restaurantusersapi.api.form.UserCreateForm;
 import br.com.fiap.restaurantusersapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Tag(name = "Users", description = "Operações de gestão de usuários")
@@ -107,5 +106,21 @@ public class UserController {
         var out = service.findAllByName(name);
         if (out.isEmpty()) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(out);
+    }
+
+    // =====================================================
+    // DELETE /api/v1/users/{uuid}
+    // =====================================================
+    @Operation(summary = "Exclui um usuário pelo Uuid")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Usuário deletado com sucesso"),
+        @ApiResponse(responseCode = "400",
+                description = "UUID inválido",
+                content = @Content(mediaType = "application/problem+json")),
+    })
+    @DeleteMapping("/{uuid}")
+    public ResponseEntity<Void> deleteUser(@PathVariable("uuid") UUID uuid) {
+        service.deleteByUuid(uuid);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -16,6 +16,7 @@ public class UserBeanConfig {
 
     @Bean("userCreatorValidator")
     public Validator<User> createUserCreatorValidator(UserRepository userRepository) {
+
         return new CreateUserValidator(List.of(
                 new UserEmailUniquenessRule(userRepository),
                 new UserLoginUniquenessRule(userRepository)
