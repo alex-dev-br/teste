@@ -33,6 +33,8 @@ public class GlobalExceptionHandler {
     private static final URI TYPE_INTERNAL_ERROR    = URI.create("http://localhost:8080/erros/internal");
 
     private static final String PROP_INVALID_PARAMS = "invalidParams";
+    private static final URI TYPE_BUSINESS_RULE = URI.create("http://localhost:8080/erros/business-rule");
+
 
     @Value("${spring.profiles.active:}")
     private String activeProfile;
@@ -130,7 +132,6 @@ public class GlobalExceptionHandler {
             throw ex;
         }
 
-
         return problem(HttpStatus.INTERNAL_SERVER_ERROR,
                 TYPE_INTERNAL_ERROR,
                 "Internal server error",
@@ -138,15 +139,19 @@ public class GlobalExceptionHandler {
                 ex, request);
     }
 
-
     @ExceptionHandler(BusinessValidationException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ProblemDetail handleValidationException(BusinessValidationException ex, HttpServletRequest request) {
-        return problem(HttpStatus.BAD_REQUEST,
-                TYPE_INVALID_ARGUMENT,
-                "Business rule",
-                ex.getValidationResult().errors().toString(),
-                ex, request);
+        ProblemDetail pd = problem(
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                TYPE_BUSINESS_RULE,
+                "Violação de regra de negócio",
+                "Uma ou mais regras de negócio foram violadas.",
+                null,   // usar 'ex' para expor 'cause' no perfil dev
+                request
+        );
+        pd.setProperty(PROP_INVALID_PARAMS, ex.getValidationResult().errors());
+        return pd;
     }
 
 

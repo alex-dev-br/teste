@@ -4,6 +4,7 @@ import br.com.fiap.restaurantusersapi.api.form.UserCreateForm;
 import br.com.fiap.restaurantusersapi.api.dto.UserDTO;
 import br.com.fiap.restaurantusersapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,13 +14,16 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Tag(name = "Users", description = "Operações de gestão de usuários")
+@Validated
 @RestController
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
@@ -87,9 +91,11 @@ public class UserController {
     @Operation(summary = "Busca um usuário pelo nome")
     @ApiResponses({
             @ApiResponse(responseCode = "200",
-                    description = "Usuário encontrado",
+                    description = "Usuário(s) encontrado(s)",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserDTO.class))),
+                            array = @ArraySchema(schema = @Schema(implementation = UserDTO.class))
+                    )
+            ),
             @ApiResponse(responseCode = "400",
                     description = "Parâmetro 'name' inválido",
                     content = @Content(mediaType = "application/problem+json")),
@@ -97,8 +103,9 @@ public class UserController {
                     description = "Usuário não encontrado")
     })
     @GetMapping
-    public ResponseEntity<UserDTO> findByName(@RequestParam @NotBlank String name) {
-        var out = service.findByName(name);
-        return out.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<List<UserDTO>> findByName(@RequestParam @NotBlank String name) {
+        var out = service.findAllByName(name);
+        if (out.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(out);
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Arrays;
 import java.util.List;
 
-// Sem o Spring Security, o WebMvcConfigurer é suficiente para o navegador aplicar CORS.
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
