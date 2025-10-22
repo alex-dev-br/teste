@@ -1,5 +1,6 @@
 package br.com.fiap.restaurantusersapi.api;
 
+import br.com.fiap.restaurantusersapi.api.dto.JwtTokenDTO;
 import br.com.fiap.restaurantusersapi.api.form.LoginForm;
 import br.com.fiap.restaurantusersapi.service.TokenService;
 import jakarta.validation.Valid;
@@ -27,6 +28,6 @@ public class AuthController {
         var authentication = loginForm.toAuthenticatorToken();
         var authenticated = authenticationManager.authenticate(authentication);
         var token = tokenService.generateToken(authenticated);
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(new JwtTokenDTO(token));
     }
 }

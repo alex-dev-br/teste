@@ -1,5 +1,6 @@
 package br.com.fiap.restaurantusersapi.service;
 
+import br.com.fiap.restaurantusersapi.domain.JwtToken;
 import br.com.fiap.restaurantusersapi.domain.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -35,7 +36,7 @@ public class TokenService {
         this.expiration = expiration;
     }
 
-    public String generateToken(Authentication authentication) {
+    public JwtToken generateToken(Authentication authentication) {
         var principal = (User) authentication.getPrincipal();
 
         byte[] decode = Decoders.BASE64.decode(secret);
@@ -44,13 +45,15 @@ public class TokenService {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expirationDate = now.plus(expiration, TimeUnit.SECONDS.toChronoUnit());
 
-        return Jwts.builder()
+        var accessToken = Jwts.builder()
                 .issuer("Restaurant-API")
                 .subject(principal.getId().toString())
                 .issuedAt(Date.from(now.toInstant(ZoneOffset.ofHours(-3))))
                 .expiration(Date.from(expirationDate.toInstant(ZoneOffset.ofHours(-3))))
                 .signWith(keys)
                 .compact();
+
+        return new JwtToken(accessToken, expiration);
     }
 
     public boolean isValidToken(String token) {
