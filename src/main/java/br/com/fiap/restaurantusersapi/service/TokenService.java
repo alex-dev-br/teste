@@ -1,8 +1,8 @@
 package br.com.fiap.restaurantusersapi.service;
 
+import br.com.fiap.restaurantusersapi.domain.JwtToken;
 import br.com.fiap.restaurantusersapi.domain.User;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
@@ -10,14 +10,10 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.MacAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +31,7 @@ public class TokenService {
         this.expiration = expiration;
     }
 
-    public String generateToken(Authentication authentication) {
+    public JwtToken generateToken(Authentication authentication) {
         var principal = (User) authentication.getPrincipal();
 
         byte[] decode = Decoders.BASE64.decode(secret);
@@ -44,13 +40,15 @@ public class TokenService {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expirationDate = now.plus(expiration, TimeUnit.SECONDS.toChronoUnit());
 
-        return Jwts.builder()
+        var accessToken = Jwts.builder()
                 .issuer("Restaurant-API")
                 .subject(principal.getId().toString())
                 .issuedAt(Date.from(now.toInstant(ZoneOffset.ofHours(-3))))
                 .expiration(Date.from(expirationDate.toInstant(ZoneOffset.ofHours(-3))))
                 .signWith(keys)
                 .compact();
+
+        return new JwtToken(accessToken, expiration);
     }
 
     public boolean isValidToken(String token) {

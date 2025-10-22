@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -53,6 +54,7 @@ public class UserController {
                     content = @Content(mediaType = "application/problem+json"))
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @SecurityRequirement(name = "bearerAuth") /*TODO verificar depois se precisa esta autenticado para se cadastras, n faz muito sentido*/
     public ResponseEntity<UserDTO> create(@Valid @RequestBody UserCreateForm in) {
         UserDTO out = service.create(in);
         URI location = URI.create("/api/v1/users/" + out.id());
@@ -78,6 +80,7 @@ public class UserController {
                     description = "Erro interno do servidor",
                     content = @Content(mediaType = "application/problem+json"))
     })
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable UUID id) {
         UserDTO out = service.findById(id);
@@ -102,6 +105,7 @@ public class UserController {
                     description = "Usuário não encontrado")
     })
     @GetMapping
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<List<UserDTO>> findByName(@RequestParam @NotBlank String name) {
         var out = service.findAllByName(name);
         if (out.isEmpty()) return ResponseEntity.notFound().build();
@@ -119,6 +123,7 @@ public class UserController {
                 content = @Content(mediaType = "application/problem+json")),
     })
     @DeleteMapping("/{uuid}")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> deleteUser(@PathVariable("uuid") UUID uuid) {
         service.deleteByUuid(uuid);
         return ResponseEntity.noContent().build();

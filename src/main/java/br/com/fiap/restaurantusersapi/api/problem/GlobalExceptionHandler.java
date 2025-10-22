@@ -9,6 +9,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -31,6 +32,7 @@ public class GlobalExceptionHandler {
     private static final URI TYPE_DATA_CONFLICT     = URI.create("http://localhost:8080/erros/data-conflict");
     private static final URI TYPE_INVALID_ARGUMENT  = URI.create("http://localhost:8080/erros/invalid-argument");
     private static final URI TYPE_INTERNAL_ERROR    = URI.create("http://localhost:8080/erros/internal");
+    private static final URI TYPE_UNAUTHORIZED      = URI.create("http://localhost:8080/erros/unauthorized");
 
     private static final String PROP_INVALID_PARAMS = "invalidParams";
     private static final URI TYPE_BUSINESS_RULE = URI.create("http://localhost:8080/erros/business-rule");
@@ -154,6 +156,19 @@ public class GlobalExceptionHandler {
         return pd;
     }
 
+    @ExceptionHandler(BadCredentialsException.class)
+    public ProblemDetail handleBadCredentials(BadCredentialsException ex, HttpServletRequest request) {
+        ProblemDetail pd = problem(
+                HttpStatus.UNAUTHORIZED,
+                TYPE_UNAUTHORIZED,
+                "Falha ao autenticar",
+                "Falha ao autenticar o usuário, verifique as credenciais e tente novamente.",
+                null,   // usar 'ex' para expor 'cause' no perfil dev
+                request
+        );
+        pd.setProperty(PROP_INVALID_PARAMS, ex.getMessage());
+        return pd;
+    }
 
     // Para diminuir repetição:
     private ProblemDetail problem(HttpStatus status,
