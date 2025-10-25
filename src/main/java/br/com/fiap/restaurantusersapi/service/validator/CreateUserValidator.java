@@ -6,13 +6,10 @@ import br.com.fiap.restaurantusersapi.service.validator.rule.Rule;
 import java.util.List;
 import java.util.Objects;
 
-public class CreateUserValidator implements Validator<User> {
+public record CreateUserValidator(List<Rule<User>> rules) implements Validator<User> {
 
-    private final List<Rule<User>> rules;
-
-    public CreateUserValidator(List<Rule<User>> rules) {
+    public CreateUserValidator {
         Objects.requireNonNull(rules);
-        this.rules = rules;
     }
 
     @Override
