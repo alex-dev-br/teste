@@ -1,4 +1,4 @@
-package br.com.fiap.restaurantusersapi.domain.exception;
+package br.com.fiap.restaurantusersapi.application.domain.exception;
 
 import br.com.fiap.restaurantusersapi.service.validator.ValidationResult;
 

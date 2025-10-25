@@ -1,6 +1,6 @@
 package br.com.fiap.restaurantusersapi.api.problem;
 
-import br.com.fiap.restaurantusersapi.domain.exception.BusinessValidationException;
+import br.com.fiap.restaurantusersapi.application.domain.exception.BusinessValidationException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Value;

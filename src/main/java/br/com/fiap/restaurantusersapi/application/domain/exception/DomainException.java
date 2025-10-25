@@ -1,4 +1,4 @@
-package br.com.fiap.restaurantusersapi.domain.exception;
+package br.com.fiap.restaurantusersapi.application.domain.exception;
 
 public class DomainException extends RuntimeException {
 

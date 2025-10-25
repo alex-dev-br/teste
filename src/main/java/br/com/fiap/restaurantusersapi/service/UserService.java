@@ -7,7 +7,7 @@ import br.com.fiap.restaurantusersapi.domain.Address;
 import br.com.fiap.restaurantusersapi.domain.Role;
 import br.com.fiap.restaurantusersapi.domain.User;
 import br.com.fiap.restaurantusersapi.domain.UserRepository;
-import br.com.fiap.restaurantusersapi.domain.exception.BusinessValidationException;
+import br.com.fiap.restaurantusersapi.application.domain.exception.BusinessValidationException;
 import br.com.fiap.restaurantusersapi.service.validator.Validator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
