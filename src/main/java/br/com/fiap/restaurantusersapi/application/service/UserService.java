@@ -5,7 +5,7 @@ import br.com.fiap.restaurantusersapi.application.domain.user.User;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserInput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserOut;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.ForCreatingUser;
-import br.com.fiap.restaurantusersapi.application.ports.outbound.repository.UserRepository;
+import br.com.fiap.restaurantusersapi.application.ports.outbound.persistence.UserPersistence;
 import br.com.fiap.restaurantusersapi.application.ports.outbound.security.PasswordEncoder;
 import br.com.fiap.restaurantusersapi.application.service.validator.CreateUserValidator;
 import jakarta.inject.Named;
@@ -15,15 +15,15 @@ import java.util.Objects;
 @Named
 public class UserService implements ForCreatingUser {
 
-    private final UserRepository userRepository;
+    private final UserPersistence userPersistence;
     private final PasswordEncoder encoder;
     private final CreateUserValidator createUserValidator;
 
-    public UserService(UserRepository userRepository, PasswordEncoder encoder, CreateUserValidator createUserValidator) {
-        Objects.requireNonNull(userRepository);
+    public UserService(UserPersistence userPersistence, PasswordEncoder encoder, CreateUserValidator createUserValidator) {
+        Objects.requireNonNull(userPersistence);
         Objects.requireNonNull(encoder);
         Objects.requireNonNull(createUserValidator);
-        this.userRepository = userRepository;
+        this.userPersistence = userPersistence;
         this.encoder = encoder;
         this.createUserValidator = createUserValidator;
     }
@@ -34,7 +34,7 @@ public class UserService implements ForCreatingUser {
         var user = createUserInput.toDomain();
         createUserValidator.validate(user);
         var encodedUser = new User(user.name(), user.email(), user.login(), encoder.encode(user.password()), user.address(), user.roles());
-        var createdUser = userRepository.create(encodedUser);
+        var createdUser = userPersistence.create(encodedUser);
         return new CreateUserOut(createdUser);
     }
 }

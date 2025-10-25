@@ -14,8 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PasswordTest {
 
-    private static final String PASSWORD_ERROR_MESSAGE = "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).";
-
     @Test
     @DisplayName("Deve criar uma senha quando ela é forte e válida")
     void shouldCreatePasswordWhenItIsStrongAndValid() {
@@ -37,14 +35,14 @@ class PasswordTest {
     @DisplayName("Deve lançar exceção quando a senha é fraca")
     void shouldThrowExceptionWhenPasswordIsWeak(String weakPassword) {
         var exception = assertThrows(DomainException.class, () -> new Password(weakPassword));
-        assertThat(exception.getMessage(), is(PASSWORD_ERROR_MESSAGE));
+        assertThat(exception.getMessage(), is(Password.PASSWORD_ERROR_MESSAGE));
     }
 
     @Test
     @DisplayName("Deve lançar exceção quando a senha é nula")
     void shouldThrowExceptionWhenPasswordIsNull() {
         var exception = assertThrows(DomainException.class, () -> new Password(null));
-        assertThat(exception.getMessage(), is(PASSWORD_ERROR_MESSAGE));
+        assertThat(exception.getMessage(), is(Password.PASSWORD_ERROR_MESSAGE));
     }
 
     @Test

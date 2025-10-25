@@ -1,26 +1,26 @@
 package br.com.fiap.restaurantusersapi.service.validator.rule;
 
-import br.com.fiap.restaurantusersapi.domain.User;
-import br.com.fiap.restaurantusersapi.domain.UserRepository;
-import br.com.fiap.restaurantusersapi.service.validator.ValidationResult;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.UserEntity;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.repository.UserRepositoryJPA;
+import br.com.fiap.restaurantusersapi.service.validator.ValidationResultOld;
 
-public class UserEmailUniquenessRule implements Rule<User> {
+public class UserEmailUniquenessRule implements Rule<UserEntity> {
 
-    private final UserRepository userRepository;
+    private final UserRepositoryJPA userRepositoryJPA;
 
-    public UserEmailUniquenessRule(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserEmailUniquenessRule(UserRepositoryJPA userRepositoryJPA) {
+        this.userRepositoryJPA = userRepositoryJPA;
     }
 
     @Override
-    public ValidationResult execute(User user) {
-        var optionalResult = userRepository.findByEmailIgnoreCase(user.getEmail());
+    public ValidationResultOld execute(UserEntity user) {
+        var optionalResult = userRepositoryJPA.findByEmailIgnoreCase(user.getEmail());
         if (optionalResult.isPresent()) {
-            User userFound = optionalResult.get();
+            UserEntity userFound = optionalResult.get();
             if (!userFound.getId().equals(user.getId())) {
-                return new ValidationResult("E-mail já está sendo utilizado");
+                return new ValidationResultOld("E-mail já está sendo utilizado");
             }
         }
-        return ValidationResult.SUCCESS;
+        return ValidationResultOld.SUCCESS;
     }
 }

@@ -1,10 +1,10 @@
-package br.com.fiap.restaurantusersapi.domain;
+package br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "addresses", indexes = @Index(name = "idx_user_id", columnList = "user_id"))
-public class Address {
+public class AddressEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,7 +13,7 @@ public class Address {
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private User user;
+    private UserEntity user;
 
     @Column(name = "street", length = 255)
     private String street;
@@ -44,11 +44,11 @@ public class Address {
         this.addressId = addressId;
     }
 
-    public User getUser() {
+    public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserEntity user) {
         this.user = user;
     }
 

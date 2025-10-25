@@ -1,6 +1,7 @@
 package br.com.fiap.restaurantusersapi.api.dto;
 
-import br.com.fiap.restaurantusersapi.domain.Address;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateAddressOut;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.AddressEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Representação de endereço", name = "AddressResponse")
@@ -13,7 +14,11 @@ public record AddressDTO (
     @Schema(example = "SP", minLength = 2, maxLength = 2) String state,
     @Schema(example = "12345-678", minLength = 8, maxLength = 9) String zipCode
 ) {
-    public AddressDTO(Address address) {
+    public AddressDTO(AddressEntity address) {
         this(address.getStreet(), address.getNumber(), address.getComplement(), address.getCity(), address.getNeighborhood(), address.getState(), address.getZipCode());
+    }
+
+    public AddressDTO(CreateAddressOut address) {
+        this(address.street(), address.number(), address.complement(), address.city(), address.neighborhood(), address.state(), address.zipCode());
     }
 }

@@ -3,6 +3,8 @@ package br.com.fiap.restaurantusersapi.application.domain.user;
 import br.com.fiap.restaurantusersapi.application.domain.exception.DomainException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -26,6 +28,24 @@ class EmailTest {
         var validEmail = "TEST@example.com";
         var email = assertDoesNotThrow(() -> new Email(validEmail));
         assertThat(email.address(), is(equalTo(validEmail.toLowerCase())));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "simple@example.com",
+            "very.common@example.com",
+            "email.with+plus@example.com",
+            "email-with-dash@example.com",
+            "email_with_underscore@domain.com",
+            "email&with&ampersand@example.com",
+            "email*with*asterisk@example.com",
+            "joana.prado1761432758@mail.com",
+            "test@sub.domain.com",
+            "a@b.co"
+    })
+    @DisplayName("Deve criar um email para vários formatos válidos")
+    void shouldCreateEmailForVariousValidFormats(String validEmail) {
+        assertDoesNotThrow(() -> new Email(validEmail));
     }
 
     @Test

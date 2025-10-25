@@ -1,11 +1,13 @@
 package br.com.fiap.restaurantusersapi.api.dto;
 
-import br.com.fiap.restaurantusersapi.domain.Role;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserOut;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.RoleEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Schema(description = "Representação de usuário", name = "UserResponse")
@@ -24,7 +26,7 @@ public record UserDTO(
         String login,
 
         @Schema(example = "[\"CLIENT\", \"OWNER\"]", description = "Papéis de usuário: OWNER, CLIENT e ADMIN")
-        Set<Role> roles,
+        Set<RoleEntity> roles,
 
         @Schema(example = "2025-09-28T12:00:00Z", description = "Data/hora de criação (UTC)")
         Instant createdAt,
@@ -34,4 +36,11 @@ public record UserDTO(
 
         @Schema(implementation = AddressDTO.class)
         AddressDTO address
-){}
+){
+    public UserDTO(CreateUserOut createUserOutput) {
+        this(createUserOutput.uuid(), createUserOutput.name(), createUserOutput.email(),
+                createUserOutput.login(), createUserOutput.roles().stream().map(r -> RoleEntity.valueOf(r.name())).collect(Collectors.toSet()),
+                createUserOutput.createdAt(), createUserOutput.updatedAt(),
+                createUserOutput.address() != null ? new AddressDTO(createUserOutput.address()) : null);
+    }
+}

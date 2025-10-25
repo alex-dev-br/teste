@@ -1,6 +1,8 @@
 package br.com.fiap.restaurantusersapi.api.form;
 
-import br.com.fiap.restaurantusersapi.domain.Role;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateRoleInput;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserInput;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.RoleEntity;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -9,6 +11,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Schema(description = "Payload para criação de usuário.", name = "UserCreateRequest")
 public record UserCreateForm(
@@ -38,12 +41,23 @@ public record UserCreateForm(
         AddressForm address,
 
         @ArraySchema(
-                schema = @Schema(implementation = Role.class),
+                schema = @Schema(implementation = RoleEntity.class),
                 arraySchema = @Schema(
                         description = "Lista de papéis do usuário. Se não for informada, o papel padrão 'CLIENT' será atribuído." ,
                         example = "[\"CLIENT\", \"OWNER\", \"ADMIN\"]"
                 ),
                 uniqueItems = true
         )
-        Set<Role> roles
-){}
+        Set<RoleEntity> roles
+){
+    public CreateUserInput toCreateUserInput() {
+        return new CreateUserInput(
+                name,
+                email,
+                login,
+                password,
+                address != null ? address.toCreateAddressInput() : null,
+                roles.stream().map(r -> new CreateRoleInput(r.name())).collect(Collectors.toSet())
+        );
+    }
+}

@@ -1,6 +1,6 @@
 package br.com.fiap.restaurantusersapi.service.security;
 
-import br.com.fiap.restaurantusersapi.domain.UserRepository;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.repository.UserRepositoryJPA;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class JpaUserDetailsService implements UserDetailsService {
 
-    private final UserRepository users;
+    private final UserRepositoryJPA users;
 
-    public JpaUserDetailsService(UserRepository users) { this.users = users; }
+    public JpaUserDetailsService(UserRepositoryJPA users) { this.users = users; }
 
     @Override
     @Transactional(readOnly = true)

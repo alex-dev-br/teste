@@ -1,7 +1,7 @@
 package br.com.fiap.restaurantusersapi.service.validator.rule;
 
-import br.com.fiap.restaurantusersapi.service.validator.ValidationResult;
+import br.com.fiap.restaurantusersapi.service.validator.ValidationResultOld;
 
 public interface Rule <T> {
-    ValidationResult execute(T t);
+    ValidationResultOld execute(T t);
 }

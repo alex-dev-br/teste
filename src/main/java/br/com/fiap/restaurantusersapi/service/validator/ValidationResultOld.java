@@ -3,15 +3,15 @@ package br.com.fiap.restaurantusersapi.service.validator;
 import java.util.ArrayList;
 import java.util.List;
 
-public record ValidationResult(List<String> errors) {
+public record ValidationResultOld(List<String> errors) {
 
-    public static final ValidationResult SUCCESS = new ValidationResult(List.of());
+    public static final ValidationResultOld SUCCESS = new ValidationResultOld(List.of());
 
-    public ValidationResult() {
+    public ValidationResultOld() {
         this(new ArrayList<>());
     }
 
-    public ValidationResult(String error) {
+    public ValidationResultOld(String error) {
         this();
         addError(error);
     }
@@ -20,10 +20,10 @@ public record ValidationResult(List<String> errors) {
         this.errors.add(message);
     }
 
-    public ValidationResult mergeErrors(ValidationResult validationResult) {
+    public ValidationResultOld mergeErrors(ValidationResultOld validationResult) {
         List<String> allErrors = new ArrayList<>(this.errors);
         allErrors.addAll(validationResult.errors);
-        return new ValidationResult(allErrors);
+        return new ValidationResultOld(allErrors);
     }
 
     public boolean isValid() {

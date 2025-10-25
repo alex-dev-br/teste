@@ -1,23 +1,23 @@
 package br.com.fiap.restaurantusersapi.service.validator.rule;
 
-import br.com.fiap.restaurantusersapi.domain.User;
-import br.com.fiap.restaurantusersapi.domain.UserRepository;
-import br.com.fiap.restaurantusersapi.service.validator.ValidationResult;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.UserEntity;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.repository.UserRepositoryJPA;
+import br.com.fiap.restaurantusersapi.service.validator.ValidationResultOld;
 
-public class UserLoginUniquenessRule implements Rule<User> {
+public class UserLoginUniquenessRule implements Rule<UserEntity> {
 
-    private final UserRepository userRepository;
+    private final UserRepositoryJPA userRepositoryJPA;
 
-    public UserLoginUniquenessRule(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserLoginUniquenessRule(UserRepositoryJPA userRepositoryJPA) {
+        this.userRepositoryJPA = userRepositoryJPA;
     }
 
     @Override
-    public ValidationResult execute(User user) {
-        var existing = userRepository.findByLoginIgnoreCase(user.getLogin());
+    public ValidationResultOld execute(UserEntity user) {
+        var existing = userRepositoryJPA.findByLoginIgnoreCase(user.getLogin());
         if (existing.isPresent() && !existing.get().getId().equals(user.getId())) {
-            return new ValidationResult("Login já está sendo utilizado");
+            return new ValidationResultOld("Login já está sendo utilizado");
         }
-        return ValidationResult.SUCCESS;
+        return ValidationResultOld.SUCCESS;
     }
 }

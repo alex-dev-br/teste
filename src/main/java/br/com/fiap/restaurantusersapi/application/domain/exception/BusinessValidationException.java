@@ -1,16 +1,16 @@
 package br.com.fiap.restaurantusersapi.application.domain.exception;
 
-import br.com.fiap.restaurantusersapi.service.validator.ValidationResult;
+import br.com.fiap.restaurantusersapi.service.validator.ValidationResultOld;
 
 public class BusinessValidationException extends DomainException {
 
-    private final ValidationResult validationResult;
+    private final ValidationResultOld validationResult;
 
-    public BusinessValidationException(ValidationResult validationResult) {
+    public BusinessValidationException(ValidationResultOld validationResult) {
         this.validationResult = validationResult;
     }
 
-    public ValidationResult getValidationResult() {
+    public ValidationResultOld getValidationResult() {
         return validationResult;
     }
 }

@@ -3,12 +3,12 @@ package br.com.fiap.restaurantusersapi.service;
 import br.com.fiap.restaurantusersapi.api.dto.AddressDTO;
 import br.com.fiap.restaurantusersapi.api.dto.UserDTO;
 import br.com.fiap.restaurantusersapi.api.form.UserCreateForm;
-import br.com.fiap.restaurantusersapi.domain.Address;
-import br.com.fiap.restaurantusersapi.domain.Role;
-import br.com.fiap.restaurantusersapi.domain.User;
-import br.com.fiap.restaurantusersapi.domain.UserRepository;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.AddressEntity;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.RoleEntity;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.UserEntity;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.repository.UserRepositoryJPA;
 import br.com.fiap.restaurantusersapi.application.domain.exception.BusinessValidationException;
-import br.com.fiap.restaurantusersapi.service.validator.Validator;
+import br.com.fiap.restaurantusersapi.service.validator.ValidatorOld;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -25,18 +25,18 @@ import java.util.UUID;
 
 
 @Service
-public class UserService {
+public class UserServiceOld {
 
-    private final UserRepository repo;
+    private final UserRepositoryJPA repo;
 
     private final PasswordEncoder encoder;
 
-    @Qualifier("userCreatorValidator")
-    private final Validator<User> userCreatorValidator;
+    @Qualifier("userCreatorValidatorOld")
+    private final ValidatorOld<UserEntity> userCreatorValidator;
 
-    public UserService(UserRepository repo,
-                       PasswordEncoder encoder,
-                       @Qualifier("userCreatorValidator") Validator<User> userCreatorValidator) {
+    public UserServiceOld(UserRepositoryJPA repo,
+                          PasswordEncoder encoder,
+                          @Qualifier("userCreatorValidatorOld") ValidatorOld<UserEntity> userCreatorValidator) {
         this.repo = repo;
         this.encoder = encoder;
         this.userCreatorValidator = userCreatorValidator;
@@ -44,22 +44,22 @@ public class UserService {
 
     @Transactional
     public UserDTO create(UserCreateForm in) {
-        var user = new User();
+        var user = new UserEntity();
         user.setName(in.name());
         user.setEmail(in.email());
         user.setLogin(in.login());
         user.setPasswordHash(encoder.encode(in.password()));
 
         // Papel padrão => CLIENT
-        Set<Role> rolesFromForm = (in.roles() != null && !in.roles().isEmpty())
+        Set<RoleEntity> rolesFromForm = (in.roles() != null && !in.roles().isEmpty())
                 ? EnumSet.copyOf(in.roles())
-                : EnumSet.of(Role.CLIENT);
+                : EnumSet.of(RoleEntity.CLIENT);
         user.setRoles(rolesFromForm);
 
         // Monta address apenas se vier no form
-        Address address = null;
+        AddressEntity address = null;
         if (in.address() != null) {
-            address = new Address();
+            address = new AddressEntity();
             address.setStreet(in.address().street());
             address.setNumber(in.address().number());
             address.setComplement(in.address().complement());
@@ -101,7 +101,7 @@ public class UserService {
                 .toList();
     }
 
-    private UserDTO toResponse(User u) {
+    private UserDTO toResponse(UserEntity u) {
         return new UserDTO(
                 u.getId(),
                 u.getName(),

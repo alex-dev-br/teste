@@ -7,7 +7,7 @@ import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateAdd
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateRoleInput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateRoleOutput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserInput;
-import br.com.fiap.restaurantusersapi.application.ports.outbound.repository.UserRepository;
+import br.com.fiap.restaurantusersapi.application.ports.outbound.persistence.UserPersistence;
 import br.com.fiap.restaurantusersapi.application.ports.outbound.security.PasswordEncoder;
 import br.com.fiap.restaurantusersapi.application.service.validator.CreateUserValidator;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,15 +24,15 @@ import static org.mockito.Mockito.*;
 
 class UserServiceTest {
 
-    private UserRepository userRepository;
+    private UserPersistence userPersistence;
     private PasswordEncoder passwordEncoder;
     private UserService userService;
 
     @BeforeEach
     void setUp() {
-        userRepository = mock(UserRepository.class);
+        userPersistence = mock(UserPersistence.class);
         passwordEncoder = mock(PasswordEncoder.class);
-        userService = new UserService(userRepository, passwordEncoder, new CreateUserValidator(List.of()));
+        userService = new UserService(userPersistence, passwordEncoder, new CreateUserValidator(List.of()));
     }
 
     @Test
@@ -53,7 +53,7 @@ class UserServiceTest {
         User createdUser = new User(userInput.name(), new Email(userInput.email()), userInput.login(), encodedPassword, addressInput.toDomain(), Set.of(new CreateRoleInput("OWNER").toDomain()));
 
         when(passwordEncoder.encode(any(Password.class))).thenReturn(encodedPassword);
-        when(userRepository.create(any(User.class))).thenReturn(createdUser);
+        when(userPersistence.create(any(User.class))).thenReturn(createdUser);
 
         var userOutput = userService.create(userInput);
 
@@ -78,7 +78,7 @@ class UserServiceTest {
         assertThat(addressOutput.zipCode(), is(equalTo(addressInput.zipCode())));
 
         verify(passwordEncoder).encode(any(Password.class));
-        verify(userRepository).create(any(User.class));
+        verify(userPersistence).create(any(User.class));
     }
 
     @Test
@@ -96,7 +96,7 @@ class UserServiceTest {
         User createdUser = new User(userInput.name(), new Email(userInput.email()), userInput.login(), encodedPassword, null, Set.of(new CreateRoleInput("OWNER").toDomain()));
 
         when(passwordEncoder.encode(any(Password.class))).thenReturn(encodedPassword);
-        when(userRepository.create(any(User.class))).thenReturn(createdUser);
+        when(userPersistence.create(any(User.class))).thenReturn(createdUser);
 
         var userOutput = userService.create(userInput);
 
@@ -114,6 +114,6 @@ class UserServiceTest {
         assertThat(addressOutput, is(nullValue()));
 
         verify(passwordEncoder).encode(any(Password.class));
-        verify(userRepository).create(any(User.class));
+        verify(userPersistence).create(any(User.class));
     }
 }

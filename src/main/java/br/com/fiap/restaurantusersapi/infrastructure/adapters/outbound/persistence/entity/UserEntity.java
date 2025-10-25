@@ -1,4 +1,4 @@
-package br.com.fiap.restaurantusersapi.domain;
+package br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity;
 
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
                 @Index(name = "ux_users_email", columnList = "email", unique = true),
                 @Index(name = "ux_users_login", columnList = "login", unique = true)
         })
-public class User implements UserDetails {
+public class UserEntity implements UserDetails {
 
     @Id
     private UUID id;
@@ -37,7 +37,7 @@ public class User implements UserDetails {
     private String passwordHash;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Address address;
+    private AddressEntity address;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -53,7 +53,7 @@ public class User implements UserDetails {
             uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role"})   // Evitar duplicata no DB
     )
     @Column(name="role")
-    private Set<Role> roles;
+    private Set<RoleEntity> roles;
 
 
     //  Ciclo de vida:
@@ -78,6 +78,22 @@ public class User implements UserDetails {
     //  Getters and Setters:
     public UUID getId() {
         return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public String getName() {
@@ -108,15 +124,15 @@ public class User implements UserDetails {
         this.passwordHash = passwordHash;
     }
 
-    public Set<Role> getRoles() { return roles;}
+    public Set<RoleEntity> getRoles() { return roles;}
 
-    public void setRoles(Set<Role> roles) { this.roles = roles; }
+    public void setRoles(Set<RoleEntity> roles) { this.roles = roles; }
 
-    public Address getAddress() {
+    public AddressEntity getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(AddressEntity address) {
         this.address = address;
     }
 
@@ -128,7 +144,7 @@ public class User implements UserDetails {
 
     @Override
     public final boolean equals(Object o) {
-        if (!(o instanceof User user)) return false;
+        if (!(o instanceof UserEntity user)) return false;
 
         return Objects.equals(id, user.id);
     }

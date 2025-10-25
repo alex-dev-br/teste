@@ -2,7 +2,8 @@ package br.com.fiap.restaurantusersapi.api;
 
 import br.com.fiap.restaurantusersapi.api.dto.UserDTO;
 import br.com.fiap.restaurantusersapi.api.form.UserCreateForm;
-import br.com.fiap.restaurantusersapi.service.UserService;
+import br.com.fiap.restaurantusersapi.application.service.UserService;
+import br.com.fiap.restaurantusersapi.service.UserServiceOld;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,9 +30,11 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService service;
+    private final UserServiceOld oldUserService;
 
-    public UserController(UserService service) {
+    public UserController(UserService service, UserServiceOld oldUserService) {
         this.service = service;
+        this.oldUserService = oldUserService;
     }
 
     // =====================================================
@@ -56,9 +59,9 @@ public class UserController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @SecurityRequirement(name = "bearerAuth") /*TODO verificar depois se precisa esta autenticado para se cadastras, n faz muito sentido*/
     public ResponseEntity<UserDTO> create(@Valid @RequestBody UserCreateForm in) {
-        UserDTO out = service.create(in);
-        URI location = URI.create("/api/v1/users/" + out.id());
-        return ResponseEntity.created(location).body(out);
+        var createUserOutput = service.create(in.toCreateUserInput());
+        URI location = URI.create("/api/v1/users/" + createUserOutput.uuid());
+        return ResponseEntity.created(location).body(new UserDTO(createUserOutput));
     }
 
     // =====================================================
@@ -83,7 +86,7 @@ public class UserController {
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable UUID id) {
-        UserDTO out = service.findById(id);
+        UserDTO out = oldUserService.findById(id);
         return ResponseEntity.ok(out);
     }
 
@@ -107,7 +110,7 @@ public class UserController {
     @GetMapping
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<List<UserDTO>> findByName(@RequestParam @NotBlank String name) {
-        var out = service.findAllByName(name);
+        var out = oldUserService.findAllByName(name);
         if (out.isEmpty()) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(out);
     }
@@ -125,7 +128,7 @@ public class UserController {
     @DeleteMapping("/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> deleteUser(@PathVariable("uuid") UUID uuid) {
-        service.deleteByUuid(uuid);
+        oldUserService.deleteByUuid(uuid);
         return ResponseEntity.noContent().build();
     }
 }

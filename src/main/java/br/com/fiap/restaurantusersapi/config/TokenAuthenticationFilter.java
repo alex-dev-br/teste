@@ -1,6 +1,6 @@
 package br.com.fiap.restaurantusersapi.config;
 
-import br.com.fiap.restaurantusersapi.domain.UserRepository;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.repository.UserRepositoryJPA;
 import br.com.fiap.restaurantusersapi.service.TokenExtractorService;
 import br.com.fiap.restaurantusersapi.service.TokenService;
 import jakarta.servlet.FilterChain;
@@ -18,12 +18,12 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenExtractorService tokenExtractorService;
     private final TokenService tokenService;
-    private final UserRepository userRepository;
+    private final UserRepositoryJPA userRepositoryJPA;
 
-    public TokenAuthenticationFilter(TokenExtractorService tokenExtractorService, TokenService tokenService, UserRepository userRepository) {
+    public TokenAuthenticationFilter(TokenExtractorService tokenExtractorService, TokenService tokenService, UserRepositoryJPA userRepositoryJPA) {
         this.tokenExtractorService = tokenExtractorService;
         this.tokenService = tokenService;
-        this.userRepository = userRepository;
+        this.userRepositoryJPA = userRepositoryJPA;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private void autenticateUser(String token) {
         UUID userId = tokenService.getUserId(token);
-        var optionalUser = userRepository.findById(userId);
+        var optionalUser = userRepositoryJPA.findById(userId);
 
         optionalUser.ifPresent(user -> SecurityContextHolder.getContext()
                 .setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities())));

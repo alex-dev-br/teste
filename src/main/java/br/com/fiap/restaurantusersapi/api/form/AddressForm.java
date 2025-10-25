@@ -1,5 +1,6 @@
 package br.com.fiap.restaurantusersapi.api.form;
 
+import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateAddressInput;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -40,4 +41,16 @@ public record AddressForm(
         @Pattern(regexp = "^\\d{5}-?\\d{3}$", message = "O CEP deve estar no formato 00000-000 (traço opcional)")
         @Schema(example = "12345-678", minLength = 8, maxLength = 9)
         String zipCode
-) {}
+) {
+    public CreateAddressInput toCreateAddressInput() {
+        return new CreateAddressInput(
+            street,
+            number,
+            complement,
+            city,
+            neighborhood,
+            state,
+            zipCode
+        );
+    }
+}
