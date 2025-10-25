@@ -1,4 +1,4 @@
-package br.com.fiap.restaurantusersapi.api.dto;
+package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto;
 
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserOut;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.RoleEntity;

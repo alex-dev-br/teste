@@ -1,4 +1,4 @@
-package br.com.fiap.restaurantusersapi.config;
+package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.config;
 
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.repository.UserRepositoryJPA;
 import br.com.fiap.restaurantusersapi.service.TokenExtractorService;

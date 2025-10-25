@@ -1,4 +1,4 @@
-package br.com.fiap.restaurantusersapi.api;
+package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

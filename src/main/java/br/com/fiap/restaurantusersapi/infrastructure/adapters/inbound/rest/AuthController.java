@@ -1,7 +1,7 @@
-package br.com.fiap.restaurantusersapi.api;
+package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest;
 
-import br.com.fiap.restaurantusersapi.api.dto.JwtTokenDTO;
-import br.com.fiap.restaurantusersapi.api.form.LoginForm;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.JwtTokenDTO;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.LoginForm;
 import br.com.fiap.restaurantusersapi.service.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
-    public final TokenService tokenService;
+    private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
 
     public AuthController(TokenService tokenService, AuthenticationManager authenticationManager) {

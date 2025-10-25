@@ -1,7 +1,7 @@
-package br.com.fiap.restaurantusersapi.api;
+package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest;
 
-import br.com.fiap.restaurantusersapi.api.dto.UserDTO;
-import br.com.fiap.restaurantusersapi.api.form.UserCreateForm;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserDTO;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserCreateForm;
 import br.com.fiap.restaurantusersapi.application.service.UserService;
 import br.com.fiap.restaurantusersapi.service.UserServiceOld;
 import io.swagger.v3.oas.annotations.Operation;

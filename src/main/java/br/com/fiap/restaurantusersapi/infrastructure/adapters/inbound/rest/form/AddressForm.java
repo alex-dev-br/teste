@@ -1,4 +1,4 @@
-package br.com.fiap.restaurantusersapi.api.form;
+package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form;
 
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateAddressInput;
 import io.swagger.v3.oas.annotations.media.Schema;

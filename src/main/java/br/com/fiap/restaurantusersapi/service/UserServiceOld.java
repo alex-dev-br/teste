@@ -1,8 +1,8 @@
 package br.com.fiap.restaurantusersapi.service;
 
-import br.com.fiap.restaurantusersapi.api.dto.AddressDTO;
-import br.com.fiap.restaurantusersapi.api.dto.UserDTO;
-import br.com.fiap.restaurantusersapi.api.form.UserCreateForm;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.AddressDTO;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserDTO;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserCreateForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.AddressEntity;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.RoleEntity;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.UserEntity;

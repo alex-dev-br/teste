@@ -1,4 +1,4 @@
-package br.com.fiap.restaurantusersapi.api.form;
+package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form;
 
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

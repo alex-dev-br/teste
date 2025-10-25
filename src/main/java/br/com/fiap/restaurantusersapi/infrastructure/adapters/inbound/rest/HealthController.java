@@ -1,4 +1,4 @@
-package br.com.fiap.restaurantusersapi.api;
+package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
