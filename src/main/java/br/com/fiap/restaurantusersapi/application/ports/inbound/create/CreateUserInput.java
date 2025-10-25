@@ -14,7 +14,7 @@ public record CreateUserInput(String name, String email, String login, String pa
     @Override
     public User toDomain() throws DomainException {
         return new User(
-            this.name, new Email(this.email), this.login, new Password(this.password), this.address.toDomain(), this.roles.stream().map(CreateRoleInput::toDomain).collect(Collectors.toSet())
+            this.name, new Email(this.email), this.login, new Password(this.password), this.address != null ? this.address.toDomain() : null, this.roles.stream().map(CreateRoleInput::toDomain).collect(Collectors.toSet())
         );
     }
 }

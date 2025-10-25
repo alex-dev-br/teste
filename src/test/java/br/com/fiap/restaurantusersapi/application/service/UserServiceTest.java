@@ -78,4 +78,38 @@ class UserServiceTest {
         verify(passwordEncoder).encode(any(Password.class));
         verify(userRepository).create(any(User.class));
     }
+
+    @Test
+    void shouldCreateNewUserWithoutAddressWithSuccess() {
+        var userInput = new CreateUserInput (
+                "Ana Paula Silva",
+                "ana.silva@mail.com",
+                "ana.silva",
+                "P4$$w0rd",
+                null,
+                Set.of(new CreateRoleInput("OWNER"))
+        );
+
+        Password encodedPassword = new Password("encodedPassword", true);
+        User createdUser = new User(userInput.name(), new Email(userInput.email()), userInput.login(), encodedPassword, null, Set.of(new CreateRoleInput("OWNER").toDomain()));
+
+        when(passwordEncoder.encode(any(Password.class))).thenReturn(encodedPassword);
+        when(userRepository.create(any(User.class))).thenReturn(createdUser);
+
+        var userOutput = userService.create(userInput);
+
+        assertThat(userOutput, is(notNullValue()));
+        assertThat(userOutput.uuid(), is(notNullValue()));
+        assertThat(userOutput.name(), is(equalTo(userInput.name())));
+        assertThat(userOutput.email(), is(equalTo(userInput.email())));
+        assertThat(userOutput.login(), is(equalTo(userInput.login())));
+        assertThat(userOutput.roles(), hasSize(1));
+        assertThat(userOutput.roles(), contains(new CreateRoleOutput("OWNER")));
+
+        var addressOutput = userOutput.address();
+        assertThat(addressOutput, is(nullValue()));
+
+        verify(passwordEncoder).encode(any(Password.class));
+        verify(userRepository).create(any(User.class));
+    }
 }
