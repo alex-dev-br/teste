@@ -64,6 +64,8 @@ class UserServiceTest {
         assertThat(userOutput.login(), is(equalTo(userInput.login())));
         assertThat(userOutput.roles(), hasSize(1));
         assertThat(userOutput.roles(), contains(new CreateRoleOutput("OWNER")));
+        assertThat(userOutput.createdAt(), is(notNullValue()));
+        assertThat(userOutput.updatedAt(), is(notNullValue()));
 
         var addressOutput = userOutput.address();
         assertThat(addressOutput, is(notNullValue()));
@@ -105,6 +107,8 @@ class UserServiceTest {
         assertThat(userOutput.login(), is(equalTo(userInput.login())));
         assertThat(userOutput.roles(), hasSize(1));
         assertThat(userOutput.roles(), contains(new CreateRoleOutput("OWNER")));
+        assertThat(userOutput.createdAt(), is(notNullValue()));
+        assertThat(userOutput.updatedAt(), is(notNullValue()));
 
         var addressOutput = userOutput.address();
         assertThat(addressOutput, is(nullValue()));
