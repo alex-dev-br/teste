@@ -1,6 +1,6 @@
 package br.com.fiap.restaurantusersapi.service;
 
-import br.com.fiap.restaurantusersapi.domain.JwtToken;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.domain.JwtToken;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.UserEntity;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.UnsupportedJwtException;

@@ -86,8 +86,8 @@ public class UserController {
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable UUID id) {
-        UserDTO out = oldUserService.findById(id);
-        return ResponseEntity.ok(out);
+        var output = service.findByUuid(id);
+        return output.map(getUserOutput -> ResponseEntity.ok(new UserDTO(getUserOutput))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // =====================================================

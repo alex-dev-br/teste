@@ -1,6 +1,7 @@
 package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto;
 
-import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserOut;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserOutput;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.get.GetUserOutput;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.RoleEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -37,10 +38,17 @@ public record UserDTO(
         @Schema(implementation = AddressDTO.class)
         AddressDTO address
 ){
-    public UserDTO(CreateUserOut createUserOutput) {
+    public UserDTO(CreateUserOutput createUserOutput) {
         this(createUserOutput.uuid(), createUserOutput.name(), createUserOutput.email(),
                 createUserOutput.login(), createUserOutput.roles().stream().map(r -> RoleEntity.valueOf(r.name())).collect(Collectors.toSet()),
                 createUserOutput.createdAt(), createUserOutput.updatedAt(),
                 createUserOutput.address() != null ? new AddressDTO(createUserOutput.address()) : null);
+    }
+
+    public UserDTO(GetUserOutput getUserOutput) {
+        this(getUserOutput.uuid(), getUserOutput.name(), getUserOutput.email(), getUserOutput.login(),
+                getUserOutput.roles().stream().map(r -> RoleEntity.valueOf(r.name())).collect(Collectors.toSet()),
+                getUserOutput.createdAt(), getUserOutput.updatedAt(),
+                getUserOutput.address() != null ? new AddressDTO(getUserOutput.address()) : null);
     }
 }

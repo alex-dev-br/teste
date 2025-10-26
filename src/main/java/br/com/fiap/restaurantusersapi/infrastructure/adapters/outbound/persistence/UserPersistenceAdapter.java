@@ -8,6 +8,7 @@ import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persisten
 import jakarta.inject.Named;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Named
 public record UserPersistenceAdapter(UserRepositoryJPA userRepositoryJPA) implements UserPersistence {
@@ -26,5 +27,10 @@ public record UserPersistenceAdapter(UserRepositoryJPA userRepositoryJPA) implem
     @Override
     public Optional<User> findByLogin(String login) {
         return userRepositoryJPA.findByLoginIgnoreCase(login).map(UserMapper::toDomain);
+    }
+
+    @Override
+    public Optional<User> findByUuid(UUID uuid) {
+        return userRepositoryJPA.findById(uuid).map(UserMapper::toDomain);
     }
 }
