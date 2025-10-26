@@ -1,4 +1,4 @@
-package br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.security;
+package br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.rest.security;
 
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.repository.UserRepositoryJPA;
 import org.springframework.security.core.userdetails.UserDetails;

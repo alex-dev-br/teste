@@ -411,7 +411,7 @@
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "{{basePath}}/api/v1/users/8abc4089-8089-4702-a71f-ccbecdecce08",
+									"raw": "{{basePath}}/api/v1/users/c0031b6d-a642-4184-b304-e71206a7cc71",
 									"host": [
 										"{{basePath}}"
 									],
@@ -419,7 +419,7 @@
 										"api",
 										"v1",
 										"users",
-										"8abc4089-8089-4702-a71f-ccbecdecce08"
+										"c0031b6d-a642-4184-b304-e71206a7cc71"
 									]
 								}
 							},

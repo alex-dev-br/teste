@@ -1,8 +1,8 @@
 package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.config;
 
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.repository.UserRepositoryJPA;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.security.TokenExtractorService;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.security.TokenService;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.rest.security.TokenExtractorService;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.rest.security.TokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;

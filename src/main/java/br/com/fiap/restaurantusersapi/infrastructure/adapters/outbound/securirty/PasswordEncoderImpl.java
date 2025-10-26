@@ -1,4 +1,4 @@
-package br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.security;
+package br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.securirty;
 
 import br.com.fiap.restaurantusersapi.application.domain.user.Password;
 import org.springframework.security.crypto.password.PasswordEncoder;

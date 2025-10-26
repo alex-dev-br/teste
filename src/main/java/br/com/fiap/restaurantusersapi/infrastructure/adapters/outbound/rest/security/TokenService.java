@@ -1,6 +1,6 @@
-package br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.security;
+package br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.rest.security;
 
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.domain.JwtToken;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.JwtTokenDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.UserEntity;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -31,7 +31,7 @@ public class TokenService {
         this.expiration = expiration;
     }
 
-    public JwtToken generateToken(Authentication authentication) {
+    public JwtTokenDTO generateToken(Authentication authentication) {
         var principal = (UserEntity) authentication.getPrincipal();
 
         byte[] decode = Decoders.BASE64.decode(secret);
@@ -48,7 +48,7 @@ public class TokenService {
                 .signWith(keys)
                 .compact();
 
-        return new JwtToken(accessToken, expiration);
+        return new JwtTokenDTO(accessToken, expiration);
     }
 
     public boolean isValidToken(String token) {

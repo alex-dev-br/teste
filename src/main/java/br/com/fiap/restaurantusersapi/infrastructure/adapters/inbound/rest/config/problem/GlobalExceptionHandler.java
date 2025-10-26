@@ -1,4 +1,4 @@
-package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.problem;
+package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.config.problem;
 
 import br.com.fiap.restaurantusersapi.application.domain.exception.BusinessValidationException;
 import jakarta.servlet.http.HttpServletRequest;
