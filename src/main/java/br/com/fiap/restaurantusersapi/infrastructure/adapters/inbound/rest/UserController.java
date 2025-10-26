@@ -133,7 +133,7 @@ public class UserController {
     @DeleteMapping("/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> deleteUser(@PathVariable("uuid") UUID uuid) {
-        oldUserService.deleteByUuid(uuid);
+        service.deleteByUuid(uuid);
         return ResponseEntity.noContent().build();
     }
 }

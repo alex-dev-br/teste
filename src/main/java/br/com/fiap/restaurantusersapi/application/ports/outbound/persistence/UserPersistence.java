@@ -13,4 +13,5 @@ public interface UserPersistence {
     Optional<User> findByLogin(String login);
     Optional<User> findByUuid(UUID uuid);
     Pagination<User> findByName(String name, Page page);
+    void deleteByUuid(UUID uuid);
 }

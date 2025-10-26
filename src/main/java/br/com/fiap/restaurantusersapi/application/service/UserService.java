@@ -7,6 +7,7 @@ import br.com.fiap.restaurantusersapi.application.domain.user.User;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserInput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserOutput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.ForCreatingUser;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.delete.ForDeletingByUuid;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.get.ForGettingUser;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.get.GetUserOutput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ForListingUserOutput;
@@ -21,7 +22,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Named
-public class UserService implements ForCreatingUser, ForGettingUser, ForListingUserOutput {
+public class UserService implements ForCreatingUser, ForGettingUser, ForListingUserOutput, ForDeletingByUuid {
 
     private final UserPersistence userPersistence;
     private final PasswordEncoder encoder;
@@ -69,5 +70,11 @@ public class UserService implements ForCreatingUser, ForGettingUser, ForListingU
         Objects.requireNonNull(name);
         Objects.requireNonNull(page);
         return userPersistence.findByName(name, page).mapItems(ListUserOutput::new);
+    }
+
+    @Override
+    public void deleteByUuid(UUID uuid) {
+        Objects.requireNonNull(uuid);
+        userPersistence.deleteByUuid(uuid);
     }
 }

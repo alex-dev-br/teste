@@ -51,4 +51,9 @@ public record UserPersistenceAdapter(UserRepositoryJPA userRepositoryJPA) implem
             pageResult.getContent().stream().map(UserMapper::toDomain).toList()
         );
     }
+
+    @Override
+    public void deleteByUuid(UUID uuid) {
+        userRepositoryJPA.deleteById(uuid);
+    }
 }
