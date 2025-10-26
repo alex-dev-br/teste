@@ -22,6 +22,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -107,7 +108,7 @@ public class UserServiceOld {
                 u.getName(),
                 u.getEmail(),
                 u.getLogin(),
-                u.getRoles(),
+                u.getRoles().stream().map(RoleEntity::name).collect(Collectors.toSet()),
                 u.getCreatedAt(),
                 u.getUpdatedAt(),
                 u.getAddress() == null ? null : new AddressDTO(u.getAddress())

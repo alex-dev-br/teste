@@ -1,12 +1,16 @@
 package br.com.fiap.restaurantusersapi.application.service;
 
 import br.com.fiap.restaurantusersapi.application.domain.exception.DomainException;
+import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
+import br.com.fiap.restaurantusersapi.application.domain.pagination.Pagination;
 import br.com.fiap.restaurantusersapi.application.domain.user.User;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserInput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserOutput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.ForCreatingUser;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.get.ForGettingUser;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.get.GetUserOutput;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ForListingUserOutput;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ListUserOutput;
 import br.com.fiap.restaurantusersapi.application.ports.outbound.persistence.UserPersistence;
 import br.com.fiap.restaurantusersapi.application.ports.outbound.security.PasswordEncoder;
 import br.com.fiap.restaurantusersapi.application.service.validator.CreateUserValidator;
@@ -17,7 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Named
-public class UserService implements ForCreatingUser, ForGettingUser {
+public class UserService implements ForCreatingUser, ForGettingUser, ForListingUserOutput {
 
     private final UserPersistence userPersistence;
     private final PasswordEncoder encoder;
@@ -58,5 +62,12 @@ public class UserService implements ForCreatingUser, ForGettingUser {
     public Optional<GetUserOutput> findByLogin(String login) {
         Objects.requireNonNull(login);
         return userPersistence.findByLogin(login).map(GetUserOutput::new);
+    }
+
+    @Override
+    public Pagination<ListUserOutput> findByName(String name, Page page) {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(page);
+        return userPersistence.findByName(name, page).mapItems(ListUserOutput::new);
     }
 }

@@ -1,6 +1,8 @@
 package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest;
 
+import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserDTO;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PaginationDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserCreateForm;
 import br.com.fiap.restaurantusersapi.application.service.UserService;
 import br.com.fiap.restaurantusersapi.service.UserServiceOld;
@@ -14,6 +16,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -96,23 +99,25 @@ public class UserController {
     @Operation(summary = "Busca um usuário pelo nome")
     @ApiResponses({
             @ApiResponse(responseCode = "200",
-                    description = "Usuário(s) encontrado(s)",
+                    description = "Paginação de usuário(s) encontrado(s)",
                     content = @Content(mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = UserDTO.class))
+                            schema = @Schema(implementation = PaginationDTO.class)
                     )
             ),
             @ApiResponse(responseCode = "400",
                     description = "Parâmetro 'name' inválido",
-                    content = @Content(mediaType = "application/problem+json")),
-            @ApiResponse(responseCode = "404",
-                    description = "Usuário não encontrado")
+                    content = @Content(mediaType = "application/problem+json"))
     })
     @GetMapping
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<List<UserDTO>> findByName(@RequestParam @NotBlank String name) {
-        var out = oldUserService.findAllByName(name);
-        if (out.isEmpty()) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(out);
+    public ResponseEntity<PaginationDTO<UserDTO>> findByName(
+            @RequestParam @NotBlank String name,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        var pageDomain = new Page(page < 1 ? 1 : page-1, size < 1 ? 10 : size);
+        var paginationResult = service.findByName(name, pageDomain).mapItems(UserDTO::new);
+        return ResponseEntity.ok(new PaginationDTO<>(paginationResult));
     }
 
     // =====================================================

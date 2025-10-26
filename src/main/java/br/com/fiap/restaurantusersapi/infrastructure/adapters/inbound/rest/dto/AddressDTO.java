@@ -2,6 +2,7 @@ package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto;
 
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateAddressOutput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.get.GetAddressOutput;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ListAddressOutput;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.AddressEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -24,6 +25,10 @@ public record AddressDTO (
     }
 
     public AddressDTO(GetAddressOutput address) {
+        this(address.street(), address.number(), address.complement(), address.city(), address.neighborhood(), address.state(), address.zipCode());
+    }
+
+    public AddressDTO(ListAddressOutput address) {
         this(address.street(), address.number(), address.complement(), address.city(), address.neighborhood(), address.state(), address.zipCode());
     }
 }
