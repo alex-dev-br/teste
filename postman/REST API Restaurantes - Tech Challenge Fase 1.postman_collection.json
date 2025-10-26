@@ -127,7 +127,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"Joana Prado\",\n    \"email\": \"joana.prado+{{$timestamp}}@mail.com\",\n    \"login\": \"joanaprado{{$timestamp}}\",\n    \"password\": \"Senha Fort3!@#*\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    },\n    \"roles\": [\n        \"CLIENT\"\n    ]\n}",
+									"raw": "{\n    \"name\": \"Joana Prado\",\n    \"email\": \"joana.prado+{{$timestamp}}@mail.com\",\n    \"login\": \"joanaprado{{$timestamp}}\",\n    \"password\": \"SenhaFort3!@#*\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    },\n    \"roles\": [\n        \"CLIENT\"\n    ]\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -399,12 +399,19 @@
 							"name": "Deleta Usuário",
 							"request": {
 								"auth": {
-									"type": "noauth"
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
 								},
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "{{basePath}}/api/v1/users/1d528ef6-d662-4aa0-a1bd-2522c1838d96",
+									"raw": "{{basePath}}/api/v1/users/c0031b6d-a642-4184-b304-e71206a7cc71",
 									"host": [
 										"{{basePath}}"
 									],
@@ -412,7 +419,7 @@
 										"api",
 										"v1",
 										"users",
-										"1d528ef6-d662-4aa0-a1bd-2522c1838d96"
+										"c0031b6d-a642-4184-b304-e71206a7cc71"
 									]
 								}
 							},
@@ -582,6 +589,26 @@
 		{
 			"key": "basePath",
 			"value": "http://localhost:8080"
+		},
+		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "userEmail",
+			"value": ""
+		},
+		{
+			"key": "userLogin",
+			"value": ""
+		},
+		{
+			"key": "userName",
+			"value": ""
 		}
 	]
 }
