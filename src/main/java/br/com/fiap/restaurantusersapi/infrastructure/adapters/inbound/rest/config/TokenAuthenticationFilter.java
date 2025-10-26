@@ -1,8 +1,8 @@
 package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.config;
 
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.repository.UserRepositoryJPA;
-import br.com.fiap.restaurantusersapi.service.TokenExtractorService;
-import br.com.fiap.restaurantusersapi.service.TokenService;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.security.TokenExtractorService;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.security.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,7 +30,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var token = tokenExtractorService.extractRequestToken(request);
         if (isValidToken(token)) {
-            autenticateUser(token);
+            authenticateUser(token);
         }
         filterChain.doFilter(request, response);
     }
@@ -41,7 +41,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 tokenService.isValidToken(token);
     }
 
-    private void autenticateUser(String token) {
+    private void authenticateUser(String token) {
         UUID userId = tokenService.getUserId(token);
         var optionalUser = userRepositoryJPA.findById(userId);
 

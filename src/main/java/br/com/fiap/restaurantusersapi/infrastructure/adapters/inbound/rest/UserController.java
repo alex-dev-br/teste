@@ -1,13 +1,11 @@
 package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest;
 
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserDTO;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PaginationDTO;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserCreateForm;
 import br.com.fiap.restaurantusersapi.application.service.UserService;
-import br.com.fiap.restaurantusersapi.service.UserServiceOld;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PaginationDTO;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserDTO;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserCreateForm;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,14 +14,12 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Users", description = "Operações de gestão de usuários")
@@ -33,11 +29,9 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService service;
-    private final UserServiceOld oldUserService;
 
-    public UserController(UserService service, UserServiceOld oldUserService) {
+    public UserController(UserService service) {
         this.service = service;
-        this.oldUserService = oldUserService;
     }
 
     // =====================================================

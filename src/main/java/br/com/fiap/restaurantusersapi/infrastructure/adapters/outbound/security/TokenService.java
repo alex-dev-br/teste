@@ -1,4 +1,4 @@
-package br.com.fiap.restaurantusersapi.service;
+package br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.security;
 
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.domain.JwtToken;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.UserEntity;

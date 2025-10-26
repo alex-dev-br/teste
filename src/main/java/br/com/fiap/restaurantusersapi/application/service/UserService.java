@@ -1,5 +1,6 @@
 package br.com.fiap.restaurantusersapi.application.service;
 
+import br.com.fiap.restaurantusersapi.application.domain.exception.BusinessValidationException;
 import br.com.fiap.restaurantusersapi.application.domain.exception.DomainException;
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Pagination;
@@ -41,7 +42,10 @@ public class UserService implements ForCreatingUser, ForGettingUser, ForListingU
     public CreateUserOutput create(CreateUserInput createUserInput) throws DomainException {
         Objects.requireNonNull(createUserInput);
         var user = createUserInput.toDomain();
-        createUserValidator.validate(user);
+        var result = createUserValidator.validate(user);
+        if (result.isInvalid()) {
+            throw new BusinessValidationException(result);
+        }
         var encodedUser = new User(user.name(), user.email(), user.login(), encoder.encode(user.password()), user.address(), user.roles());
         var createdUser = userPersistence.create(encodedUser);
         return new CreateUserOutput(createdUser);

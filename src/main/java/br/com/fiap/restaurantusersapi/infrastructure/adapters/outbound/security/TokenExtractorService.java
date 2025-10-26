@@ -1,4 +1,4 @@
-package br.com.fiap.restaurantusersapi.service;
+package br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;

@@ -2,7 +2,7 @@ package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest;
 
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.JwtTokenDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.LoginForm;
-import br.com.fiap.restaurantusersapi.service.TokenService;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.security.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
