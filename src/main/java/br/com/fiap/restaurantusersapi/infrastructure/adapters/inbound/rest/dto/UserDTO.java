@@ -6,7 +6,6 @@ import br.com.fiap.restaurantusersapi.application.ports.inbound.get.GetRoleOutpu
 import br.com.fiap.restaurantusersapi.application.ports.inbound.get.GetUserOutput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ListRoleOutput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ListUserOutput;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.RoleEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.Instant;
