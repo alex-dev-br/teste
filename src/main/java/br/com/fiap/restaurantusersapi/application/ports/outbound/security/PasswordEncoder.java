@@ -4,4 +4,6 @@ import br.com.fiap.restaurantusersapi.application.domain.user.Password;
 
 public interface PasswordEncoder {
     Password encode(Password password);
+
+    boolean matches(String rawPassword, String encodedPassword);
 }

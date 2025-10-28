@@ -3,7 +3,9 @@ package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest;
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
 import br.com.fiap.restaurantusersapi.application.service.UserService;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PaginationDTO;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PasswordChangeDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserDTO;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserUpdateForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserCreateForm;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -130,4 +132,73 @@ public class UserController {
         service.deleteByUuid(uuid);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Troca a própria senha do usuário autenticado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Senha alterada com sucesso"),
+            @ApiResponse(responseCode = "400",
+                    description = "Senha atual inválida ou payload inválido",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "401",
+                    description = "Não autenticado",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "403",
+                    description = "Usuário não pode alterar senha de outro usuário",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "404",
+                    description = "Usuário não encontrado",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "422",
+                    description = "Regras de negócio: senha não atende requisitos",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "500",
+                    description = "Erro inesperado no servidor",
+                    content = @Content(mediaType = "application/problem+json"))
+    })
+    @PatchMapping("/{uuid}/password")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<Void> changePassword(
+            @PathVariable UUID uuid,
+            @Valid @RequestBody PasswordChangeDTO form
+    ) {
+        service.changePassword(uuid, form);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Atualiza os dados (exceto senha) do próprio usuário ou se admin")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Usuário atualizado com sucesso",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserDTO.class))),
+            @ApiResponse(responseCode = "400",
+                    description = "Payload inválido",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "401",
+                    description = "Não autenticado",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "403",
+                    description = "Usuário não pode alterar outro usuário",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "404",
+                    description = "Usuário não encontrado",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "422",
+                    description = "Regras de negócio: email/login já existentes",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "500",
+                    description = "Erro inesperado no servidor",
+                    content = @Content(mediaType = "application/problem+json"))
+    })
+    @PutMapping("/{uuid}")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<UserDTO> updateUser(
+            @PathVariable UUID uuid,
+            @Valid @RequestBody UserUpdateForm form
+    ) {
+        var output = service.update(uuid, form);
+        return ResponseEntity.ok(new UserDTO(output));
+    }
+
 }
