@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>invalid-parameter • Problem Details</title>
+    <link rel="stylesheet" href="../../assets/style.css">
+    <link rel="canonical" href="http://localhost:8081/erros/invalid-parameter/">
+</head>
+<body>
+<div class="header">
+    <div class="container">
+        <a class="badge" href="/erros/">← Índice</a> <span class="badge">Problem Details</span>
+    </div>
+</div>
+<div class="container">
+    <h1>invalid-parameter</h1>
+    <p><span class="badge badge-400">HTTP 400 (sugerido)</span> <span class="badge">Handler: ConstraintViolationException</span></p>
+
+    <h2>Definição do tipo (estável)</h2>
+    <dl class="kv">
+        <dt>Type (URI)</dt><dd><code>http://localhost:8081/erros/invalid-parameter/</code></dd>
+        <dt>Title (recomendado)</dt><dd><code>Invalid request parameter</code></dd>
+        <dt>Quando usar</dt><dd>Parâmetros de rota/consulta inválidos (<code>@PathVariable</code>/<code>@RequestParam</code> com <code>@Validated</code>).</dd>
+        <dt>Extensões</dt><dd><code>invalidParams[]</code> ou <code>errors[]</code> com JSON Pointer</dd>
+    </dl>
+
+    <h2>Exemplo de resposta (dinâmica)</h2>
+    <pre>{
+        "type": "http://localhost:8081/erros/invalid-parameter",
+        "title": "Invalid request parameter",
+        "status": 400,
+        "detail": "One or more parameters are invalid",
+        "instance": "/api/v1/users?page=-1",
+        "timestamp": "2025-10-27T12:34:56Z",
+        "invalidParams": [{ "name": "page", "message": "must be ≥ 0" }],
+        "errors": [{ "pointer": "/page", "detail": "must be ≥ 0" }]
+        }
+    </pre>
+
+    <h2>Contrato (RFC + extensões)</h2>
+    <table>
+        <thead><tr><th>Campo</th><th>Tipo</th><th>Obrigatório</th><th>Semântica</th></tr></thead>
+        <tbody>
+        <tr>
+            <td>type</td>
+            <td>string (URI)</td>
+            <td>Sim</td>
+            <td>Identificador do tipo.</td>
+        </tr>
+        <tr>
+            <td>title</td>
+            <td>string</td>
+            <td>Sim</td>
+            <td>Título canônico recomendado.</td>
+        </tr>
+        <tr>
+            <td>status</td>
+            <td>number</td>
+            <td>Sim</td>
+            <td>HTTP status.</td>
+        </tr>
+        <tr>
+            <td>detail</td>
+            <td>string</td>
+            <td>Não</td>
+            <td><em>Dinâmico</em>.</td>
+        </tr>
+        <tr>
+            <td>instance</td>
+            <td>string</td>
+            <td>Não</td>
+            <td><em>Dinâmico</em>.</td>
+        </tr>
+        <tr>
+            <td>timestamp</td>
+            <td>string</td>
+            <td>Não</td>
+            <td><em>Dinâmico</em>.</td>
+        </tr>
+        <tr>
+            <td>invalidParams</td>
+            <td>array</td>
+            <td>Não</td>
+            <td><em>Extensão</em>.</td>
+        </tr>
+        <tr>
+            <td>errors</td>
+            <td>array</td>
+            <td>Não</td>
+            <td><em>Alternativa</em>.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

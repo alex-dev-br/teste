@@ -20,6 +20,14 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
+  problem-docs:
+    build: ../problem-docs
+    image: problem-docs:latest
+    container_name: problem-docs
+    profiles: ["stack"]
+    ports:
+      - "8081:80"
+
   app:
     build:
       context: ..
@@ -31,6 +39,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      problem-docs:
+        condition: service_started
     environment:
       # Defina no .env: SPRING_PROFILES_ACTIVE=dev (para seeds) ou =prod
       SPRING_PROFILES_ACTIVE: "${SPRING_PROFILES_ACTIVE:-dev}"

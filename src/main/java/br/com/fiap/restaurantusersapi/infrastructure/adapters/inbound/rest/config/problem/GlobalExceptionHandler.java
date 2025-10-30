@@ -25,21 +25,23 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // URIs locais (placeholders) para identificar cada tipo de erro (RFC 7807 - "type")
-    private static final URI TYPE_INVALID_DATA      = URI.create("http://localhost:8080/erros/invalid-data");
-    private static final URI TYPE_INVALID_PARAMETER = URI.create("http://localhost:8080/erros/invalid-parameter");
-    private static final URI TYPE_MALFORMED_JSON    = URI.create("http://localhost:8080/erros/malformed-json");
-    private static final URI TYPE_DATA_CONFLICT     = URI.create("http://localhost:8080/erros/data-conflict");
-    private static final URI TYPE_INVALID_ARGUMENT  = URI.create("http://localhost:8080/erros/invalid-argument");
-    private static final URI TYPE_INTERNAL_ERROR    = URI.create("http://localhost:8080/erros/internal");
-    private static final URI TYPE_UNAUTHORIZED      = URI.create("http://localhost:8080/erros/unauthorized");
-
     private static final String PROP_INVALID_PARAMS = "invalidParams";
-    private static final URI TYPE_BUSINESS_RULE = URI.create("http://localhost:8080/erros/business-rule");
-
 
     @Value("${spring.profiles.active:}")
     private String activeProfile;
+
+    private final ProblemProperties problemProps;
+
+    public GlobalExceptionHandler(ProblemProperties problemProps) {
+        this.problemProps = problemProps;
+    }
+
+    // monta a URI do type a partir do base-url + slug
+    private URI type(String slug) {
+        String base = problemProps.baseUrl().toString();
+        String sep = base.endsWith("/") ? "" : "/";
+        return URI.create(base + sep + slug);
+    }
 
     // 400 - Bean Validation no corpo (DTO com @Valid)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -47,7 +49,7 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpServletRequest request) {
         ProblemDetail pd = problem(
                 HttpStatus.BAD_REQUEST,
-                TYPE_INVALID_DATA,
+                type("invalid-data"),
                 "Invalid request data",
                 "One or more fields are invalid",
                 null, request);
@@ -68,7 +70,7 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest request) {
         ProblemDetail pd = problem(
                 HttpStatus.BAD_REQUEST,
-                TYPE_INVALID_PARAMETER,
+                type("invalid-parameter"),
                 "Invalid request parameter",
                 "One or more parameters are invalid",
                 null, request);
@@ -87,7 +89,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ProblemDetail handleNotReadable(HttpMessageNotReadableException ex,  HttpServletRequest request) {
         ProblemDetail pd = problem(HttpStatus.BAD_REQUEST,
-                TYPE_MALFORMED_JSON,
+                type("malformed-json"),
                 "Malformed JSON",
                 "Request body is not readable or has an invalid format.",
                 ex, request);
@@ -99,10 +101,26 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ProblemDetail handleIllegalArgumentException(IllegalArgumentException ex,  HttpServletRequest request) {
         return problem(HttpStatus.BAD_REQUEST,
-                TYPE_INVALID_ARGUMENT,
+                type("invalid-argument"),
                 "Invalid argument",
                 "Request couldn't be processed due to  invalid input.",
                 ex, request);
+    }
+
+    // 401 - Credenciais inválidas
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ProblemDetail handleBadCredentials(BadCredentialsException ex, HttpServletRequest request) {
+        ProblemDetail pd = problem(
+                HttpStatus.UNAUTHORIZED,
+                type("unauthorized"),
+                "Falha ao autenticar",
+                "Falha ao autenticar o usuário, verifique as credenciais e tente novamente.",
+                null, request
+        );
+        // não usar invalidParams aqui; mensagem geral:
+        pd.setProperty("reason", ex.getMessage());
+        return pd;
     }
 
     // 409 - Conflito de dados (Ex.: e-mail único no banco)
@@ -110,10 +128,25 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ProblemDetail handleDataIntegrityViolation(DataIntegrityViolationException ex, HttpServletRequest request) {
         return problem(HttpStatus.CONFLICT,
-                TYPE_DATA_CONFLICT,
+                type("data-conflict"),
                 "Data conflict",
                 "A data constraint was violated.",
                 ex, request);
+    }
+
+    // 422 - Regra de negócio
+    @ExceptionHandler(BusinessValidationException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ProblemDetail handleValidationException(BusinessValidationException ex, HttpServletRequest request) {
+        ProblemDetail pd = problem(
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                type("business-rule"),
+                "Violação de regra de negócio",
+                "Uma ou mais regras de negócio foram violadas.",
+                null, request
+        );
+        pd.setProperty(PROP_INVALID_PARAMS, ex.getValidationResult().errors());
+        return pd;
     }
 
     // 500 - Genérico (pega tudo)
@@ -135,40 +168,12 @@ public class GlobalExceptionHandler {
         }
 
         return problem(HttpStatus.INTERNAL_SERVER_ERROR,
-                TYPE_INTERNAL_ERROR,
+                type("internal"),
                 "Internal server error",
                 "An unexpected error occurred. Please contact support.",
                 ex, request);
     }
 
-    @ExceptionHandler(BusinessValidationException.class)
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public ProblemDetail handleValidationException(BusinessValidationException ex, HttpServletRequest request) {
-        ProblemDetail pd = problem(
-                HttpStatus.UNPROCESSABLE_ENTITY,
-                TYPE_BUSINESS_RULE,
-                "Violação de regra de negócio",
-                "Uma ou mais regras de negócio foram violadas.",
-                null,   // usar 'ex' para expor 'cause' no perfil dev
-                request
-        );
-        pd.setProperty(PROP_INVALID_PARAMS, ex.getValidationResult().errors());
-        return pd;
-    }
-
-    @ExceptionHandler(BadCredentialsException.class)
-    public ProblemDetail handleBadCredentials(BadCredentialsException ex, HttpServletRequest request) {
-        ProblemDetail pd = problem(
-                HttpStatus.UNAUTHORIZED,
-                TYPE_UNAUTHORIZED,
-                "Falha ao autenticar",
-                "Falha ao autenticar o usuário, verifique as credenciais e tente novamente.",
-                null,   // usar 'ex' para expor 'cause' no perfil dev
-                request
-        );
-        pd.setProperty(PROP_INVALID_PARAMS, ex.getMessage());
-        return pd;
-    }
 
     // Para diminuir repetição:
     private ProblemDetail problem(HttpStatus status,

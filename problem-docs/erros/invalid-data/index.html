@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>invalid-data • Problem Details</title>
+    <link rel="stylesheet" href="../../assets/style.css">
+    <link rel="canonical" href="http://localhost:8081/erros/invalid-data/">
+</head>
+<body>
+<div class="header">
+    <div class="container">
+        <a class="badge" href="/erros/">← Índice</a> <span class="badge">Problem Details</span>
+    </div>
+</div>
+<div class="container">
+    <h1>invalid-data</h1>
+    <p><span class="badge badge-400">HTTP 400 (sugerido)</span> <span class="badge">Handler: MethodArgumentNotValidException</span></p>
+
+    <h2>Definição do tipo (estável)</h2>
+    <dl class="kv">
+        <dt>Type (URI)</dt><dd><code>http://localhost:8081/erros/invalid-data/</code><small class="note">Ajuste host/porta conforme o ambiente.</small></dd>
+        <dt>Title (recomendado)</dt><dd><code>Invalid request data</code></dd>
+        <dt>Quando usar</dt><dd>Um ou mais campos do corpo estão inválidos (Bean Validation em DTOs com <code>@Valid</code>).</dd>
+        <dt>Extensões (suportadas pela API)</dt><dd><code>invalidParams[]</code> (lista de erros por campo); <em>alternativa</em>: <code>errors[]</code> com JSON Pointer</dd>
+    </dl>
+
+    <h2>Exemplo de resposta (dinâmica)</h2>
+    <p><small class="note">Os campos abaixo (ex.: <code>detail</code>, <code>instance</code>, <code>timestamp</code>) são <strong>por ocorrência</strong>.</small></p>
+    <pre>{
+        "type": "http://localhost:8081/erros/invalid-data",
+        "title": "Invalid request data",
+        "status": 400,
+        "detail": "One or more fields are invalid",
+        "instance": "/api/v1/users",
+        "timestamp": "2025-10-27T12:34:56Z",
+        "invalidParams": [
+        { "name": "email", "message": "must be a well-formed email address" },
+        { "name": "name",  "message": "must not be blank" }
+        ],
+        "errors": [
+        { "pointer": "/email", "detail": "must be a well-formed email address" },
+        { "pointer": "/name",  "detail": "must not be blank" }
+        ]
+        }</pre>
+
+    <h2>Contrato (RFC + extensões)</h2>
+    <table>
+        <thead><tr><th>Campo</th><th>Tipo</th><th>Obrigatório</th><th>Semântica</th></tr></thead>
+        <tbody>
+        <tr>
+            <td>type</td>
+            <td>string (URI)</td>
+            <td>Sim</td>
+            <td>Identificador do tipo (esta página).</td>
+        </tr>
+        <tr>
+            <td>title</td>
+            <td>string</td>
+            <td>Sim</td>
+            <td>Título canônico recomendado.</td>
+        </tr>
+        <tr>
+            <td>status</td>
+            <td>number</td>
+            <td>Sim</td>
+            <td>Código HTTP correspondente.</td>
+        </tr>
+        <tr>
+            <td>detail</td>
+            <td>string</td>
+            <td>Não</td>
+            <td><em>Dinâmico</em>. Mensagem da ocorrência.</td>
+        </tr>
+        <tr>
+            <td>instance</td>
+            <td>string (URI)</td>
+            <td>Não</td>
+            <td><em>Dinâmico</em>. URI da ocorrência.</td>
+        </tr>
+        <tr>
+            <td>timestamp</td>
+            <td>string (ISO 8601)</td>
+            <td>Não</td>
+            <td><em>Dinâmico</em>. Momento da falha.</td>
+        </tr>
+        <tr>
+            <td>invalidParams</td>
+            <td>array</td>
+            <td>Não</td>
+            <td><em>Extensão do projeto</em>. Erros por campo.</td>
+        </tr>
+        <tr>
+            <td>errors</td>
+            <td>array</td>
+            <td>Não</td>
+            <td><em>Alternativa</em>. Cada item com <code>pointer</code> (JSON Pointer) e <code>detail</code>.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="hr"></div>
+    <footer>
+        <small>Doc = estável; respostas = dinâmicas (<code>application/problem+json</code>).</small>
+    </footer>
+</div>
+</body>
+</html>

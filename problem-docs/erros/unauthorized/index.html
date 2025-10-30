@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>unauthorized • Problem Details</title>
+    <link rel="stylesheet" href="../../assets/style.css">
+    <link rel="canonical" href="http://localhost:8081/erros/unauthorized/">
+</head>
+<body>
+<div class="header">
+    <div class="container">
+        <a class="badge" href="/erros/">← Índice</a> <span class="badge">Problem Details</span>
+    </div>
+</div>
+<div class="container">
+    <h1>unauthorized</h1>
+    <p><span class="badge badge-401">HTTP 401</span> <span class="badge">Handler: BadCredentialsException</span></p>
+
+    <h2>Definição do tipo (estável)</h2>
+    <dl class="kv">
+        <dt>Type (URI)</dt><dd><code>http://localhost:8081/erros/unauthorized/</code></dd>
+        <dt>Title (recomendado)</dt><dd><code>Authentication failed</code> (ou traduza conforme seu padrão)</dd>
+        <dt>Quando usar</dt><dd>Credenciais inválidas ou ausentes.</dd>
+        <dt>Extensões</dt><dd><code>reason</code> (apenas em dev), <code>timestamp</code>, <code>instance</code></dd>
+    </dl>
+
+    <h2>Exemplo de resposta (dinâmica)</h2>
+    <pre>{
+        "type": "http://localhost:8081/erros/unauthorized",
+        "title": "Falha ao autenticar",
+        "status": 401,
+        "detail": "Falha ao autenticar o usuário, verifique as credenciais e tente novamente.",
+        "instance": "/login",
+        "timestamp": "2025-10-27T12:34:56Z",
+        "reason": "Bad credentials"
+        }
+    </pre>
+
+    <h2>Contrato</h2>
+    <table>
+        <thead><tr><th>Campo</th><th>Tipo</th><th>Obrigatório</th><th>Semântica</th></tr></thead>
+        <tbody>
+        <tr>
+            <td>type</td>
+            <td>string (URI)</td>
+            <td>Sim</td>
+            <td>Identificador do tipo.</td>
+        </tr>
+        <tr>
+            <td>title</td>
+            <td>string</td>
+            <td>Sim</td>
+            <td>Título canônico.</td>
+        </tr>
+        <tr>
+            <td>status</td>
+            <td>number</td>
+            <td>Sim</td>
+            <td>HTTP status.</td>
+        </tr>
+        <tr>
+            <td>detail</td>
+            <td>string</td>
+            <td>Não</td>
+            <td><em>Dinâmico</em>.</td>
+        </tr>
+        <tr>
+            <td>instance</td>
+            <td>string</td>
+            <td>Não</td>
+            <td><em>Dinâmico</em>.</td>
+        </tr>
+        <tr>
+            <td>timestamp</td>
+            <td>string</td>
+            <td>Não</td>
+            <td><em>Dinâmico</em>.</td>
+        </tr>
+        <tr>
+            <td>reason</td>
+            <td>string</td>
+            <td>Não</td>
+            <td><strong>Evite em produção</strong>; útil em dev.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

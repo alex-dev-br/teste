@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Tipos de erro (Problem Details)</title>
+    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="canonical" href="http://localhost:8081/erros/">
+</head>
+<body>
+<div class="header">
+    <div class="container">
+        <span class="badge">Problem Details</span><span class="badge">RFC 7807/9457</span>
+    </div>
+</div>
+<div class="container">
+    <h1>Tipos de erro (Problem Details)</h1>
+    <p>Definição dos “problem types” usados pela API. Configure o campo <code class="k">type</code> das respostas
+        para apontar para estas páginas (ex.: <code class="k">http://localhost:8081/erros/&lt;slug&gt;/</code>).
+        **Doc é estática** (tipo); as **respostas da API** são dinâmicas (ocorrência).</p>
+
+    <div class="grid">
+        <article class="card">
+            <h2><a href="/erros/invalid-data/">invalid-data</a></h2>
+            <p>Campos do corpo inválidos (Bean Validation + <code class="k">@Valid</code>).</p>
+            <div>
+                <span class="badge badge-400">400 (sugerido)</span> <small class="note">Handler: MethodArgumentNotValidException</small>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2><a href="/erros/invalid-parameter/">invalid-parameter</a></h2>
+            <p>Parâmetros de rota/consulta inválidos (<code class="k">@Validated</code>).</p>
+            <div>
+                <span class="badge badge-400">400 (sugerido)</span> <small class="note">Handler: ConstraintViolationException</small>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2><a href="/erros/malformed-json/">malformed-json</a></h2>
+            <p>Corpo ilegível/formato inválido.</p>
+            <div>
+                <span class="badge badge-400">400 (sugerido)</span> <small class="note">Handler: HttpMessageNotReadableException</small>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2><a href="/erros/invalid-argument/">invalid-argument</a></h2>
+            <p>Argumento inválido genérico.</p>
+            <div>
+                <span class="badge badge-400">400 (sugerido)</span> <small class="note">Handler: IllegalArgumentException</small>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2><a href="/erros/unauthorized/">unauthorized</a></h2>
+            <p>Falha de autenticação.</p>
+            <div>
+                <span class="badge badge-401">401</span> <small class="note">Handler: BadCredentialsException</small>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2><a href="/erros/data-conflict/">data-conflict</a></h2>
+            <p>Violação de restrição de dados/concorrência.</p>
+            <div>
+                <span class="badge badge-409">409</span> <small class="note">Handler: DataIntegrityViolationException</small>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2><a href="/erros/business-rule/">business-rule</a></h2>
+            <p>Violação de regra de negócio.</p>
+            <div>
+                <span class="badge badge-422">422</span> <small class="note">Handler: BusinessValidationException</small>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2><a href="/erros/internal/">internal</a></h2>
+            <p>Erro inesperado.</p>
+            <div>
+                <span class="badge badge-500">500</span> <small class="note">Handler: Exception (fallback)</small>
+            </div>
+        </article>
+    </div>
+
+    <div class="hr"></div>
+<!--    <footer><small>Em produção, colocar esta página em um host público e ajustar a propriedade-->
+<!--        <code class="k">problem.base-url</code> na API para apontar para cá.</small></footer>-->
+</div>
+</body>
+</html>
