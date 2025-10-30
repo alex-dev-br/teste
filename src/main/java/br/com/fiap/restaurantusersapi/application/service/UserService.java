@@ -4,6 +4,8 @@ import br.com.fiap.restaurantusersapi.application.domain.exception.BusinessValid
 import br.com.fiap.restaurantusersapi.application.domain.exception.DomainException;
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Pagination;
+import br.com.fiap.restaurantusersapi.application.domain.user.Email;
+import br.com.fiap.restaurantusersapi.application.domain.user.Password;
 import br.com.fiap.restaurantusersapi.application.domain.user.User;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserInput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserOutput;
@@ -16,8 +18,15 @@ import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ListUserOut
 import br.com.fiap.restaurantusersapi.application.ports.outbound.persistence.UserPersistence;
 import br.com.fiap.restaurantusersapi.application.ports.outbound.security.PasswordEncoder;
 import br.com.fiap.restaurantusersapi.application.service.validator.CreateUserValidator;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PasswordChangeDTO;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserUpdateForm;
 import jakarta.inject.Named;
+import jakarta.transaction.Transactional;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -75,6 +84,59 @@ public class UserService implements ForCreatingUser, ForGettingUser, ForListingU
         Objects.requireNonNull(page);
         return userPersistence.findByName(name, page).mapItems(ListUserOutput::new);
     }
+
+    @Transactional
+    public void changePassword(UUID uuid, PasswordChangeDTO form) {
+        var authenticatedLogin = SecurityContextHolder.getContext().getAuthentication().getName();
+        var user = userPersistence.findByUuid(uuid).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+
+        if (!authenticatedLogin.equalsIgnoreCase(user.login())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Você só pode alterar a própria senha");
+        }
+
+        if (!encoder.matches(form.currentPassword(), user.password().value())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha atual incorreta");
+        }
+
+        var newPassword = encoder.encode(new Password(form.newPassword(), false));
+        var updatedUser = new User(
+                user.uuid(), user.name(), user.email(), user.login(),
+                newPassword, user.address(), user.roles(), user.createdAt(), Instant.now()
+        );
+
+        userPersistence.create(updatedUser);
+    }
+
+    @Transactional
+    public GetUserOutput update(UUID uuid, UserUpdateForm form) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        var authenticatedLogin = auth.getName();
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().contains("ADMIN"));
+
+        var user = userPersistence.findByUuid(uuid)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        if (!isAdmin && !authenticatedLogin.equalsIgnoreCase(user.login())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Não autorizado");
+        }
+
+        var updated = new User(
+                user.uuid(),
+                form.name() != null ? form.name() : user.name(),
+                new Email(form.email() != null ? form.email() : user.email().address()),
+                form.login() != null ? form.login() : user.login(),
+                user.password(),
+                form.address() != null ? form.address().toDomain() : user.address(),
+                user.roles(),
+                user.createdAt(),
+                Instant.now()
+        );
+
+        return new GetUserOutput(userPersistence.create(updated));
+    }
+
 
     @Override
     public void deleteByUuid(UUID uuid) {

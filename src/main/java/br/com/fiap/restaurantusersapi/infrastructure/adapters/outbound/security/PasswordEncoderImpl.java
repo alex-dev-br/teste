@@ -17,4 +17,9 @@ public class PasswordEncoderImpl implements br.com.fiap.restaurantusersapi.appli
     public Password encode(Password password) {
         return new Password(encoder.encode(password.value()), true);
     }
+
+    public boolean matches(String rawPassword, String encodedPassword) {
+        return encoder.matches(rawPassword, encodedPassword);
+    }
+
 }
