@@ -166,15 +166,15 @@ public class GlobalExceptionHandler {
         return pd;
     }
 
-    // 403 - Regra de negócio
+    // 422 - Troca de senha
     @ExceptionHandler(CurrentPasswordMismatchException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ProblemDetail handleValidationException(CurrentPasswordMismatchException ex, HttpServletRequest request) {
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ProblemDetail handleCurrentPasswordMismatch(CurrentPasswordMismatchException ex, HttpServletRequest request) {
         return problem(
-                HttpStatus.FORBIDDEN,
-                type("business-rule"),
-                "Não foi possivel proceguir com a alteração da senha",
-                ex.getMessage(),
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                type("current-password-mismatch"),
+                "Senha atual incorreta",
+                "A senha atual informada não confere.",
                 null, request
         );
     }

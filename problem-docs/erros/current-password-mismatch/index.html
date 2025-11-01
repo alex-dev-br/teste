@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>current-password-mismatch • Problem Details</title>
+    <link rel="stylesheet" href="../../assets/style.css">
+    <link rel="canonical" href="http://localhost:8081/erros/current-password-mismatch/">
+</head>
+<body>
+<div class="header">
+    <div class="container">
+        <a class="badge" href="/erros/">← Índice</a> <span class="badge">Problem Details</span>
+    </div>
+</div>
+<div class="container">
+    <h1>current-password-mismatch</h1>
+    <p><span class="badge badge-422">HTTP 422</span> <span class="badge">Handler: CurrentPasswordMismatchException</span></p>
+
+    <h2>Definição do tipo (estável)</h2>
+    <dl class="kv">
+        <dt>Type (URI)</dt><dd><code>http://localhost:8081/erros/current-password-mismatch/</code></dd>
+        <dt>Title (recomendado)</dt><dd><code>Senha atual incorreta</code></dd>
+        <dt>Quando usar</dt>
+        <dd>Ao tentar alterar a senha e o campo <code>currentPassword</code> não corresponde à senha vigente do usuário autenticado.</dd>
+        <dt>Extensões</dt><dd><code>timestamp</code>, <code>instance</code></dd>
+    </dl>
+
+    <h2>Exemplo de resposta (dinâmica)</h2>
+    <pre>{
+        "type": "http://localhost:8081/erros/current-password-mismatch",
+        "title": "Senha atual incorreta",
+        "status": 422,
+        "detail": "A senha atual informada não confere.",
+        "instance": "/api/v1/users/me/password",
+        "timestamp": "2025-10-27T12:34:56Z"
+        }
+    </pre>
+
+    <h2>Contrato</h2>
+    <table>
+        <thead><tr><th>Campo</th><th>Tipo</th><th>Obrigatório</th><th>Semântica</th></tr></thead>
+        <tbody>
+        <tr>
+            <td>type</td>
+            <td>string (URI)</td>
+            <td>Sim</td>
+            <td>Identificador do tipo.</td>
+        </tr>
+        <tr>
+            <td>title</td>
+            <td>string</td>
+            <td>Sim</td>
+            <td>Título canônico.</td>
+        </tr>
+        <tr>
+            <td>status</td>
+            <td>number</td>
+            <td>Sim</td>
+            <td>HTTP status.</td>
+        </tr>
+        <tr>
+            <td>detail</td>
+            <td>string</td>
+            <td>Não</td>
+            <td><em>Dinâmico</em>.</td>
+        </tr>
+        <tr>
+            <td>instance</td>
+            <td>string</td>
+            <td>Não</td>
+            <td><em>Dinâmico</em>.</td>
+        </tr>
+        <tr>
+            <td>timestamp</td>
+            <td>string</td>
+            <td>Não</td>
+            <td><em>Dinâmico</em>.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
