@@ -1,6 +1,7 @@
 package br.com.fiap.restaurantusersapi.application.service;
 
 import br.com.fiap.restaurantusersapi.application.domain.exception.BusinessValidationException;
+import br.com.fiap.restaurantusersapi.application.domain.exception.CurrentPasswordMismatchException;
 import br.com.fiap.restaurantusersapi.application.domain.exception.DomainException;
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Pagination;
@@ -20,10 +21,12 @@ import br.com.fiap.restaurantusersapi.application.ports.outbound.security.Passwo
 import br.com.fiap.restaurantusersapi.application.service.validator.CreateUserValidator;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.ChangePasswordForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserUpdateForm;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.UserEntity;
 import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
@@ -86,26 +89,17 @@ public class UserService implements ForCreatingUser, ForGettingUser, ForListingU
     }
 
     @Transactional
-    public void changePassword(UUID uuid, ChangePasswordForm form) {
-        var authenticatedLogin = SecurityContextHolder.getContext().getAuthentication().getName();
-        var user = userPersistence.findByUuid(uuid).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+    public void changePassword(UserDetails userDetails, ChangePasswordForm form) {
+        Objects.requireNonNull(userDetails);
+        Objects.requireNonNull(form);
+        var user = (UserEntity) userDetails;
 
-        if (!authenticatedLogin.equalsIgnoreCase(user.login())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Você só pode alterar a própria senha");
+        if (!encoder.matches(form.currentPassword(), user.getPassword())) {
+            throw new CurrentPasswordMismatchException();
         }
 
-        if (!encoder.matches(form.currentPassword(), user.password().value())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha atual incorreta");
-        }
-
-        var newPassword = encoder.encode(new Password(form.newPassword(), false));
-        var updatedUser = new User(
-                user.uuid(), user.name(), user.email(), user.login(),
-                newPassword, user.address(), user.roles(), user.createdAt(), Instant.now()
-        );
-
-        userPersistence.create(updatedUser);
+        var newPasswordEncoded = encoder.encode(new Password(form.newPassword(), false));
+        userPersistence.changePassword(user.getId(), newPasswordEncoded.value());
     }
 
     @Transactional

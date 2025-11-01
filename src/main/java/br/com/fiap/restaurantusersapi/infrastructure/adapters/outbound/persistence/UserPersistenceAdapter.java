@@ -56,4 +56,9 @@ public record UserPersistenceAdapter(UserRepositoryJPA userRepositoryJPA) implem
     public void deleteByUuid(UUID uuid) {
         userRepositoryJPA.deleteById(uuid);
     }
+
+    @Override
+    public void changePassword(UUID uuid, String newPassword) {
+        userRepositoryJPA.changePassword(uuid, newPassword);
+    }
 }

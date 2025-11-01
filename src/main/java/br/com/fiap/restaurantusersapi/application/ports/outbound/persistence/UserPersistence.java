@@ -14,4 +14,5 @@ public interface UserPersistence {
     Optional<User> findByUuid(UUID uuid);
     Pagination<User> findByName(String name, Page page);
     void deleteByUuid(UUID uuid);
+    void changePassword(UUID uuid, String newPassword);
 }

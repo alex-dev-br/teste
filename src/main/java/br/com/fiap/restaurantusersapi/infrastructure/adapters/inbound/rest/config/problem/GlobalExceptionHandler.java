@@ -1,6 +1,7 @@
 package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.config.problem;
 
 import br.com.fiap.restaurantusersapi.application.domain.exception.BusinessValidationException;
+import br.com.fiap.restaurantusersapi.application.domain.exception.CurrentPasswordMismatchException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Value;
@@ -147,6 +148,19 @@ public class GlobalExceptionHandler {
         );
         pd.setProperty(PROP_INVALID_PARAMS, ex.getValidationResult().errors());
         return pd;
+    }
+
+    // 403 - Regra de negócio
+    @ExceptionHandler(CurrentPasswordMismatchException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ProblemDetail handleValidationException(CurrentPasswordMismatchException ex, HttpServletRequest request) {
+        return problem(
+                HttpStatus.FORBIDDEN,
+                type("business-rule"),
+                "Não foi possivel proceguir com a alteração da senha",
+                ex.getMessage(),
+                null, request
+        );
     }
 
     // 500 - Genérico (pega tudo)

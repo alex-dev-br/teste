@@ -9,5 +9,7 @@ public record ChangePasswordForm (
         @Schema(example = "S&nh4F0rt3")
         String currentPassword,
         @Schema(example = "N0v4S&nh@")
-        @NotBlank String newPassword
+        @NotBlank String newPassword,
+        @Schema(example = "N0v4S&nh@")
+        @NotBlank String confirmNewPassword
 ) {}

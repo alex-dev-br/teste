@@ -18,6 +18,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -144,7 +146,7 @@ public class UserController {
                     description = "Não autenticado",
                     content = @Content(mediaType = "application/problem+json")),
             @ApiResponse(responseCode = "403",
-                    description = "Usuário não pode alterar senha de outro usuário",
+                    description = "Permissão para seguir com a operação foi negada",
                     content = @Content(mediaType = "application/problem+json")),
             @ApiResponse(responseCode = "404",
                     description = "Usuário não encontrado",
@@ -156,10 +158,10 @@ public class UserController {
                     description = "Erro inesperado no servidor",
                     content = @Content(mediaType = "application/problem+json"))
     })
-    @PatchMapping("/{uuid}/password")
+    @PatchMapping("/change-password")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<Void> changePassword(@PathVariable UUID uuid,@Valid @RequestBody ChangePasswordForm form) {
-        service.changePassword(uuid, form);
+    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal UserDetails authenticateUser, @Valid @RequestBody ChangePasswordForm form) {
+        service.changePassword(authenticateUser, form);
         return ResponseEntity.noContent().build();
     }
 
