@@ -19,6 +19,7 @@ import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ListUserOut
 import br.com.fiap.restaurantusersapi.application.ports.outbound.persistence.UserPersistence;
 import br.com.fiap.restaurantusersapi.application.ports.outbound.security.PasswordEncoder;
 import br.com.fiap.restaurantusersapi.application.service.validator.CreateUserValidator;
+import br.com.fiap.restaurantusersapi.application.service.validator.ValidationResult;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.ChangePasswordForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserUpdateForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.UserEntity;
@@ -93,6 +94,10 @@ public class UserService implements ForCreatingUser, ForGettingUser, ForListingU
         Objects.requireNonNull(userDetails);
         Objects.requireNonNull(form);
         var user = (UserEntity) userDetails;
+
+        if (!form.newPassword().equals(form.confirmNewPassword())) {
+            throw new BusinessValidationException(new ValidationResult("A nova senha não confere com a confirmação de nova senha"));
+        }
 
         if (!encoder.matches(form.currentPassword(), user.getPassword())) {
             throw new CurrentPasswordMismatchException();
