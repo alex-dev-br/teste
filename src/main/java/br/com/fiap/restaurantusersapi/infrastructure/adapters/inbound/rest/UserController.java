@@ -133,7 +133,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Troca a própria senha do usuário autenticado")
+    @Operation(summary = "Altera senha do usuário")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204",
                     description = "Senha alterada com sucesso"),
@@ -158,10 +158,7 @@ public class UserController {
     })
     @PatchMapping("/{uuid}/password")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<Void> changePassword(
-            @PathVariable UUID uuid,
-            @Valid @RequestBody ChangePasswordForm form
-    ) {
+    public ResponseEntity<Void> changePassword(@PathVariable UUID uuid,@Valid @RequestBody ChangePasswordForm form) {
         service.changePassword(uuid, form);
         return ResponseEntity.noContent().build();
     }
