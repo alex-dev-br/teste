@@ -18,7 +18,7 @@ import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ListUserOut
 import br.com.fiap.restaurantusersapi.application.ports.outbound.persistence.UserPersistence;
 import br.com.fiap.restaurantusersapi.application.ports.outbound.security.PasswordEncoder;
 import br.com.fiap.restaurantusersapi.application.service.validator.CreateUserValidator;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PasswordChangeDTO;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.ChangePasswordForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserUpdateForm;
 import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
@@ -86,7 +86,7 @@ public class UserService implements ForCreatingUser, ForGettingUser, ForListingU
     }
 
     @Transactional
-    public void changePassword(UUID uuid, PasswordChangeDTO form) {
+    public void changePassword(UUID uuid, ChangePasswordForm form) {
         var authenticatedLogin = SecurityContextHolder.getContext().getAuthentication().getName();
         var user = userPersistence.findByUuid(uuid).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));

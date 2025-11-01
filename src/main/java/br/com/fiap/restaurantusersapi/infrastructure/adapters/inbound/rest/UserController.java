@@ -3,7 +3,7 @@ package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest;
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
 import br.com.fiap.restaurantusersapi.application.service.UserService;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PaginationDTO;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PasswordChangeDTO;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.ChangePasswordForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserUpdateForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserCreateForm;
@@ -160,7 +160,7 @@ public class UserController {
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> changePassword(
             @PathVariable UUID uuid,
-            @Valid @RequestBody PasswordChangeDTO form
+            @Valid @RequestBody ChangePasswordForm form
     ) {
         service.changePassword(uuid, form);
         return ResponseEntity.noContent().build();
