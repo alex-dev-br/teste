@@ -2,6 +2,7 @@ package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.conf
 
 import br.com.fiap.restaurantusersapi.application.domain.exception.BusinessValidationException;
 import br.com.fiap.restaurantusersapi.application.domain.exception.CurrentPasswordMismatchException;
+import br.com.fiap.restaurantusersapi.application.domain.exception.DomainException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Value;
@@ -147,6 +148,21 @@ public class GlobalExceptionHandler {
                 null, request
         );
         pd.setProperty(PROP_INVALID_PARAMS, ex.getValidationResult().errors());
+        return pd;
+    }
+
+    // 422 - Regra de negócio
+    @ExceptionHandler(DomainException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ProblemDetail handleValidationException(DomainException ex, HttpServletRequest request) {
+        ProblemDetail pd = problem(
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                type("business-rule"),
+                "Violação de regra de negócio",
+                "Uma ou mais regras de negócio foram violadas.",
+                null, request
+        );
+        pd.setProperty(PROP_INVALID_PARAMS, ex.getMessage());
         return pd;
     }
 

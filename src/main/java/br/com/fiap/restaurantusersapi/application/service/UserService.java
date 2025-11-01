@@ -90,7 +90,7 @@ public class UserService implements ForCreatingUser, ForGettingUser, ForListingU
     }
 
     @Transactional
-    public void changePassword(UserDetails userDetails, ChangePasswordForm form) {
+    public void changePassword(UserDetails userDetails, ChangePasswordForm form) throws DomainException {
         Objects.requireNonNull(userDetails);
         Objects.requireNonNull(form);
         var user = (UserEntity) userDetails;
