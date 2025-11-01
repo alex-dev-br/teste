@@ -3,9 +3,9 @@ package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest;
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
 import br.com.fiap.restaurantusersapi.application.service.UserService;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PaginationDTO;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.ChangePasswordForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserUpdateForm;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.ChangePasswordForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserCreateForm;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -158,7 +158,7 @@ public class UserController {
                     description = "Erro inesperado no servidor",
                     content = @Content(mediaType = "application/problem+json"))
     })
-    @PatchMapping("/change-password")
+    @PutMapping("/change-password")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> changePassword(@AuthenticationPrincipal UserDetails authenticateUser, @Valid @RequestBody ChangePasswordForm form) {
         service.changePassword(authenticateUser, form);
