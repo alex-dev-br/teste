@@ -152,7 +152,7 @@ public class UserController {
                     description = "Usuário não encontrado",
                     content = @Content(mediaType = "application/problem+json")),
             @ApiResponse(responseCode = "422",
-                    description = "Regras de negócio: senha não atende requisitos",
+                    description = "Erro nas regras de negócio",
                     content = @Content(mediaType = "application/problem+json")),
             @ApiResponse(responseCode = "500",
                     description = "Erro inesperado no servidor",
