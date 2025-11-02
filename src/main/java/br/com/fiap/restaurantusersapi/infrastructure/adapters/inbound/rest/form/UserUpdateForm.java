@@ -13,43 +13,59 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Schema(description = "Payload para alteração dos dados do usuário.", name = "UserUpdateRequest")
-public record UserUpdateForm (
-        @NotBlank
-        @Size(min = 3,max = 120)
-        @Schema(example = "Maria Silva")
-        String name,
-        @NotBlank
-        @Email
-        @Size(min = 5, max = 180)
-        @Schema(example = "maria.silva@mail.com")
-        String email,
-        @NotBlank
-        @Size(max = 80)
-        @Schema(example = "mariasilva")
-        String login,
-        @Valid
-        @Schema(implementation = AddressForm.class)
-        AddressForm address,
-        @ArraySchema(
-                arraySchema = @Schema(
-                    description = "Lista de papéis do usuário. Se não for informada, o papel padrão 'CUSTOMER' será atribuído." ,
-                    example = "[\"CUSTOMER\", \"OWNER\", \"ADMIN\"]",
-                    implementation = RoleForm.class
-                ),
-                uniqueItems = true
-        )
-        Set<RoleForm> roles
-) {
+public class UserUpdateForm {
+    @NotBlank
+    @Size(min = 3,max = 120)
+    @Schema(example = "Maria Silva")
+    private final String name;
+    @NotBlank
+    @Email
+    @Size(min = 5, max = 180)
+    @Schema(example = "maria.silva@mail.com")
+    private final String email;
+    @NotBlank
+    @Size(max = 80)
+    @Schema(example = "mariasilva")
+    private final String login;
+    @Valid
+    @Schema(implementation = AddressForm.class)
+    private final AddressForm address;
+
+    public UserUpdateForm(String name, String email, String login, AddressForm address) {
+        this.name = name;
+        this.email = email;
+        this.login = login;
+        this.address = address;
+    }
+
     public UpdateUserInput toUpdateUserInput(UUID uuid) {
+        return this.toUpdateUserInput(uuid, Set.of(RoleForm.CUSTOMER));
+    }
+
+    public UpdateUserInput toUpdateUserInput(UUID uuid, Set<RoleForm> roleForms) {
         return new UpdateUserInput(
-            uuid,
-            name,
-            email,
-            login,
-            address != null ? address().toUpdateAddressInput() : null,
-            roles == null || roles.isEmpty()
-                ? Set.of(RoleForm.CUSTOMER.toUpdateRoleInput())
-                : roles.stream().map(RoleForm::toUpdateRoleInput).collect(Collectors.toSet())
+                uuid,
+                name,
+                email,
+                login,
+                address != null ? address.toUpdateAddressInput() : null,
+                roleForms.stream().map(RoleForm::toUpdateRoleInput).collect(Collectors.toSet())
         );
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public AddressForm getAddress() {
+        return address;
     }
 }
