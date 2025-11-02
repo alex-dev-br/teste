@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Set;
 
+@Schema(description = "Payload para criação de usuário.", name = "AdminUserCreateRequest")
 public class AdminUserCreateForm extends CustomerUserCreateForm {
 
     @ArraySchema(
