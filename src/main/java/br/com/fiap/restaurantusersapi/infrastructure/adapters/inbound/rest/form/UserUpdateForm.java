@@ -34,16 +34,17 @@ public record UserUpdateForm (
         AddressForm address,
         @ArraySchema(
                 arraySchema = @Schema(
-                        description = "Lista de papéis do usuário. Se não for informada, o papel padrão 'CLIENT' será atribuído." ,
-                        example = "[\"CLIENT\", \"OWNER\", \"ADMIN\"]"
+                    description = "Lista de papéis do usuário. Se não for informada, o papel padrão 'CLIENT' será atribuído." ,
+                    example = "[\"CLIENT\", \"OWNER\", \"ADMIN\"]",
+                    implementation = RoleForm.class
                 ),
                 uniqueItems = true
         )
-        Set<String> roles
+        Set<RoleForm> roles
 ) {
     public UpdateUserInput toUpdateUserInput(UUID uuid) {
         return new UpdateUserInput(
-            uuid, name, email, login, address != null ? address().toUpdateAddressInput() : null, roles.stream().map(UpdateRoleInput::new).collect(Collectors.toSet())
+            uuid, name, email, login, address != null ? address().toUpdateAddressInput() : null, roles.stream().map(RoleForm::toUpdateRoleInput).collect(Collectors.toSet())
         );
     }
 }
