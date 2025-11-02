@@ -114,7 +114,8 @@
 											"pm.collectionVariables.set(\"userId\", body.id);",
 											"pm.collectionVariables.set(\"userEmail\", body.email);",
 											"pm.collectionVariables.set(\"userLogin\", body.login);",
-											"pm.collectionVariables.set(\"userName\", body.name);"
+											"pm.collectionVariables.set(\"userName\", body.name);",
+											""
 										],
 										"type": "text/javascript",
 										"packages": {},
@@ -428,6 +429,149 @@
 					]
 				},
 				{
+					"name": "Alterar Senha do Usuário",
+					"item": [
+						{
+							"name": "Alterar Senha - Sucesso (204)",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"currentPassword\": \"SenhaFort3!@#*\",\r\n    \"newPassword\": \"SenhaFort3!@#*\",\r\n    \"confirmNewPassword\": \"SenhaFort3!@#*\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{basePath}}/api/v1/users/change-password",
+									"host": [
+										"{{basePath}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"change-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Alterar Senha - (422) Senha Fraca",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"currentPassword\": \"SenhaFort3!@#*\",\r\n    \"newPassword\": \"NovaSenha\",\r\n    \"confirmNewPassword\": \"NovaSenha\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{basePath}}/api/v1/users/change-password",
+									"host": [
+										"{{basePath}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"change-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Alterar Senha - (422) Conf. Senha Inválida",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"currentPassword\": \"SenhaFort3!@#*\",\r\n    \"newPassword\": \"N0v4S&Nh@\",\r\n    \"confirmNewPassword\": \"N0v4S&Nh!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{basePath}}/api/v1/users/change-password",
+									"host": [
+										"{{basePath}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"change-password"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Alterar Usuários",
+					"item": [
+						{
+							"name": "Altera Dados Usuário",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let body = pm.response.json();\r",
+											"pm.collectionVariables.set(\"userId\", body.id);\r",
+											"pm.collectionVariables.set(\"userEmail\", body.email);\r",
+											"pm.collectionVariables.set(\"userLogin\", body.login);\r",
+											"pm.collectionVariables.set(\"userName\", body.name);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Joana Prado\",\r\n    \"email\": \"joana.prado+{{$timestamp}}@mail.com\",\r\n    \"login\": \"joanaprado{{$timestamp}}\",\r\n    \"address\": {\r\n        \"street\": \"Rua AB\",\r\n        \"number\": \"10\",\r\n        \"complement\": \"Casa\",\r\n        \"city\": \"São Paulo\",\r\n        \"neighborhood\": \"Centro\",\r\n        \"state\": \"SP\",\r\n        \"zipCode\": \"12345-678\"\r\n    },\r\n    \"roles\": [\r\n        \"CLIENT\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{basePath}}/api/v1/users",
+									"host": [
+										"{{basePath}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "CORS - Preflight OPTIONS /users",
 					"event": [
 						{
@@ -541,7 +685,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"login\": \"mariasilva\",\r\n    \"password\": \"SenhaDev#123\"\r\n}",
+					"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"SenhaFort3!@#*\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

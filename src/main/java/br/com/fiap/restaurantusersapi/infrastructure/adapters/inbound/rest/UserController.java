@@ -3,10 +3,11 @@ package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest;
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
 import br.com.fiap.restaurantusersapi.application.service.UserService;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PaginationDTO;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PasswordChangeDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserDTO;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserUpdateForm;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserUpdateForm;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.ChangePasswordForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserCreateForm;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.UserEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,6 +19,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -133,7 +136,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Troca a própria senha do usuário autenticado")
+    @Operation(summary = "Altera senha do usuário")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204",
                     description = "Senha alterada com sucesso"),
@@ -144,25 +147,22 @@ public class UserController {
                     description = "Não autenticado",
                     content = @Content(mediaType = "application/problem+json")),
             @ApiResponse(responseCode = "403",
-                    description = "Usuário não pode alterar senha de outro usuário",
+                    description = "Permissão para seguir com a operação foi negada",
                     content = @Content(mediaType = "application/problem+json")),
             @ApiResponse(responseCode = "404",
                     description = "Usuário não encontrado",
                     content = @Content(mediaType = "application/problem+json")),
             @ApiResponse(responseCode = "422",
-                    description = "Regras de negócio: senha não atende requisitos",
+                    description = "Erro nas regras de negócio",
                     content = @Content(mediaType = "application/problem+json")),
             @ApiResponse(responseCode = "500",
                     description = "Erro inesperado no servidor",
                     content = @Content(mediaType = "application/problem+json"))
     })
-    @PatchMapping("/{uuid}/password")
+    @PutMapping("/change-password")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<Void> changePassword(
-            @PathVariable UUID uuid,
-            @Valid @RequestBody PasswordChangeDTO form
-    ) {
-        service.changePassword(uuid, form);
+    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal UserDetails authenticateUser, @Valid @RequestBody ChangePasswordForm form) {
+        service.changeUserPassword(form.toChangePasswordInput(((UserEntity) authenticateUser).getId()));
         return ResponseEntity.noContent().build();
     }
 
@@ -191,13 +191,10 @@ public class UserController {
                     description = "Erro inesperado no servidor",
                     content = @Content(mediaType = "application/problem+json"))
     })
-    @PutMapping("/{uuid}")
+    @PutMapping
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<UserDTO> updateUser(
-            @PathVariable UUID uuid,
-            @Valid @RequestBody UserUpdateForm form
-    ) {
-        var output = service.update(uuid, form);
+    public ResponseEntity<UserDTO> updateUser(@AuthenticationPrincipal UserDetails authenticateUser, @Valid @RequestBody UserUpdateForm form) {
+        var output = service.update(form.toUpdateUserInput(((UserEntity) authenticateUser).getId()));
         return ResponseEntity.ok(new UserDTO(output));
     }
 

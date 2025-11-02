@@ -1,6 +1,7 @@
 package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form;
 
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateAddressInput;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.update.UpdateAddressInput;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -51,6 +52,18 @@ public record AddressForm(
             neighborhood,
             state,
             zipCode
+        );
+    }
+
+    public UpdateAddressInput toUpdateAddressInput() {
+        return new UpdateAddressInput(
+                street,
+                number,
+                complement,
+                city,
+                neighborhood,
+                state,
+                zipCode
         );
     }
 }

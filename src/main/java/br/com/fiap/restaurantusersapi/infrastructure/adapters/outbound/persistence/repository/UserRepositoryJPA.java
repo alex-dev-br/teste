@@ -1,10 +1,11 @@
 package br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.repository;
 
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.UserEntity;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -22,5 +23,13 @@ public interface UserRepositoryJPA extends JpaRepository<UserEntity, UUID> {
     @Query("SELECT u FROM UserEntity u WHERE LOWER(u.name) = LOWER(:name)")
     Page<UserEntity> findAllByName(@Param("name") String name, Pageable pageable);
 
-    Optional<UserEntity> findByLogin(@NotBlank String login);
+    Optional<UserEntity> findByLogin(String login);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE UserEntity u SET u.passwordHash = :newPassword WHERE u.id = :uuid")
+    void changePassword(@Param("uuid") UUID uuid, @Param("newPassword") String newPassword);
+
+    @Query("SELECT u.passwordHash FROM UserEntity u WHERE u.id = :uuid")
+    Optional<String> getUserPassword(@Param("uuid") UUID uuid);
 }

@@ -8,10 +8,14 @@ import java.util.UUID;
 
 public record User(UUID uuid, String name, Email email, String login, Password password, Address address, Set<Role> roles, Instant createdAt, Instant updatedAt) {
 
+    public User(UUID uuid, String name, Email email, String login, Password password, Address address, Set<Role> roles) {
+        this(uuid, name, email, login, password, address, roles, null, null);
+    }
 
     public User(String name, Email email, String login, Password password, Address address, Set<Role> roles) {
         this(null, name, email, login, password, address, roles, null, null);
     }
+
 
     public User {
         if (name == null || name.isBlank()) {
