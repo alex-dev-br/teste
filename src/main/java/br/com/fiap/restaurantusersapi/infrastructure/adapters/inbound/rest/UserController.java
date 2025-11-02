@@ -59,7 +59,7 @@ public class UserController {
                     content = @Content(mediaType = "application/problem+json"))
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @SecurityRequirement(name = "bearerAuth") /*TODO verificar depois se precisa esta autenticado para se cadastras, n faz muito sentido*/
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<UserDTO> create(@Valid @RequestBody UserCreateForm in) {
         var createUserOutput = service.create(in.toCreateUserInput());
         URI location = URI.create("/api/v1/users/" + createUserOutput.uuid());
@@ -67,9 +67,9 @@ public class UserController {
     }
 
     // =====================================================
-    // GET /api/v1/users/{id}
+    // GET /api/v1/users/{uuid}
     // =====================================================
-    @Operation(summary = "Busca um usuário pelo ID")
+    @Operation(summary = "Busca um usuário pelo UUID")
     @ApiResponses({
             @ApiResponse(responseCode = "200",
                     description = "Usuário encontrado",
@@ -86,8 +86,8 @@ public class UserController {
                     content = @Content(mediaType = "application/problem+json"))
     })
     @SecurityRequirement(name = "bearerAuth")
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> findById(@PathVariable UUID id) {
+    @GetMapping("/{uuid}")
+    public ResponseEntity<UserDTO> findById(@PathVariable("uuid") UUID id) {
         var output = service.findByUuid(id);
         return output.map(getUserOutput -> ResponseEntity.ok(new UserDTO(getUserOutput))).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -122,7 +122,7 @@ public class UserController {
     // =====================================================
     // DELETE /api/v1/users/{uuid}
     // =====================================================
-    @Operation(summary = "Exclui um usuário pelo Uuid")
+    @Operation(summary = "Exclui um usuário pelo UUID")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Usuário deletado com sucesso"),
         @ApiResponse(responseCode = "400",
@@ -162,11 +162,11 @@ public class UserController {
     @PutMapping("/change-password")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> changePassword(@AuthenticationPrincipal UserDetails authenticateUser, @Valid @RequestBody ChangePasswordForm form) {
-        service.changeUserPassword(form.toChangePasswordInput(((UserEntity) authenticateUser).getId()));
+        service.changeUserPassword(form.toChangePasswordInput(((UserEntity) authenticateUser).getUuid()));
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Atualiza os dados (exceto senha) do próprio usuário ou se admin")
+    @Operation(summary = "Atualiza os dados (exceto senha) do próprio usuário")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Usuário atualizado com sucesso",
@@ -194,7 +194,7 @@ public class UserController {
     @PutMapping
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<UserDTO> updateUser(@AuthenticationPrincipal UserDetails authenticateUser, @Valid @RequestBody UserUpdateForm form) {
-        var output = service.update(form.toUpdateUserInput(((UserEntity) authenticateUser).getId()));
+        var output = service.update(form.toUpdateUserInput(((UserEntity) authenticateUser).getUuid()));
         return ResponseEntity.ok(new UserDTO(output));
     }
 

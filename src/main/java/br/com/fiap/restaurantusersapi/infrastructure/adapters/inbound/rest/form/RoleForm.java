@@ -4,7 +4,7 @@ import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateRol
 import br.com.fiap.restaurantusersapi.application.ports.inbound.update.UpdateRoleInput;
 
 public enum RoleForm {
-    CLIENT, OWNER, ADMIN;
+    CUSTOMER, OWNER, ADMIN;
 
     public UpdateRoleInput toUpdateRoleInput() {
         return new UpdateRoleInput(this.name());

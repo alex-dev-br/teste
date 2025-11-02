@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 public record UserCreateForm(
 
         @NotBlank
-        @Size(max = 120)
+        @Size(min = 3,max = 120)
         @Schema(example = "Maria Silva")
         String name,
 
         @NotBlank
         @Email
-        @Size(max = 180)
+        @Size(min = 5,max = 180)
         @Schema(example = "maria.silva@mail.com")
         String email,
 
@@ -31,7 +31,7 @@ public record UserCreateForm(
         String login,
 
         @NotBlank
-        @Schema(example = "Senha Fort3!@#*")
+        @Schema(example = "SenhaFort3!@#*")
         String password,
 
         @Valid
@@ -40,8 +40,8 @@ public record UserCreateForm(
 
         @ArraySchema(
                 arraySchema = @Schema(
-                        description = "Lista de papéis do usuário. Se não for informada, o papel padrão 'CLIENT' será atribuído." ,
-                        example = "[\"CLIENT\", \"OWNER\", \"ADMIN\"]",
+                        description = "Lista de papéis do usuário. Se não for informada, o papel padrão 'CUSTOMER' será atribuído." ,
+                        example = "[\"CUSTOMER\", \"OWNER\", \"ADMIN\"]",
                         implementation = RoleForm.class
                 ),
                 uniqueItems = true
@@ -55,7 +55,9 @@ public record UserCreateForm(
                 login,
                 password,
                 address != null ? address.toCreateAddressInput() : null,
-                roles.stream().map(RoleForm::toCreateRoleInput).collect(Collectors.toSet())
+                roles == null || roles.isEmpty()
+                        ? Set.of(RoleForm.CUSTOMER.toCreateRoleInput())
+                        : roles.stream().map(RoleForm::toCreateRoleInput).collect(Collectors.toSet())
         );
     }
 }
