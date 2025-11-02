@@ -157,6 +157,7 @@ public class UserController {
     })
     @DeleteMapping("/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER') or authentication.principal.uuid == #uuid")
     public ResponseEntity<Void> deleteUser(@PathVariable("uuid") UUID uuid) {
         service.deleteByUuid(uuid);
         return ResponseEntity.noContent().build();
