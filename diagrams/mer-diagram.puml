@@ -15,7 +15,7 @@ entity "users" as users {
 
 entity "user_roles" as user_roles {
   * user_id : UUID <<PK, FK -> users.id, ON DELETE CASCADE>>
-  * role    : varchar(20) <<PK, CHECK in ('CLIENT','OWNER','ADMIN')>>
+  * role    : varchar(20) <<PK, CHECK in ('CUSTOMER','OWNER','ADMIN')>>
   --
   + idx_user_roles_role(role)
 }

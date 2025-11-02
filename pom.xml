@@ -11,9 +11,9 @@
 	</parent>
 
 	<groupId>br.com.fiap</groupId>
-	<artifactId>restaurant-users-api</artifactId>
+	<artifactId>restaurant-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>restaurant-users-api</name>
+	<name>restaurant-api</name>
 	<description>API REST para gerenciamento de usuários (donos e clientes de restaurantes), construída com Spring Boot - Tech Challenge Fase 1</description>
 
     <url/>
