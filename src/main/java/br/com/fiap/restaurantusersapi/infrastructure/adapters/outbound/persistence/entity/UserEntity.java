@@ -21,7 +21,8 @@ import java.util.stream.Collectors;
 public class UserEntity implements UserDetails {
 
     @Id
-    private UUID id;
+    @Column(name = "id")
+    private UUID uuid;
 
     @Column(nullable = false, length = 120)
     private String name;
@@ -59,7 +60,7 @@ public class UserEntity implements UserDetails {
     //  Ciclo de vida:
     @PrePersist
     public void prePersist() {
-        if (this.id == null) { this.id = UUID.randomUUID(); }
+        if (this.uuid == null) { this.uuid = UUID.randomUUID(); }
         this.email = email == null ? null : email.toLowerCase();
         this.login = login == null ? null : login.toLowerCase();
         var now = Instant.now();
@@ -76,12 +77,12 @@ public class UserEntity implements UserDetails {
 
 
     //  Getters and Setters:
-    public UUID getId() {
-        return id;
+    public UUID getUuid() {
+        return uuid;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public String getPasswordHash() {
@@ -146,12 +147,12 @@ public class UserEntity implements UserDetails {
     public final boolean equals(Object o) {
         if (!(o instanceof UserEntity user)) return false;
 
-        return Objects.equals(id, user.id);
+        return Objects.equals(uuid, user.uuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hashCode(uuid);
     }
 
 

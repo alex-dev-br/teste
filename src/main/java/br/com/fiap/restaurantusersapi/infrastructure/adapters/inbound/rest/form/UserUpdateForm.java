@@ -1,8 +1,6 @@
 package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form;
 
-import br.com.fiap.restaurantusersapi.application.ports.inbound.update.UpdateRoleInput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.update.UpdateUserInput;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.RoleEntity;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -17,12 +15,12 @@ import java.util.stream.Collectors;
 @Schema(description = "Payload para alteração dos dados do usuário.", name = "UserUpdateRequest")
 public record UserUpdateForm (
         @NotBlank
-        @Size(max = 120)
+        @Size(min = 3,max = 120)
         @Schema(example = "Maria Silva")
         String name,
         @NotBlank
         @Email
-        @Size(max = 180)
+        @Size(min = 5, max = 180)
         @Schema(example = "maria.silva@mail.com")
         String email,
         @NotBlank
@@ -34,8 +32,8 @@ public record UserUpdateForm (
         AddressForm address,
         @ArraySchema(
                 arraySchema = @Schema(
-                    description = "Lista de papéis do usuário. Se não for informada, o papel padrão 'CLIENT' será atribuído." ,
-                    example = "[\"CLIENT\", \"OWNER\", \"ADMIN\"]",
+                    description = "Lista de papéis do usuário. Se não for informada, o papel padrão 'CUSTOMER' será atribuído." ,
+                    example = "[\"CUSTOMER\", \"OWNER\", \"ADMIN\"]",
                     implementation = RoleForm.class
                 ),
                 uniqueItems = true
@@ -44,7 +42,14 @@ public record UserUpdateForm (
 ) {
     public UpdateUserInput toUpdateUserInput(UUID uuid) {
         return new UpdateUserInput(
-            uuid, name, email, login, address != null ? address().toUpdateAddressInput() : null, roles.stream().map(RoleForm::toUpdateRoleInput).collect(Collectors.toSet())
+            uuid,
+            name,
+            email,
+            login,
+            address != null ? address().toUpdateAddressInput() : null,
+            roles == null || roles.isEmpty()
+                ? Set.of(RoleForm.CUSTOMER.toUpdateRoleInput())
+                : roles.stream().map(RoleForm::toUpdateRoleInput).collect(Collectors.toSet())
         );
     }
 }

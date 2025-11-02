@@ -42,7 +42,7 @@ public class TokenService {
 
         var accessToken = Jwts.builder()
                 .issuer("Restaurant-API")
-                .subject(principal.getId().toString())
+                .subject(principal.getUuid().toString())
                 .issuedAt(Date.from(now.toInstant(ZoneOffset.ofHours(-3))))
                 .expiration(Date.from(expirationDate.toInstant(ZoneOffset.ofHours(-3))))
                 .signWith(keys)

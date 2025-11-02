@@ -15,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -75,7 +74,7 @@ public record UserPersistenceAdapter(UserRepositoryJPA userRepositoryJPA) implem
             address = new Address(addressDB.getAddressId(), addressDB.getStreet(), addressDB.getNumber(), addressDB.getComplement(), addressDB.getCity(), addressDB.getNeighborhood(), addressDB.getState(), addressDB.getZipCode());
         }
         var updatedUser = new User (
-            userDB.getId(),
+            userDB.getUuid(),
             user.name(),
             user.email(),
             user.login(),

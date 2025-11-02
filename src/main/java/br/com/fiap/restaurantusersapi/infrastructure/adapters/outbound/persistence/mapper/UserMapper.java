@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public record UserMapper() {
     public static UserEntity toEntity(User user) {
         var userEntity = new UserEntity();
-        userEntity.setId(user.uuid());
+        userEntity.setUuid(user.uuid());
         userEntity.setName(user.name());
         userEntity.setEmail(user.email().address());
         userEntity.setLogin(user.login());
@@ -28,7 +28,7 @@ public record UserMapper() {
 
     public static User toDomain(UserEntity userEntity) {
         return new User (
-            userEntity.getId(),
+            userEntity.getUuid(),
                 userEntity.getName(),
                 new Email(userEntity.getEmail()),
                 userEntity.getLogin(),
