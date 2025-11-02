@@ -1,8 +1,6 @@
 package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form;
 
-import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateRoleInput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserInput;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.RoleEntity;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -43,11 +41,12 @@ public record UserCreateForm(
         @ArraySchema(
                 arraySchema = @Schema(
                         description = "Lista de papéis do usuário. Se não for informada, o papel padrão 'CLIENT' será atribuído." ,
-                        example = "[\"CLIENT\", \"OWNER\", \"ADMIN\"]"
+                        example = "[\"CLIENT\", \"OWNER\", \"ADMIN\"]",
+                        implementation = RoleForm.class
                 ),
                 uniqueItems = true
         )
-        Set<String> roles
+        Set<RoleForm> roles
 ){
     public CreateUserInput toCreateUserInput() {
         return new CreateUserInput(
@@ -56,7 +55,7 @@ public record UserCreateForm(
                 login,
                 password,
                 address != null ? address.toCreateAddressInput() : null,
-                roles.stream().map(CreateRoleInput::new).collect(Collectors.toSet())
+                roles.stream().map(RoleForm::toCreateRoleInput).collect(Collectors.toSet())
         );
     }
 }

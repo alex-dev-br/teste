@@ -3,6 +3,7 @@ package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.conf
 import br.com.fiap.restaurantusersapi.application.domain.exception.BusinessValidationException;
 import br.com.fiap.restaurantusersapi.application.domain.exception.CurrentPasswordMismatchException;
 import br.com.fiap.restaurantusersapi.application.domain.exception.DomainException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,9 +21,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -95,6 +98,18 @@ public class GlobalExceptionHandler {
                 "Malformed JSON",
                 "Request body is not readable or has an invalid format.",
                 ex, request);
+
+        if (ex.getCause() instanceof InvalidFormatException invalidFormatException) {
+            if (invalidFormatException.getTargetType() != null && invalidFormatException.getTargetType().isEnum()) {
+                String validValues = Arrays.stream(invalidFormatException.getTargetType().getEnumConstants())
+                        .map(Object::toString)
+                        .collect(Collectors.joining(", "));
+                String errorMessage = String.format("Invalid value for %s. Valid values are: [%s]", invalidFormatException.getPath().getFirst().getFieldName(), validValues);
+                pd.setProperty("fields", List.of (
+                    Map.of("name", invalidFormatException.getPath().getFirst().getFieldName(), "message", errorMessage)
+                ));
+            }
+        }
         return pd;
     }
 
