@@ -4,10 +4,8 @@ import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
 import br.com.fiap.restaurantusersapi.application.service.UserService;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PaginationDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserDTO;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.AdminUserCreateForm;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserUpdateForm;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.ChangePasswordForm;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.CustomerUserCreateForm;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.*;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.RoleEntity;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.UserEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,13 +18,16 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Tag(name = "Users", description = "Operações de gestão de usuários")
 @Validated
@@ -43,7 +44,7 @@ public class UserController {
     // =====================================================
     // POST /api/v1/users
     // =====================================================
-    @Operation(summary = "Cria um novo usuário")
+    @Operation(summary = "Cria um novo usuário com permissões de dono de restaurante e/ou administrador")
     @ApiResponses({
             @ApiResponse(responseCode = "201",
                     description = "Usuário criado com sucesso",
@@ -61,13 +62,14 @@ public class UserController {
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
     public ResponseEntity<UserDTO> create(@Valid @RequestBody AdminUserCreateForm in) {
         var createUserOutput = service.create(in.toCreateUserInput());
         URI location = URI.create("/api/v1/users/" + createUserOutput.uuid());
         return ResponseEntity.created(location).body(new UserDTO(createUserOutput));
     }
 
-    @Operation(summary = "Cria um novo usuário com role de customer")
+    @Operation(summary = "Cria um novo usuário com permissões de cliente")
     @ApiResponses({
             @ApiResponse(responseCode = "201",
                     description = "Usuário criado com sucesso",
@@ -190,7 +192,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Atualiza os dados (exceto senha) do próprio usuário")
+    @Operation(summary = "Atualiza os dados (exceto senha) do usuário logado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Usuário atualizado com sucesso",
@@ -218,8 +220,42 @@ public class UserController {
     @PutMapping
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<UserDTO> updateUser(@AuthenticationPrincipal UserDetails authenticateUser, @Valid @RequestBody UserUpdateForm form) {
-        var output = service.update(form.toUpdateUserInput(((UserEntity) authenticateUser).getUuid()));
+        var uuid = ((UserEntity) authenticateUser).getUuid();
+        var roles = ((UserEntity) authenticateUser).getRoles().stream().map(r -> RoleForm.valueOf(r.name())).collect(Collectors.toSet());
+        var output = service.update(form.toUpdateUserInput(uuid, roles));
         return ResponseEntity.ok(new UserDTO(output));
     }
 
+    @Operation(summary = "Atualiza outros usuários com permissões de dono de restaurante e/ou administrador")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Usuário atualizado com sucesso",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserDTO.class))),
+            @ApiResponse(responseCode = "400",
+                    description = "Payload inválido",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "401",
+                    description = "Não autenticado",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "403",
+                    description = "Usuário não pode alterar outro usuário",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "404",
+                    description = "Usuário não encontrado",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "422",
+                    description = "Regras de negócio: email/login já existentes",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "500",
+                    description = "Erro inesperado no servidor",
+                    content = @Content(mediaType = "application/problem+json"))
+    })
+    @PutMapping("/{uuid}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<UserDTO> updateUser(@PathVariable("uuid") UUID uuid, @Valid @RequestBody UserUpdateForm form) {
+        var output = service.update(form.toUpdateUserInput(uuid));
+        return ResponseEntity.ok(new UserDTO(output));
+    }
 }

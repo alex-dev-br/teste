@@ -1,13 +1,15 @@
 package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form;
 
-import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserInput;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.update.UpdateUserInput;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Set;
+import java.util.UUID;
 
-@Schema(description = "Payload para criação de usuário.", name = "AdminUserCreateRequest")
-public class AdminUserCreateForm extends CustomerUserCreateForm {
+@Schema(description = "Payload para alteração dos dados do usuário.", name = "UserUpdateRequest")
+public final class AdminUserUpdateForm extends UserUpdateForm {
 
     @ArraySchema(
             arraySchema = @Schema(
@@ -19,17 +21,13 @@ public class AdminUserCreateForm extends CustomerUserCreateForm {
     )
     private final Set<RoleForm> roles;
 
-    public AdminUserCreateForm(String name, String email, String login, String password, AddressForm address, Set<RoleForm> roles) {
-        super(name, email, login, password, address);
+    public AdminUserUpdateForm(String name, String email, String login, AddressForm address, Set<RoleForm> roles) {
+        super(name, email, login, address);
         this.roles = roles;
     }
 
-    public Set<RoleForm> getRoles() {
-        return roles;
-    }
-
-    @Override
-    public CreateUserInput toCreateUserInput() {
-        return super.toCreateUserInput(this.roles);
+    @Operation
+    public UpdateUserInput toUpdateUserInput(UUID uuid) {
+        return this.toUpdateUserInput(uuid, roles);
     }
 }

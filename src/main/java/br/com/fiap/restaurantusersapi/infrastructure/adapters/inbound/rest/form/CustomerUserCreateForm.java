@@ -7,8 +7,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Schema(description = "Payload para criação de usuário.", name = "UserCreateRequest")
 public class CustomerUserCreateForm {
@@ -46,13 +48,17 @@ public class CustomerUserCreateForm {
     }
 
     public CreateUserInput toCreateUserInput() {
+        return toCreateUserInput(Set.of(RoleForm.CUSTOMER));
+    }
+
+    public CreateUserInput toCreateUserInput(Set<RoleForm> roles) {
         return new CreateUserInput(
                 name,
                 email,
                 login,
                 password,
                 address != null ? address.toCreateAddressInput() : null,
-                Set.of(RoleForm.CUSTOMER.toCreateRoleInput())
+                roles.stream().map(RoleForm::toCreateRoleInput).collect(Collectors.toSet())
         );
     }
 
