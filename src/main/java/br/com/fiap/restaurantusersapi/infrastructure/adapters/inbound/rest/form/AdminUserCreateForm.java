@@ -3,6 +3,8 @@ package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserInput;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.Set;
 
@@ -17,6 +19,8 @@ public class AdminUserCreateForm extends CustomerUserCreateForm {
             ),
             uniqueItems = true
     )
+    @NotNull
+    @Size(min = 1)
     private final Set<RoleForm> roles;
 
     public AdminUserCreateForm(String name, String email, String login, String password, AddressForm address, Set<RoleForm> roles) {
