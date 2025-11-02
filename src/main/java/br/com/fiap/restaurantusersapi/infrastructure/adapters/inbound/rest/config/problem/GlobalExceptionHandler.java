@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -133,6 +134,21 @@ public class GlobalExceptionHandler {
                 type("unauthorized"),
                 "Falha ao autenticar",
                 "Falha ao autenticar o usuário, verifique as credenciais e tente novamente.",
+                null, request
+        );
+        // não usar invalidParams aqui; mensagem geral:
+        pd.setProperty("reason", ex.getMessage());
+        return pd;
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ProblemDetail handleAccessDenied(AuthorizationDeniedException ex, HttpServletRequest request) {
+        ProblemDetail pd = problem(
+                HttpStatus.FORBIDDEN,
+                type("forbidden"),
+                "Operação não permitida",
+                "Operação não permitida, verifique as permissões de acesso.",
                 null, request
         );
         // não usar invalidParams aqui; mensagem geral:
