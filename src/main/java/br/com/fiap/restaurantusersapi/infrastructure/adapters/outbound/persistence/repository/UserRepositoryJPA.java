@@ -29,4 +29,7 @@ public interface UserRepositoryJPA extends JpaRepository<UserEntity, UUID> {
     @Modifying
     @Query("UPDATE UserEntity u SET u.passwordHash = :newPassword WHERE u.id = :uuid")
     void changePassword(@Param("uuid") UUID uuid, @Param("newPassword") String newPassword);
+
+    @Query("SELECT u.passwordHash FROM UserEntity u WHERE u.id = :uuid")
+    Optional<String> getUserPassword(@Param("uuid") UUID uuid);
 }

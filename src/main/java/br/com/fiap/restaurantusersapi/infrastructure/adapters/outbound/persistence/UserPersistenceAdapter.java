@@ -1,7 +1,10 @@
 package br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence;
 
+import br.com.fiap.restaurantusersapi.application.domain.exception.DomainException;
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Pagination;
+import br.com.fiap.restaurantusersapi.application.domain.user.Address;
+import br.com.fiap.restaurantusersapi.application.domain.user.Password;
 import br.com.fiap.restaurantusersapi.application.domain.user.User;
 import br.com.fiap.restaurantusersapi.application.ports.outbound.persistence.UserPersistence;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.UserEntity;
@@ -11,6 +14,7 @@ import jakarta.inject.Named;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -60,5 +64,33 @@ public record UserPersistenceAdapter(UserRepositoryJPA userRepositoryJPA) implem
     @Override
     public void changePassword(UUID uuid, String newPassword) {
         userRepositoryJPA.changePassword(uuid, newPassword);
+    }
+
+    @Override
+    public User update(User user) {
+        var userDB = userRepositoryJPA.findById(user.uuid()).orElseThrow(() -> new DomainException("Usuário alvo da altações não foi encontrado"));
+        var addressDB = userDB.getAddress();
+        Address address = null;
+        if (addressDB != null) {
+            address = new Address(addressDB.getAddressId(), addressDB.getStreet(), addressDB.getNumber(), addressDB.getComplement(), addressDB.getCity(), addressDB.getNeighborhood(), addressDB.getState(), addressDB.getZipCode());
+        }
+        var updatedUser = new User (
+            userDB.getId(),
+            user.name(),
+            user.email(),
+            user.login(),
+            new Password(userDB.getPassword(), true),
+            address,
+            user.roles(),
+            userDB.getCreatedAt(),
+            Instant.now()
+        );
+        var saved = userRepositoryJPA.save(UserMapper.toEntity(updatedUser));
+        return UserMapper.toDomain(saved);
+    }
+
+    @Override
+    public Optional<String> getUserPassword(UUID uuid) {
+        return userRepositoryJPA.getUserPassword(uuid);
     }
 }

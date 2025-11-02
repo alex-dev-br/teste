@@ -4,9 +4,10 @@ import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
 import br.com.fiap.restaurantusersapi.application.service.UserService;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PaginationDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserDTO;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserUpdateForm;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserUpdateForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.ChangePasswordForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserCreateForm;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.UserEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -161,7 +162,7 @@ public class UserController {
     @PutMapping("/change-password")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> changePassword(@AuthenticationPrincipal UserDetails authenticateUser, @Valid @RequestBody ChangePasswordForm form) {
-        service.changePassword(authenticateUser, form);
+        service.changeUserPassword(form.toChangePasswordInput(((UserEntity) authenticateUser).getId()));
         return ResponseEntity.noContent().build();
     }
 
@@ -190,13 +191,10 @@ public class UserController {
                     description = "Erro inesperado no servidor",
                     content = @Content(mediaType = "application/problem+json"))
     })
-    @PutMapping("/{uuid}")
+    @PutMapping
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<UserDTO> updateUser(
-            @PathVariable UUID uuid,
-            @Valid @RequestBody UserUpdateForm form
-    ) {
-        var output = service.update(uuid, form);
+    public ResponseEntity<UserDTO> updateUser(@AuthenticationPrincipal UserDetails authenticateUser, @Valid @RequestBody UserUpdateForm form) {
+        var output = service.update(form.toUpdateUserInput(((UserEntity) authenticateUser).getId()));
         return ResponseEntity.ok(new UserDTO(output));
     }
 

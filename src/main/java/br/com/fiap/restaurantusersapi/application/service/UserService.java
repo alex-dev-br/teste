@@ -5,7 +5,6 @@ import br.com.fiap.restaurantusersapi.application.domain.exception.CurrentPasswo
 import br.com.fiap.restaurantusersapi.application.domain.exception.DomainException;
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Pagination;
-import br.com.fiap.restaurantusersapi.application.domain.user.Email;
 import br.com.fiap.restaurantusersapi.application.domain.user.Password;
 import br.com.fiap.restaurantusersapi.application.domain.user.User;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserInput;
@@ -16,33 +15,32 @@ import br.com.fiap.restaurantusersapi.application.ports.inbound.get.ForGettingUs
 import br.com.fiap.restaurantusersapi.application.ports.inbound.get.GetUserOutput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ForListingUserOutput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ListUserOutput;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.update.UpdateUserInput;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.update.UpdateUserOutput;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.update.password.ForChangingUserPassword;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.update.password.ChangeUserPasswordInput;
 import br.com.fiap.restaurantusersapi.application.ports.outbound.persistence.UserPersistence;
 import br.com.fiap.restaurantusersapi.application.ports.outbound.security.PasswordEncoder;
 import br.com.fiap.restaurantusersapi.application.service.validator.CreateUserValidator;
+import br.com.fiap.restaurantusersapi.application.service.validator.UpdateUserValidator;
 import br.com.fiap.restaurantusersapi.application.service.validator.ValidationResult;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.ChangePasswordForm;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserUpdateForm;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.UserEntity;
 import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 @Named
-public class UserService implements ForCreatingUser, ForGettingUser, ForListingUserOutput, ForDeletingByUuid {
+public class UserService implements ForCreatingUser, ForGettingUser, ForListingUserOutput, ForDeletingByUuid, ForChangingUserPassword {
 
     private final UserPersistence userPersistence;
     private final PasswordEncoder encoder;
     private final CreateUserValidator createUserValidator;
+    private final UpdateUserValidator updateUserValidator;
 
-    public UserService(UserPersistence userPersistence, PasswordEncoder encoder, CreateUserValidator createUserValidator) {
+    public UserService(UserPersistence userPersistence, PasswordEncoder encoder, CreateUserValidator createUserValidator, UpdateUserValidator updateUserValidator) {
+        this.updateUserValidator = updateUserValidator;
         Objects.requireNonNull(userPersistence);
         Objects.requireNonNull(encoder);
         Objects.requireNonNull(createUserValidator);
@@ -89,51 +87,31 @@ public class UserService implements ForCreatingUser, ForGettingUser, ForListingU
         return userPersistence.findByName(name, page).mapItems(ListUserOutput::new);
     }
 
+    @Override
     @Transactional
-    public void changePassword(UserDetails userDetails, ChangePasswordForm form) throws DomainException {
-        Objects.requireNonNull(userDetails);
-        Objects.requireNonNull(form);
-        var user = (UserEntity) userDetails;
+    public void changeUserPassword(ChangeUserPasswordInput input) {
+        var userCurrentPassword = userPersistence.getUserPassword(input.userUuid()).orElseThrow(() -> new DomainException("Usuário com inconsistência"));
 
-        if (!form.newPassword().equals(form.confirmNewPassword())) {
+        if (!input.newPassword().equals(input.confirmNewPassword())) {
             throw new BusinessValidationException(new ValidationResult("A nova senha não confere com a confirmação de nova senha"));
         }
 
-        if (!encoder.matches(form.currentPassword(), user.getPassword())) {
+        if (!encoder.matches(input.currentPassword(), userCurrentPassword)) {
             throw new CurrentPasswordMismatchException();
         }
 
-        var newPasswordEncoded = encoder.encode(new Password(form.newPassword(), false));
-        userPersistence.changePassword(user.getId(), newPasswordEncoded.value());
+        var newPasswordEncoded = encoder.encode(new Password(input.newPassword()));
+        userPersistence.changePassword(input.userUuid(), newPasswordEncoded.value());
     }
 
     @Transactional
-    public GetUserOutput update(UUID uuid, UserUpdateForm form) {
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-        var authenticatedLogin = auth.getName();
-        boolean isAdmin = auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().contains("ADMIN"));
-
-        var user = userPersistence.findByUuid(uuid)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        if (!isAdmin && !authenticatedLogin.equalsIgnoreCase(user.login())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Não autorizado");
+    public UpdateUserOutput update(UpdateUserInput form) {
+        var user = form.toDomain();
+        var result = updateUserValidator.validate(user);
+        if (result.isInvalid()) {
+            throw new BusinessValidationException(result);
         }
-
-        var updated = new User(
-                user.uuid(),
-                form.name() != null ? form.name() : user.name(),
-                new Email(form.email() != null ? form.email() : user.email().address()),
-                form.login() != null ? form.login() : user.login(),
-                user.password(),
-                form.address() != null ? form.address().toDomain() : user.address(),
-                user.roles(),
-                user.createdAt(),
-                Instant.now()
-        );
-
-        return new GetUserOutput(userPersistence.create(updated));
+        return new UpdateUserOutput(userPersistence.update(user));
     }
 
 

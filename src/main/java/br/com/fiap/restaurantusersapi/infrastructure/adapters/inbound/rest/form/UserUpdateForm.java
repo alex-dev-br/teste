@@ -1,7 +1,7 @@
 package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form;
 
-import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateRoleInput;
-import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUserInput;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.update.UpdateRoleInput;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.update.UpdateUserInput;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.RoleEntity;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,35 +11,27 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Schema(description = "Payload para criação de usuário.", name = "UserCreateRequest")
-public record UserCreateForm(
-
+@Schema(description = "Payload para alteração dos dados do usuário.", name = "UserUpdateRequest")
+public record UserUpdateForm (
         @NotBlank
         @Size(max = 120)
         @Schema(example = "Maria Silva")
         String name,
-
         @NotBlank
         @Email
         @Size(max = 180)
         @Schema(example = "maria.silva@mail.com")
         String email,
-
         @NotBlank
         @Size(max = 80)
         @Schema(example = "mariasilva")
         String login,
-
-        @NotBlank
-        @Schema(example = "Senha Fort3!@#*")
-        String password,
-
         @Valid
         @Schema(implementation = AddressForm.class)
         AddressForm address,
-
         @ArraySchema(
                 arraySchema = @Schema(
                         description = "Lista de papéis do usuário. Se não for informada, o papel padrão 'CLIENT' será atribuído." ,
@@ -48,15 +40,10 @@ public record UserCreateForm(
                 uniqueItems = true
         )
         Set<String> roles
-){
-    public CreateUserInput toCreateUserInput() {
-        return new CreateUserInput(
-                name,
-                email,
-                login,
-                password,
-                address != null ? address.toCreateAddressInput() : null,
-                roles.stream().map(CreateRoleInput::new).collect(Collectors.toSet())
+) {
+    public UpdateUserInput toUpdateUserInput(UUID uuid) {
+        return new UpdateUserInput(
+            uuid, name, email, login, address != null ? address().toUpdateAddressInput() : null, roles.stream().map(UpdateRoleInput::new).collect(Collectors.toSet())
         );
     }
 }

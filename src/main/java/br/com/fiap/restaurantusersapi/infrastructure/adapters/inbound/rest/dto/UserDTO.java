@@ -6,6 +6,8 @@ import br.com.fiap.restaurantusersapi.application.ports.inbound.get.GetRoleOutpu
 import br.com.fiap.restaurantusersapi.application.ports.inbound.get.GetUserOutput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ListRoleOutput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ListUserOutput;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.update.UpdateRoleOutput;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.update.UpdateUserOutput;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.Instant;
@@ -60,5 +62,12 @@ public record UserDTO(
                 listUserOutput.roles().stream().map(ListRoleOutput::name).collect(Collectors.toSet()),
                 listUserOutput.createdAt(), listUserOutput.updatedAt(),
                 listUserOutput.address() != null ? new AddressDTO(listUserOutput.address()) : null);
+    }
+
+    public UserDTO(UpdateUserOutput updateUserOutput) {
+        this(updateUserOutput.uuid(), updateUserOutput.name(), updateUserOutput.email(), updateUserOutput.login(),
+                updateUserOutput.roles().stream().map(UpdateRoleOutput::name).collect(Collectors.toSet()),
+                updateUserOutput.createdAt(), updateUserOutput.updatedAt(),
+                updateUserOutput.address() != null ? new AddressDTO(updateUserOutput.address()) : null);
     }
 }
