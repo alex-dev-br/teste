@@ -4,9 +4,10 @@ import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
 import br.com.fiap.restaurantusersapi.application.service.UserService;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PaginationDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserDTO;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.AdminUserCreateForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserUpdateForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.ChangePasswordForm;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserCreateForm;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.CustomerUserCreateForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.UserEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -60,7 +61,30 @@ public class UserController {
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<UserDTO> create(@Valid @RequestBody UserCreateForm in) {
+    public ResponseEntity<UserDTO> create(@Valid @RequestBody AdminUserCreateForm in) {
+        var createUserOutput = service.create(in.toCreateUserInput());
+        URI location = URI.create("/api/v1/users/" + createUserOutput.uuid());
+        return ResponseEntity.created(location).body(new UserDTO(createUserOutput));
+    }
+
+    @Operation(summary = "Cria um novo usuário com role de customer")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201",
+                    description = "Usuário criado com sucesso",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserDTO.class))),
+            @ApiResponse(responseCode = "400",
+                    description = "Dados inválidos",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "409",
+                    description = "Conflito (e-mail ou login já existentes)",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "500",
+                    description = "Erro interno do servidor",
+                    content = @Content(mediaType = "application/problem+json"))
+    })
+    @PostMapping(path = "/customer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDTO> create(@Valid @RequestBody CustomerUserCreateForm in) {
         var createUserOutput = service.create(in.toCreateUserInput());
         URI location = URI.create("/api/v1/users/" + createUserOutput.uuid());
         return ResponseEntity.created(location).body(new UserDTO(createUserOutput));
