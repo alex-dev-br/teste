@@ -10,6 +10,7 @@ import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateUse
 import br.com.fiap.restaurantusersapi.application.ports.outbound.persistence.UserPersistence;
 import br.com.fiap.restaurantusersapi.application.ports.outbound.security.PasswordEncoder;
 import br.com.fiap.restaurantusersapi.application.service.validator.CreateUserValidator;
+import br.com.fiap.restaurantusersapi.application.service.validator.UpdateUserValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +33,7 @@ class UserServiceTest {
     void setUp() {
         userPersistence = mock(UserPersistence.class);
         passwordEncoder = mock(PasswordEncoder.class);
-        userService = new UserService(userPersistence, passwordEncoder, new CreateUserValidator(List.of()));
+        userService = new UserService(userPersistence, passwordEncoder, new CreateUserValidator(List.of()), new UpdateUserValidator(List.of()));
     }
 
     @Test
