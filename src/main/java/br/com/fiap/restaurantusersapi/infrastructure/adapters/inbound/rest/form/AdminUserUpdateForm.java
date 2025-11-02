@@ -4,6 +4,8 @@ import br.com.fiap.restaurantusersapi.application.ports.inbound.update.UpdateUse
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.Set;
 import java.util.UUID;
@@ -19,6 +21,8 @@ public final class AdminUserUpdateForm extends UserUpdateForm {
             ),
             uniqueItems = true
     )
+    @NotNull
+    @Size(min = 1)
     private final Set<RoleForm> roles;
 
     public AdminUserUpdateForm(String name, String email, String login, AddressForm address, Set<RoleForm> roles) {
