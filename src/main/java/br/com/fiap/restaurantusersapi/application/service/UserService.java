@@ -19,6 +19,7 @@ import br.com.fiap.restaurantusersapi.application.ports.inbound.update.UpdateUse
 import br.com.fiap.restaurantusersapi.application.ports.inbound.update.UpdateUserOutput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.update.password.ForChangingUserPassword;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.update.password.ChangeUserPasswordInput;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.update.ForUpdatingUser;
 import br.com.fiap.restaurantusersapi.application.ports.outbound.persistence.UserPersistence;
 import br.com.fiap.restaurantusersapi.application.ports.outbound.security.PasswordEncoder;
 import br.com.fiap.restaurantusersapi.application.service.validator.CreateUserValidator;
@@ -32,14 +33,24 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Named
-public class UserService implements ForCreatingUser, ForGettingUser, ForListingUserOutput, ForDeletingByUuid, ForChangingUserPassword {
+public class UserService implements
+        ForCreatingUser,
+        ForGettingUser,
+        ForListingUserOutput,
+        ForDeletingByUuid,
+        ForChangingUserPassword,
+        ForUpdatingUser
+{
 
     private final UserPersistence userPersistence;
     private final PasswordEncoder encoder;
     private final CreateUserValidator createUserValidator;
     private final UpdateUserValidator updateUserValidator;
 
-    public UserService(UserPersistence userPersistence, PasswordEncoder encoder, CreateUserValidator createUserValidator, UpdateUserValidator updateUserValidator) {
+    public UserService(UserPersistence userPersistence,
+                       PasswordEncoder encoder,
+                       CreateUserValidator createUserValidator,
+                       UpdateUserValidator updateUserValidator) {
         this.updateUserValidator = updateUserValidator;
         Objects.requireNonNull(userPersistence);
         Objects.requireNonNull(encoder);
@@ -57,7 +68,14 @@ public class UserService implements ForCreatingUser, ForGettingUser, ForListingU
         if (result.isInvalid()) {
             throw new BusinessValidationException(result);
         }
-        var encodedUser = new User(user.name(), user.email(), user.login(), encoder.encode(user.password()), user.address(), user.roles());
+        var encodedUser = new User(
+                user.name(),
+                user.email(),
+                user.login(),
+                encoder.encode(user.password()),
+                user.address(),
+                user.roles()
+        );
         var createdUser = userPersistence.create(encodedUser);
         return new CreateUserOutput(createdUser);
     }
@@ -90,10 +108,12 @@ public class UserService implements ForCreatingUser, ForGettingUser, ForListingU
     @Override
     @Transactional
     public void changeUserPassword(ChangeUserPasswordInput input) {
-        var userCurrentPassword = userPersistence.getUserPassword(input.userUuid()).orElseThrow(() -> new DomainException("Usuário com inconsistência"));
+        var userCurrentPassword = userPersistence.getUserPassword(input.userUuid())
+                .orElseThrow(() -> new DomainException("Usuário com inconsistência"));
 
         if (!input.newPassword().equals(input.confirmNewPassword())) {
-            throw new BusinessValidationException(new ValidationResult("A nova senha não confere com a confirmação de nova senha"));
+            throw new BusinessValidationException(new ValidationResult(
+                    "A nova senha não confere com a confirmação de nova senha"));
         }
 
         if (!encoder.matches(input.currentPassword(), userCurrentPassword)) {
@@ -104,6 +124,7 @@ public class UserService implements ForCreatingUser, ForGettingUser, ForListingU
         userPersistence.changePassword(input.userUuid(), newPasswordEncoded.value());
     }
 
+    @Override
     @Transactional
     public UpdateUserOutput update(UpdateUserInput form) {
         var user = form.toDomain();
@@ -113,7 +134,6 @@ public class UserService implements ForCreatingUser, ForGettingUser, ForListingU
         }
         return new UpdateUserOutput(userPersistence.update(user));
     }
-
 
     @Override
     public void deleteByUuid(UUID uuid) {

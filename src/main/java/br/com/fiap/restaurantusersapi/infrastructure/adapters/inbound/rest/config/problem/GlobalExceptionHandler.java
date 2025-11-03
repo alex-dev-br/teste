@@ -105,9 +105,13 @@ public class GlobalExceptionHandler {
                 String validValues = Arrays.stream(invalidFormatException.getTargetType().getEnumConstants())
                         .map(Object::toString)
                         .collect(Collectors.joining(", "));
-                String errorMessage = String.format("Invalid value for %s. Valid values are: [%s]", invalidFormatException.getPath().getFirst().getFieldName(), validValues);
-                pd.setProperty("fields", List.of (
-                    Map.of("name", invalidFormatException.getPath().getFirst().getFieldName(), "message", errorMessage)
+                String field = invalidFormatException.getPath().isEmpty()
+                        ? "value"
+                        : invalidFormatException.getPath().getFirst().getFieldName();
+                String errorMessage = String.format(
+                        "Invalid value for %s. Valid values are: [%s]", field, validValues);
+                pd.setProperty("fields", List.of(
+                        Map.of("name", field, "message", errorMessage)
                 ));
             }
         }
@@ -167,7 +171,7 @@ public class GlobalExceptionHandler {
                 ex, request);
     }
 
-    // 422 - Regra de negócio
+    // 422 - Regras de negócio (lista de strings)
     @ExceptionHandler(BusinessValidationException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ProblemDetail handleValidationException(BusinessValidationException ex, HttpServletRequest request) {
@@ -182,7 +186,7 @@ public class GlobalExceptionHandler {
         return pd;
     }
 
-    // 422 - Regra de negócio
+    // 422 - Regra de negócio (DomainException) → lista de strings
     @ExceptionHandler(DomainException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ProblemDetail handleValidationException(DomainException ex, HttpServletRequest request) {
@@ -193,7 +197,8 @@ public class GlobalExceptionHandler {
                 "Uma ou mais regras de negócio foram violadas.",
                 null, request
         );
-        pd.setProperty(PROP_INVALID_PARAMS, ex.getMessage());
+        // padroniza como lista de strings
+        pd.setProperty(PROP_INVALID_PARAMS, java.util.List.of(ex.getMessage()));
         return pd;
     }
 
@@ -235,8 +240,7 @@ public class GlobalExceptionHandler {
                 ex, request);
     }
 
-
-    // Para diminuir repetição:
+    // Helper para reduzir repetição
     private ProblemDetail problem(HttpStatus status,
                                   URI type,
                                   String title,

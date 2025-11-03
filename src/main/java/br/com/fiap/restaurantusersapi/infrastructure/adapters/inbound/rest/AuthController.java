@@ -40,7 +40,7 @@ public class AuthController {
         @ApiResponse(responseCode = "401", description = "Falha ao autenticar",
             content = @Content(mediaType = "application/problem+json"))
     })
-    @PostMapping
+    @PostMapping({ "", "/", "/login" })
     public ResponseEntity<JwtTokenDTO> login(@RequestBody @Valid LoginForm loginForm) {
         var authentication = loginForm.toAuthenticatorToken();
         var authenticated = authenticationManager.authenticate(authentication);

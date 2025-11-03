@@ -14,13 +14,13 @@ public class PasswordEncoderImpl implements br.com.fiap.restaurantusersapi.appli
     }
 
     @Override
-    public Password encode(Password password) {
-        return new Password(encoder.encode(password.value()), true);
+    public Password encode(Password raw) {
+        String hash = encoder.encode(raw.value());
+        return Password.hashed(hash);
     }
 
     @Override
     public boolean matches(String rawPassword, String encodedPassword) {
         return encoder.matches(rawPassword, encodedPassword);
     }
-
 }

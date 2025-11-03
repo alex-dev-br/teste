@@ -6,17 +6,28 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenExtractorService {
 
+    private static final String AUTH_HEADER = "Authorization";
+    private static final String BEARER = "Bearer";
+
     public String extractRequestToken(HttpServletRequest request) {
-        String tokenAndTypeToken = request.getHeader("Authorization");
-        return extractRequestToken(tokenAndTypeToken);
+        return extractRequestToken(request.getHeader(AUTH_HEADER));
     }
 
-    public String extractRequestToken(String tokenAndTypeToken) {
-        if (tokenAndTypeToken == null) {
-            return null;
-        }
+    public String extractRequestToken(String headerValue) {
+        if (headerValue == null) return null;
 
-        String[] tokenInfo = tokenAndTypeToken.trim().split(" ");
-        return tokenInfo[1] != null ? tokenInfo[1] : null;
+        String h = headerValue.trim();
+        if (h.isEmpty()) return null;
+
+        int space = h.indexOf(' ');
+        if (space <= 0) return null; // sem esquema ou sem espaço
+
+        String scheme = h.substring(0, space).trim();
+        String token  = h.substring(space + 1).trim();
+
+        if (!BEARER.equalsIgnoreCase(scheme)) return null;
+        if (token.isEmpty()) return null;
+
+        return token;
     }
 }

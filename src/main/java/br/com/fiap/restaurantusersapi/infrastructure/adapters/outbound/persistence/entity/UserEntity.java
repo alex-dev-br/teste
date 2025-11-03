@@ -46,6 +46,15 @@ public class UserEntity implements UserDetails {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @Column(name = "pwd_must_change", nullable = false)
+    private boolean pwdMustChange = false;
+
+    @Column(name = "pwd_changed_at")
+    private Instant pwdChangedAt;
+
+    @Column(name = "pwd_version", nullable = false)
+    private int pwdVersion = 0;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(
@@ -142,6 +151,15 @@ public class UserEntity implements UserDetails {
     public Instant getUpdatedAt() {
         return updatedAt;
     }
+
+    public boolean isPwdMustChange() { return pwdMustChange; }
+    public void setPwdMustChange(boolean pwdMustChange) {this.pwdMustChange = pwdMustChange; }
+
+    public Instant getPwdChangedAt() { return pwdChangedAt; }
+    public void setPwdChangedAt(Instant pwdChangedAt) {this.pwdChangedAt = pwdChangedAt; }
+
+    public int getPwdVersion() { return pwdVersion; }
+    public void setPwdVersion(int pwdVersion) { this.pwdVersion = pwdVersion; }
 
     @Override
     public final boolean equals(Object o) {

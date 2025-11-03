@@ -11,22 +11,20 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate      # O schema vem do Flyway
+      ddl-auto: validate
 
   flyway:
     enabled: true
+    # Em DEV traz migrations oficiais + seeds/dev
     locations: ${SPRING_FLYWAY_LOCATIONS:classpath:db/migration,classpath:db/migration-dev}
     baseline-on-migrate: false
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:${DB_PORT:5432}/${DB_NAME:app}}
-    user: ${SPRING_DATASOURCE_USERNAME:${DB_USER:app}}
-    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:app}}
+    # >>> REMOVIDO: url, user, password (Flyway reutiliza o spring.datasource.*)
 
 logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 
-# Dev: CORS amplo (ajuste o origin conforme o front)
 app:
   cors:
     allowed-origins: "http://localhost:3000"
@@ -37,7 +35,6 @@ springdoc:
   swagger-ui:
     enabled: true
 
-# Actuator => Expondo endpoints internos para monitorar a aplicação (health, info, metrics, env, beans, mappings etc)
 management:
   endpoints:
     web:

@@ -1,5 +1,6 @@
 package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form;
 
+import br.com.fiap.restaurantusersapi.application.domain.user.Role;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.CreateRoleInput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.update.UpdateRoleInput;
 
@@ -12,5 +13,9 @@ public enum RoleForm {
 
     public CreateRoleInput toCreateRoleInput() {
         return new CreateRoleInput(this.name());
+    }
+
+    public Role toDomain() {
+        return Role.of(this.name());
     }
 }
