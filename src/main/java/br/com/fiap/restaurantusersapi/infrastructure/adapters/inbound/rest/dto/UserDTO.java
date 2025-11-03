@@ -40,7 +40,7 @@ public record UserDTO(
         @Schema(example = "2025-09-28T12:34:56Z")
         Instant updatedAt,
 
-        @Schema(implementation = AddressDTO.class)
+        @Schema(implementation = AddressDTO.class, nullable = true)
         AddressDTO address
 ){
     public UserDTO(CreateUserOutput createUserOutput) {
