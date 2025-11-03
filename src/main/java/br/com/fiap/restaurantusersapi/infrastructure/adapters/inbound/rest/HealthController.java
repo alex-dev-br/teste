@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Ping", description = "Operações para verificar conectividade com a aplicação")
 public class HealthController {
 
-    @Schema(description = "Resposta do ping", example = "{\"status\":\"ok\"}")
+    @Schema(description = "Resposta do ping", example = "{\"status\":\"ok\"}", name = "PingResponse")
     public record Ping(String status){}
 
 
