@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "e2d792fd-9aa2-4ffb-94b3-dbc364cbaafd",
+		"_postman_id": "a6732391-a4df-49ad-8968-c0dd07bee544",
 		"name": "REST API Restaurantes - Tech Challenge Fase 1",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "7819036"
+		"_exporter_id": "7819036",
+		"_collection_link": "https://crimson-space-820886.postman.co/workspace/FIAP---TC~085bff68-55a4-4073-8c74-5545e5a72fc2/collection/7819036-a6732391-a4df-49ad-8968-c0dd07bee544?action=share&source=collection_link&creator=7819036"
 	},
 	"item": [
 		{
@@ -128,7 +129,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"Joana Prado\",\n    \"email\": \"joana.prado+{{$timestamp}}@mail.com\",\n    \"login\": \"joanaprado{{$timestamp}}\",\n    \"password\": \"SenhaFort3!@#*\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    },\n    \"roles\": [\n        \"CLIENT\"\n    ]\n}",
+									"raw": "{\n    \"name\": \"Joana Prado\",\n    \"email\": \"joana.prado+{{$timestamp}}@mail.com\",\n    \"login\": \"joanaprado{{$timestamp}}\",\n    \"password\": \"SenhaFort3!@#*\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    },\n    \"roles\": [\n        \"CUSTOMER\"\n    ]\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -251,6 +252,63 @@
 										"api",
 										"v1",
 										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Customer User - Create (201)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"",
+											"pm.test(\"201 Created\", function () {",
+											"  pm.response.to.have.status(201);",
+											"});",
+											"pm.test(\"Location header present\", function () {",
+											"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+											"});",
+											"let body = pm.response.json();",
+											"pm.collectionVariables.set(\"userId\", body.id);",
+											"pm.collectionVariables.set(\"userEmail\", body.email);",
+											"pm.collectionVariables.set(\"userLogin\", body.login);",
+											"pm.collectionVariables.set(\"userName\", body.name);",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Joana Prado\",\n    \"email\": \"joana.prado+{{$timestamp}}@mail.com\",\n    \"login\": \"joanaprado{{$timestamp}}\",\n    \"password\": \"SenhaFort3!@#*\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{basePath}}/api/v1/users/customer",
+									"host": [
+										"{{basePath}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"customer"
 									]
 								}
 							},
@@ -548,7 +606,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Joana Prado\",\r\n    \"email\": \"joana.prado+{{$timestamp}}@mail.com\",\r\n    \"login\": \"joanaprado{{$timestamp}}\",\r\n    \"address\": {\r\n        \"street\": \"Rua AB\",\r\n        \"number\": \"10\",\r\n        \"complement\": \"Casa\",\r\n        \"city\": \"São Paulo\",\r\n        \"neighborhood\": \"Centro\",\r\n        \"state\": \"SP\",\r\n        \"zipCode\": \"12345-678\"\r\n    },\r\n    \"roles\": [\r\n        \"CLIENT\"\r\n    ]\r\n}",
+									"raw": "{\r\n    \"name\": \"Joana Prado\",\r\n    \"email\": \"joana.prado+{{$timestamp}}@mail.com\",\r\n    \"login\": \"joanaprado{{$timestamp}}\",\r\n    \"address\": {\r\n        \"street\": \"Rua AB\",\r\n        \"number\": \"10\",\r\n        \"complement\": \"Casa\",\r\n        \"city\": \"São Paulo\",\r\n        \"neighborhood\": \"Centro\",\r\n        \"state\": \"SP\",\r\n        \"zipCode\": \"12345-678\"\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -564,6 +622,53 @@
 										"api",
 										"v1",
 										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Altera Dados de Outro Usuário",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let body = pm.response.json();\r",
+											"pm.collectionVariables.set(\"userId\", body.id);\r",
+											"pm.collectionVariables.set(\"userEmail\", body.email);\r",
+											"pm.collectionVariables.set(\"userLogin\", body.login);\r",
+											"pm.collectionVariables.set(\"userName\", body.name);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Joana Prado\",\r\n    \"email\": \"joana.prado+{{$timestamp}}@mail.com\",\r\n    \"login\": \"joanaprado{{$timestamp}}\",\r\n    \"address\": {\r\n        \"street\": \"Rua AB\",\r\n        \"number\": \"10\",\r\n        \"complement\": \"Casa\",\r\n        \"city\": \"São Paulo\",\r\n        \"neighborhood\": \"Centro\",\r\n        \"state\": \"SP\",\r\n        \"zipCode\": \"12345-678\"\r\n    },\r\n    \"roles\": [\r\n        \"CUSTOMER\", \"OWNER\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{basePath}}/api/v1/users/d0e754b4-a8f7-438a-bc71-38b3d356e14e",
+									"host": [
+										"{{basePath}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"d0e754b4-a8f7-438a-bc71-38b3d356e14e"
 									]
 								}
 							},
@@ -624,6 +729,51 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Auth Admin/Dono",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"carlossouza\",\r\n    \"password\": \"SenhaDev#123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{basePath}}/api/v1/auth",
+							"host": [
+								"{{basePath}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {
@@ -662,49 +812,5088 @@
 			]
 		},
 		{
-			"name": "Auth",
-			"event": [
+			"name": "Casos de Teste",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const responseJson = pm.response.json();\r",
-							"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"SenhaFort3!@#*\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "Autenticação",
+					"item": [
+						{
+							"name": "Sucesso",
+							"item": [
+								{
+									"name": "Cria Cliente e Autentifica",
+									"item": [
+										{
+											"name": "Cria Novo cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"Cria novo cliente\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Marcia Campos\",\n    \"email\": \"marcia.campos_{{$timestamp}}@mail.com\",\n    \"login\": \"marcia.campos.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Autentica Novo Cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Autentica novo cliente com sucesso\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"{{passwordDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Cria Admin e Autentifica",
+									"item": [
+										{
+											"name": "Autentica com Sucesso",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Autentica com sucesso\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userNameAdminDefault}}\",\r\n    \"password\": \"{{passwordAdminDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cria Novo Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"Cria novo admin\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Eduardo Santos\",\n    \"email\": \"edu.santos_{{$timestamp}}@mail.com\",\n    \"login\": \"edu.snts_{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    },\n    \"roles\": [\n        \"ADMIN\", \"CUSTOMER\", \"OWNER\"\n    ]\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Autentica Novo Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Autentica novo admin com sucesso\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"{{passwordDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Erro",
+							"item": [
+								{
+									"name": "Falha ao Autenticar",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Falha ao autenticar\", function () {\r",
+													"  pm.response.to.have.status(401);\r",
+													"});\r",
+													"const responseJson = pm.response.json();\r",
+													"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"login\": \"{{userNameAdminDefault}}\",\r\n    \"password\": \"{{passwordDefault}}+erro\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{basePath}}/api/v1/auth",
+											"host": [
+												"{{basePath}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"auth"
+											]
+										}
+									},
+									"response": []
+								}
+							]
 						}
-					}
+					]
 				},
-				"url": {
-					"raw": "{{basePath}}/api/v1/auth",
-					"host": [
-						"{{basePath}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"auth"
+				{
+					"name": "Criação Usuario Cliente",
+					"item": [
+						{
+							"name": "Sucesso",
+							"item": [
+								{
+									"name": "Cliente",
+									"item": [
+										{
+											"name": "Sem Autenticar",
+											"item": [
+												{
+													"name": "Cria cliente com endereço",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"",
+																	"pm.test(\"201 Created\", function () {",
+																	"  pm.response.to.have.status(201);",
+																	"});",
+																	"pm.test(\"Location header present\", function () {",
+																	"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+																	"});",
+																	""
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														}
+													],
+													"request": {
+														"method": "POST",
+														"header": [],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n    \"name\": \"Julia Campos\",\n    \"email\": \"ju.campos_{{$timestamp}}@mail.com\",\n    \"login\": \"julia.campos.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"address\": {\n        \"street\": \"Rua {{$randomStreetName}}\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{basePath}}/api/v1/users/customer",
+															"host": [
+																"{{basePath}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"users",
+																"customer"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Cria cliente sem endereço",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"",
+																	"pm.test(\"201 Created\", function () {",
+																	"  pm.response.to.have.status(201);",
+																	"});",
+																	"pm.test(\"Location header present\", function () {",
+																	"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+																	"});",
+																	""
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														}
+													],
+													"request": {
+														"method": "POST",
+														"header": [],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n    \"name\": \"Juliana Campos\",\n    \"email\": \"juliana.campos_{{$timestamp}}@mail.com\",\n    \"login\": \"juliana.campos.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\"\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{basePath}}/api/v1/users/customer",
+															"host": [
+																"{{basePath}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"users",
+																"customer"
+															]
+														}
+													},
+													"response": []
+												}
+											]
+										},
+										{
+											"name": "Autenticado",
+											"item": [
+												{
+													"name": "Auth Admin/Dono",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"200 Auth\", function () {\r",
+																	"  pm.response.to.have.status(200);\r",
+																	"});\r",
+																	"const responseJson = pm.response.json();\r",
+																	"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n    \"login\": \"{{userNameAdminDefault}}\",\r\n    \"password\": \"{{passwordAdminDefault}}\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{basePath}}/api/v1/auth",
+															"host": [
+																"{{basePath}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"auth"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Cria cliente com endereço",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"",
+																	"pm.test(\"201 Created\", function () {",
+																	"  pm.response.to.have.status(201);",
+																	"});",
+																	"pm.test(\"Location header present\", function () {",
+																	"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+																	"});",
+																	"let body = pm.response.json();",
+																	"pm.collectionVariables.set(\"userId\", body.id);",
+																	"pm.collectionVariables.set(\"userEmail\", body.email);",
+																	"pm.collectionVariables.set(\"userLogin\", body.login);",
+																	"pm.collectionVariables.set(\"userName\", body.name);",
+																	""
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "bearer",
+															"bearer": [
+																{
+																	"key": "token",
+																	"value": "{{accessToken}}",
+																	"type": "string"
+																}
+															]
+														},
+														"method": "POST",
+														"header": [],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n    \"name\": \"Joana Prado\",\n    \"email\": \"joana.prado+{{$timestamp}}@mail.com\",\n    \"login\": \"joanaprado{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"address\": {\n        \"street\": \"Rua {{$randomStreetName}}\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    },\n    \"roles\": [\n        \"CUSTOMER\"\n    ]\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{basePath}}/api/v1/users",
+															"host": [
+																"{{basePath}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"users"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Cria cliente sem endereço",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"",
+																	"pm.test(\"201 Created\", function () {",
+																	"  pm.response.to.have.status(201);",
+																	"});",
+																	"pm.test(\"Location header present\", function () {",
+																	"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+																	"});",
+																	"let body = pm.response.json();",
+																	"pm.collectionVariables.set(\"userId\", body.id);",
+																	"pm.collectionVariables.set(\"userEmail\", body.email);",
+																	"pm.collectionVariables.set(\"userLogin\", body.login);",
+																	"pm.collectionVariables.set(\"userName\", body.name);",
+																	""
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "bearer",
+															"bearer": [
+																{
+																	"key": "token",
+																	"value": "{{accessToken}}",
+																	"type": "string"
+																}
+															]
+														},
+														"method": "POST",
+														"header": [],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n    \"name\": \"Ana Paula Prado\",\n    \"email\": \"ana.prado_{{$timestamp}}@mail.com\",\n    \"login\": \"anapr_{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"roles\": [\n        \"CUSTOMER\"\n    ]\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{basePath}}/api/v1/users",
+															"host": [
+																"{{basePath}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"users"
+															]
+														}
+													},
+													"response": []
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "Dono de Restaurante",
+									"item": [
+										{
+											"name": "Auth Admin/Dono",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"200 Auth\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userNameAdminDefault}}\",\r\n    \"password\": \"{{passwordAdminDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cria Dono com endereço",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Pedro Machado\",\n    \"email\": \"pedro_machado_{{$timestamp}}@mail.com\",\n    \"login\": \"pedrom_{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"address\": {\n        \"street\": \"Rua {{$randomStreetName}}\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    },\n    \"roles\": [\n        \"CUSTOMER\", \"OWNER\"\n    ]\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cria Dono sem endereço",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Camila Machado\",\n    \"email\": \"camila_machado_{{$timestamp}}@mail.com\",\n    \"login\": \"camila_mcd_{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"roles\": [\n        \"CUSTOMER\", \"OWNER\"\n    ]\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Administrador",
+									"item": [
+										{
+											"name": "Auth Admin/Dono",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"200 Auth\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userNameAdminDefault}}\",\r\n    \"password\": \"{{passwordAdminDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cria Administrador com endereço",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Carlos Machado\",\n    \"email\": \"carlos_machado_{{$timestamp}}@mail.com\",\n    \"login\": \"c.marchado_{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"address\": {\n        \"street\": \"Rua {{$randomStreetName}}\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    },\n    \"roles\": [\n        \"ADMIN\", \"CUSTOMER\", \"OWNER\"\n    ]\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cria Administrador sem endereço",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"João Silva\",\n    \"email\": \"joao.silva_{{$timestamp}}@mail.com\",\n    \"login\": \"joao_silva_{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"roles\": [\n        \"ADMIN\", \"CUSTOMER\", \"OWNER\"\n    ]\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Erros",
+							"item": [
+								{
+									"name": "Sem Autenticar",
+									"item": [
+										{
+											"name": "Cria cliente (para próximos testes)",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Vitoria Nunes\",\n    \"email\": \"vi_nunes_{{$timestamp}}@mail.com\",\n    \"login\": \"vitoria.nunes.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Erro de E-mail em uso",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Email em uso\", function () {",
+															"  pm.response.to.have.status(422);",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Vitoria Nunes\",\n    \"email\": \"{{userEmail}}\",\n    \"login\": \"vitoia_nn_{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Erro de Login em uso",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Login já em uso\", function () {",
+															"  pm.response.to.have.status(422);",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Vitoria Nunes\",\n    \"email\": \"vitoria_nunes_{{$timestamp}}@mail.com\",\n    \"login\": \"{{userLogin}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Erro de Campo Obrigatório Vazio",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Campo Obrigatório Vazio\", function () {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Vitoria Nunes\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Erro de Senha Fraca",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Senha Fraca\", function () {",
+															"  pm.response.to.have.status(422);",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Vitoria Nunes\",\n    \"email\": \"vitoria_nunes_{{$timestamp}}@mail.com\",\n    \"login\": \"vitoria_nn_{{$timestamp}}\",\n    \"password\": \"SenhaFraca\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Autenticado",
+									"item": [
+										{
+											"name": "Não Autorizado",
+											"item": [
+												{
+													"name": "Não Autorizado",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Não autorizado\", function () {",
+																	"  pm.response.to.have.status(401);",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n    \"name\": \"Alex Costas\",\n    \"email\": \"alex.costas_{{$timestamp}}@mail.com\",\n    \"login\": \"alex.contas.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{basePath}}/api/v1/users",
+															"host": [
+																"{{basePath}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"users"
+															]
+														}
+													},
+													"response": []
+												}
+											]
+										},
+										{
+											"name": "Sem permissão para endpoint",
+											"item": [
+												{
+													"name": "Cria Cliente",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"",
+																	"pm.test(\"201 Created\", function () {",
+																	"  pm.response.to.have.status(201);",
+																	"});",
+																	"pm.test(\"Location header present\", function () {",
+																	"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+																	"});",
+																	"let body = pm.response.json();",
+																	"pm.collectionVariables.set(\"userId\", body.id);",
+																	"pm.collectionVariables.set(\"userEmail\", body.email);",
+																	"pm.collectionVariables.set(\"userLogin\", body.login);"
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														}
+													],
+													"request": {
+														"method": "POST",
+														"header": [],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n    \"name\": \"Juliana Matos\",\n    \"email\": \"juliana.matos_{{$timestamp}}@mail.com\",\n    \"login\": \"juliana.matos.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\"\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{basePath}}/api/v1/users/customer",
+															"host": [
+																"{{basePath}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"users",
+																"customer"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Auth Cliente",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"200 Auth\", function () {\r",
+																	"  pm.response.to.have.status(200);\r",
+																	"});\r",
+																	"const responseJson = pm.response.json();\r",
+																	"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"{{passwordDefault}}\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{basePath}}/api/v1/auth",
+															"host": [
+																"{{basePath}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"auth"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Erro ao tentar criar com permissão insulficiente",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Sem permissão para criar nesse endpoint\", function () {",
+																	"  pm.response.to.have.status(403);",
+																	"});",
+																	""
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "bearer",
+															"bearer": [
+																{
+																	"key": "token",
+																	"value": "{{accessToken}}",
+																	"type": "string"
+																}
+															]
+														},
+														"method": "POST",
+														"header": [],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n    \"name\": \"Alex Costas\",\n    \"email\": \"alex.costas_{{$timestamp}}@mail.com\",\n    \"login\": \"alex.contas.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    },\n    \"roles\": [\n        \"CUSTOMER\"\n    ]\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{basePath}}/api/v1/users",
+															"host": [
+																"{{basePath}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"users"
+															]
+														}
+													},
+													"response": []
+												}
+											]
+										},
+										{
+											"name": "Erros preenchimento",
+											"item": [
+												{
+													"name": "Auth Admin/Dono",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"200 Auth\", function () {\r",
+																	"  pm.response.to.have.status(200);\r",
+																	"});\r",
+																	"const responseJson = pm.response.json();\r",
+																	"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n    \"login\": \"{{userNameAdminDefault}}\",\r\n    \"password\": \"{{passwordAdminDefault}}\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{basePath}}/api/v1/auth",
+															"host": [
+																"{{basePath}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"auth"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Cria cliente com sucesso",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"201 Created\", function () {",
+																	"  pm.response.to.have.status(201);",
+																	"});",
+																	"pm.test(\"Location header present\", function () {",
+																	"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+																	"});",
+																	"let body = pm.response.json();",
+																	"pm.collectionVariables.set(\"userId\", body.id);",
+																	"pm.collectionVariables.set(\"userEmail\", body.email);",
+																	"pm.collectionVariables.set(\"userLogin\", body.login);",
+																	""
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "bearer",
+															"bearer": [
+																{
+																	"key": "token",
+																	"value": "{{accessToken}}",
+																	"type": "string"
+																}
+															]
+														},
+														"method": "POST",
+														"header": [],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n    \"name\": \"Alex Costas\",\n    \"email\": \"alex.costas_{{$timestamp}}@mail.com\",\n    \"login\": \"alex.contas.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    },\n    \"roles\": [\n        \"CUSTOMER\"\n    ]\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{basePath}}/api/v1/users",
+															"host": [
+																"{{basePath}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"users"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Erro de E-mail em uso",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Email em uso\", function () {",
+																	"  pm.response.to.have.status(422);",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "bearer",
+															"bearer": [
+																{
+																	"key": "token",
+																	"value": "{{accessToken}}",
+																	"type": "string"
+																}
+															]
+														},
+														"method": "POST",
+														"header": [],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n    \"name\": \"Alex Costas\",\n    \"email\": \"{{userEmail}}\",\n    \"login\": \"alex.costas_{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    },\n    \"roles\": [\n        \"CUSTOMER\"\n    ]\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{basePath}}/api/v1/users",
+															"host": [
+																"{{basePath}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"users"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Erro de Login em uso",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Login já em uso\", function () {",
+																	"  pm.response.to.have.status(422);",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "bearer",
+															"bearer": [
+																{
+																	"key": "token",
+																	"value": "{{accessToken}}",
+																	"type": "string"
+																}
+															]
+														},
+														"method": "POST",
+														"header": [],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n    \"name\": \"Alex Costas\",\n    \"email\": \"alex.costas_{{$timestamp}}@mail.com\",\n    \"login\": \"{{userLogin}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    },\n    \"roles\": [\n        \"CUSTOMER\"\n    ]\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{basePath}}/api/v1/users",
+															"host": [
+																"{{basePath}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"users"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Erro de Campo Obrigatório Vazio",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Campo Obrigatório Vazio\", function () {",
+																	"  pm.response.to.have.status(400);",
+																	"});",
+																	""
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "bearer",
+															"bearer": [
+																{
+																	"key": "token",
+																	"value": "{{accessToken}}",
+																	"type": "string"
+																}
+															]
+														},
+														"method": "POST",
+														"header": [],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n    \"name\": \"Alex Costas\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    },\n    \"roles\": [\n        \"CUSTOMER\"\n    ]\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{basePath}}/api/v1/users",
+															"host": [
+																"{{basePath}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"users"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Erro de Senha Fraca",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Senha Fraca\", function () {",
+																	"  pm.response.to.have.status(422);",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {},
+																"requests": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "bearer",
+															"bearer": [
+																{
+																	"key": "token",
+																	"value": "{{accessToken}}",
+																	"type": "string"
+																}
+															]
+														},
+														"method": "POST",
+														"header": [],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n    \"name\": \"Alex Costas\",\n    \"email\": \"alex.costas_{{$timestamp}}@mail.com\",\n    \"login\": \"alex.costas.{{$timestamp}}\",\n    \"password\": \"SenhaFraca\",\n    \"address\": {\n        \"street\": \"Rua A\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    },\n    \"roles\": [\n        \"CUSTOMER\"\n    ]\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "{{basePath}}/api/v1/users",
+															"host": [
+																"{{basePath}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"users"
+															]
+														}
+													},
+													"response": []
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Exclusão",
+					"item": [
+						{
+							"name": "Sucesso",
+							"item": [
+								{
+									"name": "Cria e excluir o próprio usuário",
+									"item": [
+										{
+											"name": "Cria novo cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"José Carlos\",\n    \"email\": \"j.carlos{{$timestamp}}@mail.com\",\n    \"login\": \"j.carlos.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\"\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Autentica Novo Cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Autentica novo cliente com sucesso\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"{{passwordDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Deleta Usuário",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Deleta com sucesso\", function () {\r",
+															"  pm.response.to.have.status(204);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/{{userId}}",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Admin/Dono excluem outros usuários",
+									"item": [
+										{
+											"name": "Cria novo cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"José Luiz\",\n    \"email\": \"jose.luiz_{{$timestamp}}@mail.com\",\n    \"login\": \"jose.luiz.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\"\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Auth Admin/Dono",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"200 Auth\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userNameAdminDefault}}\",\r\n    \"password\": \"{{passwordAdminDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Admin/Dono Deleta Outros Usuário",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Deleta com sucesso\", function () {\r",
+															"  pm.response.to.have.status(204);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/{{userId}}",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Erro",
+							"item": [
+								{
+									"name": "Não Autenticado",
+									"item": [
+										{
+											"name": "Não autenticado",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Não autorizado\", function () {\r",
+															"  pm.response.to.have.status(401);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/{{userId}}",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Sem permissão para excluir outros usuários",
+									"item": [
+										{
+											"name": "Cria novo cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Jonatas Silva\",\n    \"email\": \"johnsv{{$timestamp}}@mail.com\",\n    \"login\": \"john.silva.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\"\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Autentica Novo Cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Autentica novo cliente com sucesso\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"{{passwordDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cria novo cliente Para Deletar",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Jonatas Silveira\",\n    \"email\": \"jonatas.silveira{{$timestamp}}@mail.com\",\n    \"login\": \"jonatas.silveira{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\"\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Erro ao tentar deletar outro usuário",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Erro ao tentar deletar outro usuário\", function () {\r",
+															"  pm.response.to.have.status(403);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/{{userId}}",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Busca",
+					"item": [
+						{
+							"name": "Sem Autenticar",
+							"item": [
+								{
+									"name": "Cria e Busca Cliente Com Endereço",
+									"item": [
+										{
+											"name": "Cria cliente com endereço",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userName\", body.name);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Luiza Dias\",\n    \"email\": \"luiza.dias_{{$timestamp}}@mail.com\",\n    \"login\": \"luiza.dias.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"address\": {\n        \"street\": \"Rua {{$randomStreetName}}\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Autentica Novo Client",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Autentica novo cliente com sucesso\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"{{passwordDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Busca Clientes pelo Nome",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Resultado da busca pelo nome\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{basePath}}/api/v1/users?name={{userName}}",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													],
+													"query": [
+														{
+															"key": "name",
+															"value": "{{userName}}"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Cria e Busca Cliente Sem Endereço",
+									"item": [
+										{
+											"name": "Cria cliente sem endereço",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userName\", body.name);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Caio Campos\",\n    \"email\": \"Caio.campos_{{$timestamp}}@mail.com\",\n    \"login\": \"Caio.campos.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\"\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Autentica Novo Client",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Autentica novo cliente com sucesso\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"{{passwordDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Busca Clientes pelo Nome",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Resultado da busca pelo nome\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{basePath}}/api/v1/users?name={{userName}}",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													],
+													"query": [
+														{
+															"key": "name",
+															"value": "{{userName}}"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Autenticado",
+							"item": [
+								{
+									"name": "Cria e Busca Owner Com Endereço",
+									"item": [
+										{
+											"name": "Auth Admin/Dono",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"200 Auth\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userNameAdminDefault}}\",\r\n    \"password\": \"{{passwordAdminDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cria cliente com endereço",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Caio Meneses\",\n    \"email\": \"caio.meneses+{{$timestamp}}@mail.com\",\n    \"login\": \"caio.meneses{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"address\": {\n        \"street\": \"Rua {{$randomStreetName}}\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    },\n    \"roles\": [\n        \"CUSTOMER\"\n    ]\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Busca Owner pelo Nome",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Resultado da busca pelo nome\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{basePath}}/api/v1/users?name={{userName}}",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													],
+													"query": [
+														{
+															"key": "name",
+															"value": "{{userName}}"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Cria e Busca Owner Sem Endeço",
+									"item": [
+										{
+											"name": "Auth Admin/Dono",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"200 Auth\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userNameAdminDefault}}\",\r\n    \"password\": \"{{passwordAdminDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cria cliente sem endereço",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Ana Paula Prado\",\n    \"email\": \"ana.prado_{{$timestamp}}@mail.com\",\n    \"login\": \"anapr_{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"roles\": [\n        \"CUSTOMER\"\n    ]\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Busca Owner pelo Nome",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Resultado da busca pelo nome\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{basePath}}/api/v1/users?name={{userName}}",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													],
+													"query": [
+														{
+															"key": "name",
+															"value": "{{userName}}"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Alteração de Dados do Usuário",
+					"item": [
+						{
+							"name": "Sucesso",
+							"item": [
+								{
+									"name": "Cria cliente e atualizado os dados",
+									"item": [
+										{
+											"name": "Cria Cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Paula Machado\",\n    \"email\": \"paula.machado.{{$timestamp}}@mail.com\",\n    \"login\": \"paula.machado.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\"\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Autentica Novo Cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Autentica novo cliente com sucesso\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"{{passwordDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Altera Usuário",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"Altera usuário cliente com sucesso\", function () {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Paula Machado\",\n    \"email\": \"paula.machado.{{$timestamp}}@mail.com\",\n    \"login\": \"paula.machado.{{$timestamp}}\",\n    \"address\": {\n        \"street\": \"Rua {{$randomStreetName}}\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Admin/Dono Altera outro usuário",
+									"item": [
+										{
+											"name": "Auth Admin/Dono",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userNameAdminDefault}}\",\r\n    \"password\": \"{{passwordAdminDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cria cliente sem endereço",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"Cria usuário para alterar\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Renan Sena\",\n    \"email\": \"renan.sena_{{$timestamp}}@mail.com\",\n    \"login\": \"renan.sena_{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"roles\": [\n        \"CUSTOMER\"\n    ]\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Admin/Dono Altera Outro Usuário",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"Altera usuário cliente com sucesso\", function () {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Renan Sena\",\n    \"email\": \"renan.sena_{{$timestamp}}@mail.com\",\n    \"login\": \"renan.sena_{{$timestamp}}\",\n    \"roles\": [\n        \"CUSTOMER\"\n    ],\n    \"address\": {\n        \"street\": \"Rua {{$randomStreetName}}\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/{{userId}}",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Admin/Dono Alterar os próprios usuários",
+									"item": [
+										{
+											"name": "Auth Admin/Dono",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userNameAdminDefault}}\",\r\n    \"password\": \"{{passwordAdminDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cria Cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"Cria usuário para alterar\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Raul de Moraes\",\n    \"email\": \"raul.moraes_{{$timestamp}}@mail.com\",\n    \"login\": \"raul.moraes_{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"roles\": [\n        \"CUSTOMER\", \"OWNER\"\n    ]\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Auth Novo Admin/Dono",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"{{passwordDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Admin/Dono Altera Outro Usuário",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"Altera usuário cliente com sucesso\", function () {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Raul de Moraes\",\n    \"email\": \"raul.moraes_{{$timestamp}}@mail.com\",\n    \"login\": \"raul.moraes_{{$timestamp}}\",\n    \"roles\": [\n        \"CUSTOMER\", \"OWNER\"\n    ],\n    \"address\": {\n        \"street\": \"Rua {{$randomStreetName}}\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Erro",
+							"item": [
+								{
+									"name": "Erro ao atualiazar sem se autenticar",
+									"item": [
+										{
+											"name": "Altera Usuário",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"Não Autorizado\", function () {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															"",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Paula Machado\",\n    \"email\": \"paula.machado.{{$timestamp}}@mail.com\",\n    \"login\": \"paula.machado.{{$timestamp}}\",\n    \"address\": {\n        \"street\": \"Rua {{$randomStreetName}}\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Erro ao tentar atualizar outro usuário sem permissão",
+									"item": [
+										{
+											"name": "Cria Cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Ana Machado\",\n    \"email\": \"ana.machado.{{$timestamp}}@mail.com\",\n    \"login\": \"ana.machado.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\"\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Autentica Novo Cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Autentica novo cliente com sucesso\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"{{passwordDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cria Cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Paula Cruz\",\n    \"email\": \"paula.cruz.{{$timestamp}}@mail.com\",\n    \"login\": \"paula.cruz.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\"\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Altera Usuário",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"Não Autorizado cliente atualizar outro cliente\", function () {",
+															"  pm.response.to.have.status(403);",
+															"});",
+															"",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Paula Cruz\",\n    \"email\": \"paula.cruz.{{$timestamp}}@mail.com\",\n    \"login\": \"paula.cruz.{{$timestamp}}\",\n    \"address\": {\n        \"street\": \"Rua {{$randomStreetName}}\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/{{userId}}",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Erro ao tentar trocar o e-mail/login por em uso",
+									"item": [
+										{
+											"name": "Cria Cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Larissa Martis dos Santos\",\n    \"email\": \"larissa.martis.{{$timestamp}}@mail.com\",\n    \"login\": \"larissa.martis.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\"\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Autentica Novo Cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Autentica novo cliente com sucesso\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"{{passwordDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cria Cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Larissa Santos\",\n    \"email\": \"larisa.santos{{$timestamp}}@mail.com\",\n    \"login\": \"larisa.santos.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\"\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Erro ao tentar alterar e-mail em uso",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"E-mail em uso\", function () {",
+															"  pm.response.to.have.status(422);",
+															"});",
+															"",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Larissa Martis Santos\",\n    \"email\": \"{{userEmail}}\",\n    \"login\": \"larissa.martis.{{$timestamp}}\",\n    \"address\": {\n        \"street\": \"Rua {{$randomStreetName}}\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Erro ao tentar alterar e-mail em uso Copy",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"Login em uso\", function () {",
+															"  pm.response.to.have.status(422);",
+															"});",
+															"",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Larissa Martis Santos\",\n    \"email\": \"larissa.martis.{{$timestamp}}@mail.com\",\n    \"login\": \"{{userLogin}}\",\n    \"address\": {\n        \"street\": \"Rua {{$randomStreetName}}\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Alteração de Senha do Usuário",
+					"item": [
+						{
+							"name": "Sucesso",
+							"item": [
+								{
+									"name": "Cliente atualiza senha",
+									"item": [
+										{
+											"name": "Cria Cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Roberto Machado\",\n    \"email\": \"roberto.machado.{{$timestamp}}@mail.com\",\n    \"login\": \"roberto.machado.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\"\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Autentica Novo Client",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Autentica novo cliente com sucesso\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"{{passwordDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cliente altera a senha",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Senha Alterada com sucesso\", function () {\r",
+															"  pm.response.to.have.status(204);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"currentPassword\": \"SenhaFort3!@#*\",\r\n    \"newPassword\": \"N0v4S&nh4\",\r\n    \"confirmNewPassword\": \"N0v4S&nh4\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/change-password",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"change-password"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Admin/Dono Atualiza senha",
+									"item": [
+										{
+											"name": "Auth Admin/Dono",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userNameAdminDefault}}\",\r\n    \"password\": \"{{passwordAdminDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cria cliente sem endereço",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"Cria usuário para alterar\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Ricardo Sena\",\n    \"email\": \"ricardo.sena_{{$timestamp}}@mail.com\",\n    \"login\": \"ricardo.sena_{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\",\n    \"roles\": [\n        \"CUSTOMER\", \"OWNER\"\n    ]\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Autentica Novo Cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Autentica novo cliente com sucesso\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"{{passwordDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cliente altera a senha",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Senha Alterada com sucesso\", function () {\r",
+															"  pm.response.to.have.status(204);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"currentPassword\": \"SenhaFort3!@#*\",\r\n    \"newPassword\": \"N0v4S&nh4\",\r\n    \"confirmNewPassword\": \"N0v4S&nh4\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/change-password",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"change-password"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Erro",
+							"item": [
+								{
+									"name": "Erro não Autenticado",
+									"item": [
+										{
+											"name": "Cliente altera a senha",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Não autorizado\", function () {\r",
+															"  pm.response.to.have.status(401);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"currentPassword\": \"SenhaFort3!@#*\",\r\n    \"newPassword\": \"N0v4S&nh4\",\r\n    \"confirmNewPassword\": \"N0v4S&nh4\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/change-password",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"change-password"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Erro senha atual inválida",
+									"item": [
+										{
+											"name": "Cria Cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Julio Costas\",\n    \"email\": \"julio.costas.{{$timestamp}}@mail.com\",\n    \"login\": \"julio.costas.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\"\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Autentica Novo Client",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Autentica novo cliente com sucesso\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"{{passwordDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cliente altera a senha",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Senha atual inválida\", function () {\r",
+															"  pm.response.to.have.status(422);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"currentPassword\": \"Senha4TualFort3!@#*\",\r\n    \"newPassword\": \"N0v4S&nh4\",\r\n    \"confirmNewPassword\": \"N0v4S&nh4\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/change-password",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"change-password"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Erro confirmação de senha não corresponde",
+									"item": [
+										{
+											"name": "Cria Cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Julio Silva\",\n    \"email\": \"julio.silva.{{$timestamp}}@mail.com\",\n    \"login\": \"julio.silva.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\"\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Autentica Novo Client",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Autentica novo cliente com sucesso\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"{{passwordDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cliente altera a senha",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Confirmação de senha não corresponde\", function () {\r",
+															"  pm.response.to.have.status(422);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"currentPassword\": \"SenhaFort3!@#*\",\r\n    \"newPassword\": \"N0v4S&nh4\",\r\n    \"confirmNewPassword\": \"N0v4S&nh@\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/change-password",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"change-password"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "Erro nova senha fraca",
+									"item": [
+										{
+											"name": "Cria Cliente",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"",
+															"pm.test(\"201 Created\", function () {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"pm.test(\"Location header present\", function () {",
+															"  pm.expect(pm.response.headers.has('Location')).to.be.true;",
+															"});",
+															"let body = pm.response.json();",
+															"pm.collectionVariables.set(\"userId\", body.id);",
+															"pm.collectionVariables.set(\"userEmail\", body.email);",
+															"pm.collectionVariables.set(\"userLogin\", body.login);",
+															"pm.collectionVariables.set(\"userName\", body.name);",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"Cleiton Silva\",\n    \"email\": \"cleiton.silva.{{$timestamp}}@mail.com\",\n    \"login\": \"cleiton.silva.{{$timestamp}}\",\n    \"password\": \"{{passwordDefault}}\"\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/customer",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"customer"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Autentica Novo Client",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Autentica novo cliente com sucesso\", function () {\r",
+															"  pm.response.to.have.status(200);\r",
+															"});\r",
+															"const responseJson = pm.response.json();\r",
+															"pm.collectionVariables.set(\"accessToken\", responseJson.accessToken);"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"login\": \"{{userLogin}}\",\r\n    \"password\": \"{{passwordDefault}}\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/auth",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"auth"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Cliente altera a senha",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Senha não fraca\", function () {\r",
+															"  pm.response.to.have.status(422);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {},
+														"requests": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{accessToken}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"currentPassword\": \"SenhaFort3!@#*\",\r\n    \"newPassword\": \"NovaSenha\",\r\n    \"confirmNewPassword\": \"NovaSenha\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{basePath}}/api/v1/users/change-password",
+													"host": [
+														"{{basePath}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"users",
+														"change-password"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
 					]
 				}
-			},
-			"response": []
+			]
 		}
 	],
 	"event": [
@@ -735,10 +5924,6 @@
 			"value": "http://localhost:8080"
 		},
 		{
-			"key": "accessToken",
-			"value": ""
-		},
-		{
 			"key": "userId",
 			"value": ""
 		},
@@ -751,8 +5936,24 @@
 			"value": ""
 		},
 		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
 			"key": "userName",
 			"value": ""
+		},
+		{
+			"key": "userNameAdminDefault",
+			"value": "carlossouza"
+		},
+		{
+			"key": "passwordDefault",
+			"value": "SenhaFort3!@#*"
+		},
+		{
+			"key": "passwordAdminDefault",
+			"value": "SenhaDev#123"
 		}
 	]
 }
