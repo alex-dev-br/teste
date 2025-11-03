@@ -1,4 +1,11 @@
 package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.config.problem;
 
-public class PasswordChangeRequiredException {
+import org.springframework.security.access.AccessDeniedException;
+
+public class PasswordChangeRequiredException extends AccessDeniedException {
+
+    public PasswordChangeRequiredException() {
+        super("Password change required");
+    }
+
 }

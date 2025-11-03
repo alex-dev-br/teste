@@ -4,8 +4,6 @@ spring:
 
   jpa:
     open-in-view: false
-    # Com o "open-in-view: false" a sessão JPA fecha ao fim da camada service, sem atalhos na controller.
-    # Obriga a buscar tudo no service (com fetch join ou DTO projection).
     properties:
       hibernate:
         format_sql: true
@@ -15,13 +13,10 @@ spring:
 server:
   port: 8080
 
-# Configs comuns do Springdoc (podem ser sobrescritas por perfil)
 springdoc:
   api-docs:
     enabled: true
   swagger-ui:
     enabled: true
-  # Deixar o Swagger default em JSON (limpa a doc, mas não altera o runtime)
   default-produces-media-type: application/json
   default-consumes-media-type: application/json
-
