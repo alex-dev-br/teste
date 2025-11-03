@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-
 @Schema(description = "Representação de usuário", name = "UserResponse")
 public record UserDTO(
 
@@ -31,7 +30,7 @@ public record UserDTO(
         @Schema(example = "mariasilva")
         String login,
 
-        @Schema(example = "[\"CLIENT\", \"OWNER\"]", description = "Papéis de usuário: OWNER, CLIENT e ADMIN")
+        @Schema(example = "[\"CUSTOMER\", \"OWNER\"]", description = "Papéis de usuário: OWNER, CUSTOMER e ADMIN")
         Set<String> roles,
 
         @Schema(example = "2025-09-28T12:00:00Z", description = "Data/hora de criação (UTC)")

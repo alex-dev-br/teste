@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
         info = @Info(
                 title = "Restaurant Users API",
                 version = "v1",
-                description = "API para gestão de usuários (OWNER / CLIENT) - Tech Challenge Fase 1",
+                description = "API para gestão de usuários (OWNER / CUSTOMER) - Tech Challenge Fase 1",
                 contact = @Contact(name = "Equipe24", email = "alex_dev@outlook.com.br"),
                 license = @License(name = "MIT")
         )

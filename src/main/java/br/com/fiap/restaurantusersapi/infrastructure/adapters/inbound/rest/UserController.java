@@ -1,12 +1,7 @@
 package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest;
 
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
-import br.com.fiap.restaurantusersapi.application.ports.inbound.create.ForCreatingUser;
-import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ForListingUserOutput;
-import br.com.fiap.restaurantusersapi.application.ports.inbound.update.ForUpdatingUser;
-import br.com.fiap.restaurantusersapi.application.ports.inbound.update.password.ForChangingUserPassword;
-import br.com.fiap.restaurantusersapi.application.ports.inbound.get.ForGettingUser;
-import br.com.fiap.restaurantusersapi.application.ports.inbound.delete.ForDeletingByUuid;
+import br.com.fiap.restaurantusersapi.application.service.UserService;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PaginationDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserUpdateForm;
@@ -38,29 +33,14 @@ import java.util.UUID;
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
-    private final ForCreatingUser createUser;
-    private final ForGettingUser getUser;
-    private final ForListingUserOutput listUsers;
-    private final ForDeletingByUuid deleteUser;
-    private final ForChangingUserPassword changePwd;
-    private final ForUpdatingUser updateUser;
+    private final UserService service;
 
-    public UserController(ForCreatingUser createUser,
-                          ForGettingUser getUser,
-                          ForListingUserOutput listUsers,
-                          ForDeletingByUuid deleteUser,
-                          ForChangingUserPassword changePwd,
-                          ForUpdatingUser updateUser) {
-        this.createUser = createUser;
-        this.getUser = getUser;
-        this.listUsers = listUsers;
-        this.deleteUser = deleteUser;
-        this.changePwd = changePwd;
-        this.updateUser = updateUser;
+    public UserController(UserService service) {
+        this.service = service;
     }
 
     // =====================================================
-    // POST /api/v1/users  (permissão pública no SecurityConfig)
+    // POST /api/v1/users  (público)
     // =====================================================
     @Operation(summary = "Cria um novo usuário")
     @ApiResponses({
@@ -74,19 +54,22 @@ public class UserController {
             @ApiResponse(responseCode = "409",
                     description = "Conflito (e-mail ou login já existentes)",
                     content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "422",
+                    description = "Regras de negócio violadas",
+                    content = @Content(mediaType = "application/problem+json")),
             @ApiResponse(responseCode = "500",
                     description = "Erro interno do servidor",
                     content = @Content(mediaType = "application/problem+json"))
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> create(@Valid @RequestBody UserCreateForm in) {
-        var output = createUser.create(in.toCreateUserInput());
-        URI location = URI.create("/api/v1/users/" + output.uuid());
-        return ResponseEntity.created(location).body(new UserDTO(output));
+        var createUserOutput = service.create(in.toCreateUserInput());
+        URI location = URI.create("/api/v1/users/" + createUserOutput.uuid());
+        return ResponseEntity.created(location).body(new UserDTO(createUserOutput));
     }
 
     // =====================================================
-    // GET /api/v1/users/{uuid}
+    // GET /api/v1/users/{uuid}  (protegido)
     // =====================================================
     @Operation(summary = "Busca um usuário pelo UUID")
     @ApiResponses({
@@ -96,6 +79,12 @@ public class UserController {
                             schema = @Schema(implementation = UserDTO.class))),
             @ApiResponse(responseCode = "400",
                     description = "ID inválido",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "401",
+                    description = "Não autenticado",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "403",
+                    description = "Acesso negado",
                     content = @Content(mediaType = "application/problem+json")),
             @ApiResponse(responseCode = "404",
                     description = "Usuário não encontrado",
@@ -107,25 +96,28 @@ public class UserController {
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/{uuid}")
     public ResponseEntity<UserDTO> findById(@PathVariable("uuid") UUID id) {
-        var output = getUser.findByUuid(id);
-        return output
-                .map(o -> ResponseEntity.ok(new UserDTO(o)))
+        var output = service.findByUuid(id);
+        return output.map(getUserOutput -> ResponseEntity.ok(new UserDTO(getUserOutput)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // =====================================================
-    // GET /api/v1/users?name={name}
+    // GET /api/v1/users?name={name}  (protegido)
     // =====================================================
-    @Operation(summary = "Busca um usuário pelo nome")
+    @Operation(summary = "Busca usuários pelo nome (paginado)")
     @ApiResponses({
             @ApiResponse(responseCode = "200",
                     description = "Paginação de usuário(s) encontrado(s)",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PaginationDTO.class)
-                    )
-            ),
+                            schema = @Schema(implementation = PaginationDTO.class))),
             @ApiResponse(responseCode = "400",
                     description = "Parâmetro 'name' inválido",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "401",
+                    description = "Não autenticado",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "403",
+                    description = "Acesso negado",
                     content = @Content(mediaType = "application/problem+json"))
     })
     @GetMapping
@@ -136,12 +128,12 @@ public class UserController {
             @RequestParam(defaultValue = "10") int size
     ) {
         var pageDomain = new Page(page < 1 ? 1 : page - 1, size < 1 ? 10 : size);
-        var pagination = listUsers.findByName(name, pageDomain).mapItems(UserDTO::new);
-        return ResponseEntity.ok(new PaginationDTO<>(pagination));
+        var paginationResult = service.findByName(name, pageDomain).mapItems(UserDTO::new);
+        return ResponseEntity.ok(new PaginationDTO<>(paginationResult));
     }
 
     // =====================================================
-    // DELETE /api/v1/users/{uuid}
+    // DELETE /api/v1/users/{uuid}  (protegido)
     // =====================================================
     @Operation(summary = "Exclui um usuário pelo UUID")
     @ApiResponses({
@@ -149,16 +141,22 @@ public class UserController {
             @ApiResponse(responseCode = "400",
                     description = "UUID inválido",
                     content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "401",
+                    description = "Não autenticado",
+                    content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "403",
+                    description = "Acesso negado",
+                    content = @Content(mediaType = "application/problem+json"))
     })
     @DeleteMapping("/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> deleteUser(@PathVariable("uuid") UUID uuid) {
-        deleteUser.deleteByUuid(uuid);
+        service.deleteByUuid(uuid);
         return ResponseEntity.noContent().build();
     }
 
     // =====================================================
-    // PUT /api/v1/users/change-password
+    // PUT /api/v1/users/change-password  (protegido)
     // =====================================================
     @Operation(summary = "Altera senha do usuário")
     @ApiResponses(value = {
@@ -187,14 +185,12 @@ public class UserController {
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> changePassword(@AuthenticationPrincipal UserDetails authenticateUser,
                                                @Valid @RequestBody ChangePasswordForm form) {
-        changePwd.changeUserPassword(
-                form.toChangePasswordInput(((UserEntity) authenticateUser).getUuid())
-        );
+        service.changeUserPassword(form.toChangePasswordInput(((UserEntity) authenticateUser).getUuid()));
         return ResponseEntity.noContent().build();
     }
 
     // =====================================================
-    // PUT /api/v1/users
+    // PUT /api/v1/users  (protegido)
     // =====================================================
     @Operation(summary = "Atualiza os dados (exceto senha) do próprio usuário")
     @ApiResponses(value = {
@@ -225,9 +221,7 @@ public class UserController {
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<UserDTO> updateUser(@AuthenticationPrincipal UserDetails authenticateUser,
                                               @Valid @RequestBody UserUpdateForm form) {
-        var output = updateUser.update(
-                form.toUpdateUserInput(((UserEntity) authenticateUser).getUuid())
-        );
+        var output = service.update(form.toUpdateUserInput(((UserEntity) authenticateUser).getUuid()));
         return ResponseEntity.ok(new UserDTO(output));
     }
 }
