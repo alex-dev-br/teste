@@ -23,7 +23,7 @@ public class ProblemDetailsAccessDeniedHandler implements AccessDeniedHandler {
 
     private URI type(String slug) {
         String base = props.baseUrl().toString();
-        String sep = base.endsWith("/") ? "" : "/";
+        String sep  = base.endsWith("/") ? "" : "/";
         return URI.create(base + sep + slug);
     }
 
@@ -35,7 +35,7 @@ public class ProblemDetailsAccessDeniedHandler implements AccessDeniedHandler {
         pd.setTitle("Forbidden");
         pd.setDetail(ex.getMessage());
         pd.setType(type("forbidden"));
-        pd.setProperty("path", request.getRequestURI());
+        pd.setInstance(URI.create(request.getRequestURI() == null ? "/" : request.getRequestURI()));
         pd.setProperty("timestamp", OffsetDateTime.now().toString());
 
         if (ex instanceof PasswordChangeRequiredException) {
@@ -46,6 +46,7 @@ public class ProblemDetailsAccessDeniedHandler implements AccessDeniedHandler {
 
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType("application/problem+json");
+        response.setCharacterEncoding("UTF-8");
         om.writeValue(response.getWriter(), pd);
     }
 }

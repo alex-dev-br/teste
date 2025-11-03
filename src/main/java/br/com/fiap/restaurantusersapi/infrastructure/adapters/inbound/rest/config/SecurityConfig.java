@@ -28,15 +28,29 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    // Beans dos handlers para poderem receber ProblemProperties
     @Bean
-    public AuthenticationEntryPoint problemDetailsAuthenticationEntryPoint(ProblemProperties props) {
-        return new ProblemDetailsAuthenticationEntryPoint(props);
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12);
     }
 
     @Bean
-    public AccessDeniedHandler problemDetailsAccessDeniedHandler(ProblemProperties props) {
-        return new ProblemDetailsAccessDeniedHandler(props);
+    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
+                                                       PasswordEncoder passwordEncoder) {
+        var provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return new ProviderManager(provider);
+    }
+
+    // Beans dos handlers para que possamos injetar ProblemProperties
+    @Bean
+    AuthenticationEntryPoint authenticationEntryPoint(ProblemProperties problemProperties) {
+        return new ProblemDetailsAuthenticationEntryPoint(problemProperties);
+    }
+
+    @Bean
+    AccessDeniedHandler accessDeniedHandler(ProblemProperties problemProperties) {
+        return new ProblemDetailsAccessDeniedHandler(problemProperties);
     }
 
     @Bean
@@ -88,31 +102,15 @@ public class SecurityConfig {
                         // Troca de senha: autenticado
                         .requestMatchers(HttpMethod.PUT, "/api/v1/users/change-password").authenticated()
 
-                        // Demais: autenticado
+                        // Demais rotas: autenticado
                         .anyRequest().authenticated()
                 )
-                // Autenticação por JWT
                 .addFilterBefore(
                         new TokenAuthenticationFilter(tokenExtractor, tokenService, userRepositoryJPA),
                         UsernamePasswordAuthenticationFilter.class
                 )
-                // Política de troca de senha
                 .addFilterAfter(new ForcePasswordPolicyFilter(), TokenAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
-                                                       PasswordEncoder passwordEncoder) {
-        var provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
-        provider.setPasswordEncoder(passwordEncoder);
-        return new ProviderManager(provider);
     }
 }

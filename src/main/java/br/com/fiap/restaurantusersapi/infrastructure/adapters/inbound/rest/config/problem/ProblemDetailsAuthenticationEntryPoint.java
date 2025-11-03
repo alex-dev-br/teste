@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.time.OffsetDateTime;
 
+import static br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.config.problem.ProblemDetailsAuthenticationEntryPoint.ATTR_AUTH_ERROR;
+import static br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.config.problem.ProblemDetailsAuthenticationEntryPoint.ERR_TOKEN_REVOKED;
+
 public class ProblemDetailsAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     public static final String ERR_TOKEN_REVOKED = "TOKEN_REVOKED";
@@ -26,7 +29,7 @@ public class ProblemDetailsAuthenticationEntryPoint implements AuthenticationEnt
 
     private URI type(String slug) {
         String base = props.baseUrl().toString();
-        String sep = base.endsWith("/") ? "" : "/";
+        String sep  = base.endsWith("/") ? "" : "/";
         return URI.create(base + sep + slug);
     }
 
@@ -40,7 +43,7 @@ public class ProblemDetailsAuthenticationEntryPoint implements AuthenticationEnt
         pd.setTitle("Unauthorized");
         pd.setType(type("unauthorized"));
         pd.setDetail(authException != null ? authException.getMessage() : "Authentication required.");
-        pd.setProperty("path", request.getRequestURI());
+        pd.setInstance(URI.create(request.getRequestURI() == null ? "/" : request.getRequestURI()));
         pd.setProperty("timestamp", OffsetDateTime.now().toString());
 
         if (ERR_TOKEN_REVOKED.equals(authError)) {
@@ -51,6 +54,7 @@ public class ProblemDetailsAuthenticationEntryPoint implements AuthenticationEnt
 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/problem+json");
+        response.setCharacterEncoding("UTF-8");
         om.writeValue(response.getWriter(), pd);
     }
 }
