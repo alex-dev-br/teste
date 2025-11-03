@@ -39,7 +39,8 @@ public class UserService implements
         ForListingUserOutput,
         ForDeletingByUuid,
         ForChangingUserPassword,
-        ForUpdatingUser {
+        ForUpdatingUser
+{
 
     private final UserPersistence userPersistence;
     private final PasswordEncoder encoder;
