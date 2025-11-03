@@ -1,7 +1,12 @@
 package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest;
 
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
-import br.com.fiap.restaurantusersapi.application.service.UserService;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.create.ForCreatingUser;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ForListingUserOutput;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.update.ForUpdatingUser;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.update.password.ForChangingUserPassword;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.get.ForGettingUser;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.delete.ForDeletingByUuid;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PaginationDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserUpdateForm;
@@ -33,14 +38,29 @@ import java.util.UUID;
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
-    private final UserService service;
+    private final ForCreatingUser createUser;
+    private final ForGettingUser getUser;
+    private final ForListingUserOutput listUsers;
+    private final ForDeletingByUuid deleteUser;
+    private final ForChangingUserPassword changePwd;
+    private final ForUpdatingUser updateUser;
 
-    public UserController(UserService service) {
-        this.service = service;
+    public UserController(ForCreatingUser createUser,
+                          ForGettingUser getUser,
+                          ForListingUserOutput listUsers,
+                          ForDeletingByUuid deleteUser,
+                          ForChangingUserPassword changePwd,
+                          ForUpdatingUser updateUser) {
+        this.createUser = createUser;
+        this.getUser = getUser;
+        this.listUsers = listUsers;
+        this.deleteUser = deleteUser;
+        this.changePwd = changePwd;
+        this.updateUser = updateUser;
     }
 
     // =====================================================
-    // POST /api/v1/users
+    // POST /api/v1/users  (permissão pública no SecurityConfig)
     // =====================================================
     @Operation(summary = "Cria um novo usuário")
     @ApiResponses({
@@ -59,11 +79,10 @@ public class UserController {
                     content = @Content(mediaType = "application/problem+json"))
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<UserDTO> create(@Valid @RequestBody UserCreateForm in) {
-        var createUserOutput = service.create(in.toCreateUserInput());
-        URI location = URI.create("/api/v1/users/" + createUserOutput.uuid());
-        return ResponseEntity.created(location).body(new UserDTO(createUserOutput));
+        var output = createUser.create(in.toCreateUserInput());
+        URI location = URI.create("/api/v1/users/" + output.uuid());
+        return ResponseEntity.created(location).body(new UserDTO(output));
     }
 
     // =====================================================
@@ -88,8 +107,10 @@ public class UserController {
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/{uuid}")
     public ResponseEntity<UserDTO> findById(@PathVariable("uuid") UUID id) {
-        var output = service.findByUuid(id);
-        return output.map(getUserOutput -> ResponseEntity.ok(new UserDTO(getUserOutput))).orElseGet(() -> ResponseEntity.notFound().build());
+        var output = getUser.findByUuid(id);
+        return output
+                .map(o -> ResponseEntity.ok(new UserDTO(o)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // =====================================================
@@ -114,9 +135,9 @@ public class UserController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        var pageDomain = new Page(page < 1 ? 1 : page-1, size < 1 ? 10 : size);
-        var paginationResult = service.findByName(name, pageDomain).mapItems(UserDTO::new);
-        return ResponseEntity.ok(new PaginationDTO<>(paginationResult));
+        var pageDomain = new Page(page < 1 ? 1 : page - 1, size < 1 ? 10 : size);
+        var pagination = listUsers.findByName(name, pageDomain).mapItems(UserDTO::new);
+        return ResponseEntity.ok(new PaginationDTO<>(pagination));
     }
 
     // =====================================================
@@ -124,18 +145,21 @@ public class UserController {
     // =====================================================
     @Operation(summary = "Exclui um usuário pelo UUID")
     @ApiResponses({
-        @ApiResponse(responseCode = "204", description = "Usuário deletado com sucesso"),
-        @ApiResponse(responseCode = "400",
-                description = "UUID inválido",
-                content = @Content(mediaType = "application/problem+json")),
+            @ApiResponse(responseCode = "204", description = "Usuário deletado com sucesso"),
+            @ApiResponse(responseCode = "400",
+                    description = "UUID inválido",
+                    content = @Content(mediaType = "application/problem+json")),
     })
     @DeleteMapping("/{uuid}")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> deleteUser(@PathVariable("uuid") UUID uuid) {
-        service.deleteByUuid(uuid);
+        deleteUser.deleteByUuid(uuid);
         return ResponseEntity.noContent().build();
     }
 
+    // =====================================================
+    // PUT /api/v1/users/change-password
+    // =====================================================
     @Operation(summary = "Altera senha do usuário")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204",
@@ -161,11 +185,17 @@ public class UserController {
     })
     @PutMapping("/change-password")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal UserDetails authenticateUser, @Valid @RequestBody ChangePasswordForm form) {
-        service.changeUserPassword(form.toChangePasswordInput(((UserEntity) authenticateUser).getUuid()));
+    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal UserDetails authenticateUser,
+                                               @Valid @RequestBody ChangePasswordForm form) {
+        changePwd.changeUserPassword(
+                form.toChangePasswordInput(((UserEntity) authenticateUser).getUuid())
+        );
         return ResponseEntity.noContent().build();
     }
 
+    // =====================================================
+    // PUT /api/v1/users
+    // =====================================================
     @Operation(summary = "Atualiza os dados (exceto senha) do próprio usuário")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -193,9 +223,11 @@ public class UserController {
     })
     @PutMapping
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<UserDTO> updateUser(@AuthenticationPrincipal UserDetails authenticateUser, @Valid @RequestBody UserUpdateForm form) {
-        var output = service.update(form.toUpdateUserInput(((UserEntity) authenticateUser).getUuid()));
+    public ResponseEntity<UserDTO> updateUser(@AuthenticationPrincipal UserDetails authenticateUser,
+                                              @Valid @RequestBody UserUpdateForm form) {
+        var output = updateUser.update(
+                form.toUpdateUserInput(((UserEntity) authenticateUser).getUuid())
+        );
         return ResponseEntity.ok(new UserDTO(output));
     }
-
 }
