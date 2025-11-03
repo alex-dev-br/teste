@@ -4,13 +4,13 @@ spring:
       on-profile: prod
 
   datasource:
-    url: ${JDBC_URL}
+    url: ${SPRING_DATASOURCE_URL}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
-      ddl-auto: validate     # Não criar/alterar schema em prod via Hibernate, usar Flyway
+      ddl-auto: validate
   flyway:
     enabled: true
     baseline-on-migrate: true
@@ -21,19 +21,16 @@ logging:
     root: debug
     org.hibernate.SQL: warn
 
-# Segurança de exposição em prod:
 springdoc:
   api-docs:
-    enabled: true       # true => export JSON da doc (útil para portais) / false => não expõe nada
+    enabled: true
   swagger-ui:
-    enabled: false      # UI desligada em produção (mantém só o "/v3/api-docs") / poderia estar habilitada
+    enabled: false
 
 app:
   cors:
     allowed-origins: "https://front-da-aplicacao.com"
 
-# Actuator => Expondo endpoints internos para monitorar a aplicação (health, info, metrics, env, beans, mappings etc)
-# Só mostrar o básico sem comprometer a segurança (health, info)
 management:
   endpoints:
     web:
