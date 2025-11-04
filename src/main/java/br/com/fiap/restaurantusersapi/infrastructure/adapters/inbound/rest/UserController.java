@@ -9,11 +9,7 @@ import br.com.fiap.restaurantusersapi.application.ports.inbound.delete.ForDeleti
 import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ForListingUserOutput;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PaginationDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserDTO;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.AdminUserCreateForm;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.AdminUserUpdateForm;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.ChangePasswordForm;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.CustomerUserCreateForm;
-import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserUpdateForm;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.*;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.outbound.persistence.entity.UserEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,7 +29,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Tag(name = "Users", description = "Operações de gestão de usuários")
 @Validated
@@ -258,7 +256,9 @@ public class UserController {
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<UserDTO> updateUser(@AuthenticationPrincipal UserDetails authUser,
                                               @Valid @RequestBody UserUpdateForm form) {
-        var out = updateUser.update(form.toUpdateUserInput(((UserEntity) authUser).getUuid()));
+        var user = (UserEntity) authUser;
+        var roles = user.getRoles().stream().map(r -> RoleForm.valueOf(r.name())).collect(Collectors.toSet());
+        var out = updateUser.update(form.toUpdateUserInput(user.getUuid(), roles));
         return ResponseEntity.ok(new UserDTO(out));
     }
 
