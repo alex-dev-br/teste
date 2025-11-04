@@ -1,9 +1,10 @@
-package br.com.fiap.restaurantusersapi.application.service;
+package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.bootstrap;
 
 import br.com.fiap.restaurantusersapi.application.ports.inbound.BootstrapAdminUseCase;
 import br.com.fiap.restaurantusersapi.application.ports.outbound.persistence.CountAdminsPort;
 import br.com.fiap.restaurantusersapi.application.ports.outbound.persistence.SaveUserWithPolicyPort;
 import br.com.fiap.restaurantusersapi.application.ports.outbound.security.PasswordEncoder;
+import br.com.fiap.restaurantusersapi.application.service.BootstrapAdminService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
