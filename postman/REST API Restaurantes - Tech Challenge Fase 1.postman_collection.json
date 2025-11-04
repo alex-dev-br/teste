@@ -4620,7 +4620,7 @@
 												"header": [],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n    \"name\": \"Paula Cruz\",\n    \"email\": \"paula.cruz.{{$timestamp}}@mail.com\",\n    \"login\": \"paula.cruz.{{$timestamp}}\",\n    \"address\": {\n        \"street\": \"Rua {{$randomStreetName}}\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
+													"raw": "{\n    \"name\": \"Paula Cruz\",\n    \"email\": \"paula.cruz.{{$timestamp}}@mail.com\",\n    \"login\": \"paula.cruz.{{$timestamp}}\",\n    \"roles\": [\n        \"CUSTOMER\"\n    ],\n    \"address\": {\n        \"street\": \"Rua {{$randomStreetName}}\",\n        \"number\": \"10\",\n        \"complement\": \"Casa\",\n        \"city\": \"São Paulo\",\n        \"neighborhood\": \"Centro\",\n        \"state\": \"SP\",\n        \"zipCode\": \"12345-678\"\n    }\n}",
 													"options": {
 														"raw": {
 															"language": "json"
