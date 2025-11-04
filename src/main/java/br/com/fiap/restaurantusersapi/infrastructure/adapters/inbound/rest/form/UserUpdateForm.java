@@ -18,15 +18,18 @@ public class UserUpdateForm {
     @Size(min = 3,max = 120)
     @Schema(example = "Maria Silva")
     private final String name;
+
     @NotBlank
     @Email
     @Size(min = 5, max = 180)
     @Schema(example = "maria.silva@mail.com")
     private final String email;
+
     @NotBlank
     @Size(max = 80)
     @Schema(example = "mariasilva")
     private final String login;
+
     @Valid
     @Schema(implementation = AddressForm.class)
     private final AddressForm address;
@@ -38,10 +41,25 @@ public class UserUpdateForm {
         this.address = address;
     }
 
+    /**
+     * Atualização do próprio usuário: NÃO altera roles.
+     * Envia roles = null para que a camada de persistência preserve os papéis existentes.
+     */
     public UpdateUserInput toUpdateUserInput(UUID uuid) {
-        return this.toUpdateUserInput(uuid, Set.of(RoleForm.CUSTOMER));
+        return new UpdateUserInput(
+                uuid,
+                name,
+                email,
+                login,
+                address != null ? address.toUpdateAddressInput() : null,
+                null // <- não alterar roles
+        );
     }
 
+    /**
+     * Método utilitário (ainda usado por AdminUserUpdateForm) caso seja necessário
+     * informar papéis explicitamente.
+     */
     public UpdateUserInput toUpdateUserInput(UUID uuid, Set<RoleForm> roleForms) {
         return new UpdateUserInput(
                 uuid,
@@ -49,23 +67,12 @@ public class UserUpdateForm {
                 email,
                 login,
                 address != null ? address.toUpdateAddressInput() : null,
-                roleForms.stream().map(RoleForm::toUpdateRoleInput).collect(Collectors.toSet())
+                roleForms == null ? null : roleForms.stream().map(RoleForm::toUpdateRoleInput).collect(Collectors.toSet())
         );
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public AddressForm getAddress() {
-        return address;
-    }
+    public String getName() { return name; }
+    public String getEmail() { return email; }
+    public String getLogin() { return login; }
+    public AddressForm getAddress() { return address; }
 }

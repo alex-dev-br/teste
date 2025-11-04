@@ -10,6 +10,7 @@ import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ForListingU
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PaginationDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.AdminUserCreateForm;
+import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.AdminUserUpdateForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.ChangePasswordForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.CustomerUserCreateForm;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.UserUpdateForm;
@@ -157,7 +158,7 @@ public class UserController {
     @Operation(summary = "Busca usuários pelo nome (paginado)")
     @ApiResponses({
             @ApiResponse(responseCode = "200",
-                    description = "Paginação de usuário(s) encontrado(s)",
+                    description = "Paginação de usuário(s) encontrado(s) com sucesso",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = PaginationDTO.class))),
             @ApiResponse(responseCode = "400",
@@ -290,7 +291,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<UserDTO> updateUserByAdmin(@PathVariable("uuid") UUID uuid,
-                                                     @Valid @RequestBody UserUpdateForm form) {
+                                                     @Valid @RequestBody AdminUserUpdateForm form) {
         var out = updateUser.update(form.toUpdateUserInput(uuid));
         return ResponseEntity.ok(new UserDTO(out));
     }

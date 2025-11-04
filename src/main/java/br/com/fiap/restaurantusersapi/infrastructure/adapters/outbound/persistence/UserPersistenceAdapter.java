@@ -108,16 +108,16 @@ public record UserPersistenceAdapter(UserRepositoryJPA userRepositoryJPA)
         entity.setLogin(user.login());
         entity.setUpdatedAt(Instant.now());
 
-        // ---- Roles: mapeia VO -> Enum JPA ----
-        Set<RoleEntity> newRoles = (user.roles() == null ? Set.<RoleEntity>of() :
-                user.roles().stream()
-                        .map(Role::name)            // "ADMIN", "OWNER", "CUSTOMER"
-                        .map(RoleEntity::valueOf)   // Enum do JPA
-                        .collect(Collectors.toSet())
-        );
-        entity.setRoles(newRoles);
+        // ---- Roles: ATUALIZA SOMENTE SE vier no payload; se null, preserva as atuais ----
+        if (user.roles() != null) {
+            Set<RoleEntity> newRoles = user.roles().stream()
+                    .map(Role::name)            // "ADMIN", "OWNER", "CUSTOMER"
+                    .map(RoleEntity::valueOf)   // Enum do JPA
+                    .collect(Collectors.toSet());
+            entity.setRoles(newRoles);
+        }
 
-        // ---- Endereço: atualiza se veio no payload; se não vier, mantém o atual ----
+        // ---- Endereço: atualiza se vier no payload; se não vier, mantém o atual ----
         Address newAddress = user.address();
         AddressEntity current = entity.getAddress();
 
