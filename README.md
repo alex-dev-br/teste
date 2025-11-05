@@ -654,42 +654,17 @@ As collections e o environment estão versionados no repositório, em:
 
 Basta importar no Postman os arquivos desta pasta (`*.postman_collection.json` e `*.postman_environment.json`):
 
-1. Abra o Postman → **Import** → **Files** → selecione os arquivos em `/postman`.
-(ou simplesmente arraste e solte os arquivos na janela do Postman).
+1.  Abra o Postman → **Import** → **Files** → selecione os arquivos em `/postman`. (ou simplesmente arraste e solte os arquivos na janela do Postman).
+2.  Clique na pasta principal da collection importada, ela deve está com o nome “REST API Restaurantes - Tech Challenge Fase 1”, ao clica o postman abrirá uma aba
+3. Clique no botão “Run” localizado no canto superior esquerdo, o postman abrirá uma nova aba para selecionar os quais requisições ele deve executar. Por padrão ele seleciona tudo.
+4. Clique no botão “Run REST API Restaurantes - Te…” é o botão de cor laranja do lado direito. 
+> Com isso o postman executará todos os cenários de testes que mapeamos, tanto positivo, como os negativos (que deve validar e retornar erro)
+Os cenários mapeados ficaram dentro da pasta “Casos de Teste”, dentro dela é possível navegar e testar os cenários desejados.
+Ao passar o mouse na pasta de cada cenário aparecerá no canto esquerdo da pasta três pontos, clicando nesses três pontos aparecerá mais opções entre elas a opção “Run” para por executar a pasta especifica.
 
-
-2. Selecione o Environment importado (no canto superior direito do Postman).
-
-### Descrição dos Testes Manuais (Postman Runner)
-
-1. **Importe** a collection e o environment da pasta **`/postman`** (na raiz do `restaurant-api`).
-2. Abra o **Runner**: no Postman, clique em **Runner** (ou nos três pontos da coleção → **Run collection**).
-3. **Selecione**:
-
-    * **Collection**: `REST API Restaurantes - Tech Challenge Fase 1` (ou equivalente).
-    * **Environment**: `restaurant-api - local` (ou o que você importou de `/postman`).
-4. **Ordem/escopo**: execute a **collection inteira** ou apenas **pastas** (ex.: `Docs & Health`, `Auth`, `Users`), conforme a ordem já definida.
-5. **Configurações úteis**:
-
-    * **Delay** entre requisições: `100–300 ms` (evita condições de corrida).
-    * **Stop run on failure**: *desligado* (para ver todos os resultados; ligue se quiser parar no primeiro erro).
-    * **Iterations** / **Data (CSV/JSON)**: opcional, se quiser rodar com massa de testes.
-6. **Tokens e variáveis**: a collection/environment já definem `{{BASE_URL}}`.
-
-    * Faça o **login** (pasta **Auth**) **antes** de requests protegidos.
-    * Se a collection salvar o token automaticamente, o **Authorization** (Bearer) será aplicado aos demais requests.
-7. **Executar**: clique em **Run** e acompanhe o painel de resultados (status, tempo, body).
-
-    * Esperados no “smoke”:
-
-        * `GET /api/v1/_ping` → **200 OK**
-        * `GET /actuator/health` → **200 OK**
-        * `POST /api/v1/auth` → **200 OK** (gera token)
-        * `POST /api/v1/users/customer` → **201 Created**
-        * `PUT /api/v1/users/change-password` → **204 No Content**
-    * Exemplos **negativos** (pastas “Negative”/“Sem Auth”): retornos **401/403/4xx** conforme o cenário.
-
-> **Dica:** para repetir um fluxo completo (ex.: criar usuário → alterar senha → validar token revogado), execute as **pastas** na ordem sugerida dentro do Runner.
+5. Verificar resultados: ao executar o postman mostrará como está andando a execução dos testes, mostrando quantos testes passaram e quantos falharam. 
+> A validação dos testes é principalmente pelo status code retornado da requisição que se encontra no canto esquerdo do cenário listado pelo postman.
+> Para testes de cenários específicos: como alguns casos de testes necessitam de passos anteriores para serem testados como se autenticar por exemplo é recomendado executar a pasta do cenário especifico inteiro ou se desejar executar manualmente, executar na ordem que está na pasta.
 
 ---
 
