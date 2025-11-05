@@ -583,7 +583,78 @@ Descreva o arquivo `docker-compose.yml` e explique como ele orquestra a aplicaç
 
 ### Boas Práticas Utilizadas
 
-[Detalhe práticas de organização e padrões seguidos, como DRY, SOLID, e convenções do Spring Boot.]
+show! Segue um texto pronto (em Markdown) para colar na sua doc — focado em “5. Qualidade do Código → Boas Práticas Utilizadas”, espelhando exatamente o que o seu projeto implementa hoje e como isso conversa com DRY, SOLID e convenções Spring Boot. No final deixei um bloco “Oportunidades de melhoria” (curto e pragmático) que também costuma agregar valor nessa seção.
+
+---
+
+## 5. Qualidade do Código
+
+### Boas Práticas Utilizadas
+
+**Arquitetura e SOLID**
+
+* **Arquitetura Hexagonal (Ports & Adapters)**: separação explícita entre domínio (`application.domain.*`), portas de entrada/saída (`application.ports.*`) e adaptadores de infraestrutura (`infrastructure.adapters.*`). Isso reduz acoplamento e facilita testes e evolução.
+* **D**IP (Dependency Inversion): casos de uso conversam com o mundo externo via **ports** (`UserPersistence`, `PasswordEncoder`, etc.), e os **adapters** concretos injetam implementações (JPA, BCrypt).
+* **S**RP (Single Responsibility): classes pequenas e focadas (ex.: `TokenExtractorService`, `ProblemDetails*Handler`, `UserPersistenceAdapter`, `PasswordEncoderImpl`).
+* **I**SP (Interface Segregation): interfaces específicas por intenção (ex.: `ForCreatingUser`, `ForUpdatingUser`, `ForChangingUserPassword`, `ForListingUserOutput`), evitando contratos “inchados”.
+* **O**CP (Open/Closed): validações de negócio compostas por **regras plugáveis** (`Rule<T>`, `CreateUserValidator`, `UpdateUserValidator`). Incluir novas regras não exige mudar o core do caso de uso.
+
+**Domínio Rico e Modelagem**
+
+* **Value Objects imutáveis** (Java `record`) com **invariantes no construtor**: `Email` (normaliza/lower-case), `Password` (força forte) e `Role` (normaliza UPPERCASE). Violação de invariantes lança `DomainException`.
+* **Entidades de domínio** (`User`, `Address`) separadas de DTOs/Forms da camada web. Mapeamentos claros nos *Mappers*.
+* **Paginação** tipada (`Page`, `Pagination<T>`) e **DTO de paginação** consistente para a API.
+
+**DRY e Convenções**
+
+* **Tratamento de erros centralizado** com **Problem Details (RFC 7807/9457)** em `GlobalExceptionHandler` e handlers de Security — evita duplicação e padroniza payloads (ex.: `type`, `title`, `detail`, `instance`, `invalidParams`).
+* **Normalização de login/e-mail** em múltiplas camadas (domínio e JPA `@PrePersist/@PreUpdate`) para manter consistência.
+* **Configuração externa** por perfis (`dev`, `test`, `prod`) e variáveis de ambiente, respeitando o **12-factor**.
+* **Convenções Spring Boot**:
+
+    * Controllers enxutos (DTO/Form ↔ caso de uso).
+    * Beans criados por **config classes** ou `@ConfigurationProperties`.
+    * **Actuator** para health/env e healthcheck de containers.
+
+**Validação e Regras de Negócio**
+
+* **Bean Validation** (anotações nas *forms*) para validar payloads HTTP.
+* **Validação no domínio** (VOs) e **validação de negócio** (regras de unicidade `email/login` via ports) → erros agregados em `BusinessValidationException` com retorno **422**.
+* **Respostas consistentes**: `400` (payload/parâmetros), `401/403` (auth/authz), `409` (violação de unicidade), `422` (regras de negócio), `500` (exceções não mapeadas).
+
+**Segurança**
+
+* **JWT stateless** com assinatura HMAC (JJWT), **expiração configurável** e *claim* `pwdv` (password version) para **revogação de token na troca de senha**.
+* **BCrypt** com *work factor* configurado para hashing seguro.
+* **Força de senha** exigida no VO `Password` (mínimo de caracteres, dígitos, maiúsculas, minúsculas e caractere especial).
+* **Fluxo de “password change required”** (flag na entidade, `ForcePasswordPolicyFilter` e Problem Details específico).
+* **Minimiza enumeração de usuários** no *login* (mensagens genéricas em `JpaUserDetailsService`).
+* **Autorização por escopo de rota** e `@PreAuthorize` (ex.: autoatualização vs. atualização por ADMIN/OWNER).
+* **CORS** configurável por ambiente.
+
+**Persistência e Banco de Dados**
+
+* **Flyway** versionado (V1…Vn), **seeds** para DEV e migração de papéis (`CLIENT` → `CUSTOMER`) com *constraint* atualizada.
+* **Índices e unicidade**: `LOWER(email/login)` para **case-insensitive unique** (garante no banco), e tratamento de `DataIntegrityViolationException` → **409**.
+* **1–1 Address/User** com `UNIQUE(user_id)` e *checks* de sanidade (UF e CEP).
+* **Timestamps** com `created_at/updated_at` e *trigger* de atualização no BD — mais `@PrePersist/@PreUpdate` para robustez.
+* **H2 (modo PostgreSQL)** isolado para **test profile**, com `ddl-auto=create-drop` e **Flyway desabilitado** (evita conflito).
+
+**Documentação e Contrato de API**
+
+* **OpenAPI/Swagger** com `@OpenAPIDefinition` e `@SecurityScheme` (Bearer), exemplos nos DTOs, versionamento de rota (`/api/v1`) e **endpoints separados** para senha, login e cadastro público de CUSTOMER.
+* **Problem Docs** servidos em container dedicado (`problem-docs`) e referenciados pelo `type` dos problemas (melhora DX).
+
+**Contêineres e Operação**
+
+* **Docker multi-stage** (build com Maven + runtime JRE), imagem final enxuta e **healthcheck via Actuator**.
+* **Compose por perfis**.
+
+* **Propriedades sensíveis** vindas do ambiente (`.env/.env.prod`) — sem hardcode no código.
+
+---
+
+
 
 ---
 
