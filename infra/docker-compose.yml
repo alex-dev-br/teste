@@ -42,10 +42,10 @@ services:
       problem-docs:
         condition: service_started
     environment:
-      # Defina no .env: SPRING_PROFILES_ACTIVE=dev (para seeds) ou =prod
+      # Defina no .env: SPRING_PROFILES_ACTIVE=dev (seeds) ou =prod
       SPRING_PROFILES_ACTIVE: "${SPRING_PROFILES_ACTIVE:-dev}"
 
-      # Datasource apontando para o serviço "postgres" (não localhost)
+      # Datasource container-para-container (DNS 'postgres' na rede do Compose)
       SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/${DB_NAME}"
       SPRING_DATASOURCE_USERNAME: "${DB_USER}"
       SPRING_DATASOURCE_PASSWORD: "${DB_PASSWORD}"

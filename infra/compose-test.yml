@@ -17,19 +17,15 @@ services:
       timeout: 3s
       retries: 5
 
-#Como rodar:
+# Como rodar:
 #
-## usando variáveis do .env.local (APP_PORT, TZ, etc.)
-#  docker compose -f infra/compose-test.yml --env-file infra/.env.local up -d
-#  docker compose -f infra/compose-test.yml logs -f
+# usando variáveis do .env.local (APP_PORT, TZ, etc.)
+#   docker compose -f infra/compose-test.yml --env-file infra/.env.local up -d
+#   docker compose -f infra/compose-test.yml logs -f
 #
+# Checar:
+#   http://localhost:8080/actuator/health  → UP
+#   http://localhost:8080/actuator/env     → "activeProfiles":["test"]
+#   http://localhost:8080/h2               → H2 console
 #
-#Checar:
-#
-#  http://localhost:8080/actuator/health → UP
-#
-#  http://localhost:8080/actuator/env → "activeProfiles":["test"]
-#
-#  http://localhost:8080/h2 (H2 console)
-#
-#  Não há Postgres aqui — o test usa H2.
+# Observação: não há Postgres aqui — o profile 'test' usa H2 em memória.

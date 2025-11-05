@@ -1,11 +1,11 @@
-# build
+# ---------- build ----------
 FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /build
 COPY pom.xml .
 COPY src ./src
 RUN mvn -q -DskipTests package
 
-# run (JRE)
+# ---------- run (JRE) ----------
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 
