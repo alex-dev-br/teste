@@ -568,13 +568,42 @@ curl -X DELETE "$BASE_URL/api/v1/users/d2b37cae-21c5-48dd-9fa7-9168d2122a7b"
 
 ## 4. Configuração do Projeto
 
-### Configuração do Docker Compose
+### 4.1 Arquivos (infra/)
 
-Descreva o arquivo `docker-compose.yml` e explique como ele orquestra a aplicação e o banco de dados.
+* `.env` → dev (perfil `dev`).
+* `.env.prod` → prod (perfil `prod`).
+* `docker-compose.yml` → orquestra **postgres**, **problem-docs** (8081) e **app** (8080).
+* `compose-test.yml` → sobe só a **app** com **H2** (`SPRING_PROFILES_ACTIVE=test`).
+* `Dockerfile` → build multi-stage (Maven + JRE 21).
 
-### Instruções para execução local
+### 4.2 Perfis
 
-[Documente as URLs e portas configuradas.]
+* **stack**: tudo no Docker (postgres + problem-docs + app).
+* **ide**: só postgres no Docker; app roda na IDE/JAR.
+
+### 4.3 Como o compose orquestra
+
+* `postgres` (perfil `ide`,`stack`): volume `db_data`, healthcheck `pg_isready`.
+* `problem-docs` (perfil `stack`): site estático dos Problem Types na **8081**.
+* `app` (perfil `stack`): depende de `postgres` e `problem-docs`; healthcheck em `/actuator/health`.
+
+  > Dentro do Docker use `SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/app`. Fora do Docker, use `…://localhost:5432/app`.
+
+### 4.4 Como executar local
+Um link com arquivo .env de exemplo é disponibilido no final desse documento.
+```bash
+cd infra
+docker compose --env-file .env --profile stack up -d --build
+# check
+curl http://localhost:8080/actuator/health
+```
+
+### 4.5 URLs
+
+* API: `http://localhost:8080`
+* Health: `http://localhost:8080/actuator/health`
+* Swagger: `http://localhost:8080/swagger-ui/index.html`
+* Problem Docs (stack): `http://localhost:8081/`
 
 ---
 
