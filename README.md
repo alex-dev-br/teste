@@ -579,13 +579,6 @@ Descreva o arquivo `docker-compose.yml` e explique como ele orquestra a aplicaç
 
 ---
 
-## 5. Qualidade do Código
-
-### Boas Práticas Utilizadas
-
-show! Segue um texto pronto (em Markdown) para colar na sua doc — focado em “5. Qualidade do Código → Boas Práticas Utilizadas”, espelhando exatamente o que o seu projeto implementa hoje e como isso conversa com DRY, SOLID e convenções Spring Boot. No final deixei um bloco “Oportunidades de melhoria” (curto e pragmático) que também costuma agregar valor nessa seção.
-
----
 
 ## 5. Qualidade do Código
 
@@ -651,9 +644,6 @@ show! Segue um texto pronto (em Markdown) para colar na sua doc — focado em �
 * **Compose por perfis**.
 
 * **Propriedades sensíveis** vindas do ambiente (`.env/.env.prod`) — sem hardcode no código.
-
----
-
 
 
 ---
