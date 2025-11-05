@@ -570,10 +570,8 @@ curl -X DELETE "$BASE_URL/api/v1/users/d2b37cae-21c5-48dd-9fa7-9168d2122a7b"
 
 ### 4.1 Arquivos (infra/)
 
-* `.env` → dev (perfil `dev`).
-* `.env.prod` → prod (perfil `prod`).
+* `.env`
 * `docker-compose.yml` → orquestra **postgres**, **problem-docs** (8081) e **app** (8080).
-* `compose-test.yml` → sobe só a **app** com **H2** (`SPRING_PROFILES_ACTIVE=test`).
 * `Dockerfile` → build multi-stage (Maven + JRE 21).
 
 ### 4.2 Perfis
