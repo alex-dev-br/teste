@@ -5,21 +5,21 @@ spring:
 
   datasource:
     url: ${SPRING_DATASOURCE_URL}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
-
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USER:app}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:app}}
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: validate
   flyway:
     enabled: true
     baseline-on-migrate: true
-    locations: classpath:db/migration
+    locations: ${SPRING_FLYWAY_LOCATIONS:classpath:db/migration,classpath:db/migration-dev}
 
 logging:
   level:
-    root: debug
-    org.hibernate.SQL: warn
+    root: info
+    org.hibernate.SQL: info
 
 springdoc:
   api-docs:
@@ -39,3 +39,9 @@ management:
   endpoint:
     health:
       show-details: "never"
+api:
+  security:
+    token:
+      # TO DO remover valor padrao em versoes futuras
+      secret: ${JWT_SECURITY_TOKEN:PG/7ONpNJspUZUm315FvrtOmn9ZFWAVJJcNaoqDMRiA+n3J3HKL51ZlKYCpvnzWs0Ji5/HiFAzwAxyD/M+UADA==}
+      expiration: ${JWT_EXPIRATION:3600}

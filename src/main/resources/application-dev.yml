@@ -40,9 +40,8 @@ management:
     web:
       exposure:
         include: "*"
-
 api:
   security:
     token:
-      secret: PG/7ONpNJspUZUm315FvrtOmn9ZFWAVJJcNaoqDMRiA+n3J3HKL51ZlKYCpvnzWs0Ji5/HiFAzwAxyD/M+UADA==
-      expiration: 3600
+      secret: ${JWT_SECURITY_TOKEN:PG/7ONpNJspUZUm315FvrtOmn9ZFWAVJJcNaoqDMRiA+n3J3HKL51ZlKYCpvnzWs0Ji5/HiFAzwAxyD/M+UADA==}
+      expiration: ${JWT_EXPIRATION:3600}
