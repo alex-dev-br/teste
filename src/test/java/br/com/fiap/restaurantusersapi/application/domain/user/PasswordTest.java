@@ -42,7 +42,7 @@ class PasswordTest {
     @DisplayName("Deve lançar exceção quando a senha é nula")
     void shouldThrowExceptionWhenPasswordIsNull() {
         var exception = assertThrows(DomainException.class, () -> new Password(null));
-        assertThat(exception.getMessage(), is(Password.PASSWORD_ERROR_MESSAGE));
+        assertThat(exception.getMessage(), is(Password.NULL_OR_EMPTY_MESSAGE));
     }
 
     @Test

@@ -16,7 +16,6 @@ public record User(UUID uuid, String name, Email email, String login, Password p
         this(null, name, email, login, password, address, roles, null, null);
     }
 
-
     public User {
         if (name == null || name.isBlank()) {
             throw new DomainException("Name cannot be null or empty");
@@ -26,14 +25,6 @@ public record User(UUID uuid, String name, Email email, String login, Password p
         }
         if (login == null || login.isBlank()) {
             throw new DomainException("Login cannot be null or empty");
-        }
-
-        if (roles == null || roles.isEmpty()) {
-            throw new DomainException("Roles cannot be null or empty");
-        }
-
-        if (password == null) {
-            throw new DomainException("Password cannot be null");
         }
 
         if (uuid == null) {

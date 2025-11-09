@@ -17,7 +17,9 @@ public record UpdateUserInput(UUID userUuid, String name, String email, String l
     @Override
     public User toDomain() throws DomainException {
         return new User (
-            this.userUuid, this.name, new Email(this.email), this.login, new Password("secret", true), this.address != null ? this.address.toDomain() : null, this.roles.stream().map(UpdateRoleInput::toDomain).collect(Collectors.toSet())
+            this.userUuid, this.name, new Email(this.email), this.login, new Password("secret", true),
+                this.address != null ? this.address.toDomain() : null,
+                this.roles == null ? null : this.roles.stream().map(UpdateRoleInput::toDomain).collect(Collectors.toSet())
         );
     }
 }

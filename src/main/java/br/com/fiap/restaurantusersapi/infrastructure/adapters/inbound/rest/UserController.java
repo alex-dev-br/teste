@@ -2,11 +2,11 @@ package br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest;
 
 import br.com.fiap.restaurantusersapi.application.domain.pagination.Page;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.create.ForCreatingUser;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.delete.ForDeletingByUuid;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.get.ForGettingUser;
+import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ForListingUserOutput;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.update.ForUpdatingUser;
 import br.com.fiap.restaurantusersapi.application.ports.inbound.update.password.ForChangingUserPassword;
-import br.com.fiap.restaurantusersapi.application.ports.inbound.get.ForGettingUser;
-import br.com.fiap.restaurantusersapi.application.ports.inbound.delete.ForDeletingByUuid;
-import br.com.fiap.restaurantusersapi.application.ports.inbound.list.ForListingUserOutput;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.PaginationDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.dto.UserDTO;
 import br.com.fiap.restaurantusersapi.infrastructure.adapters.inbound.rest.form.*;
@@ -24,14 +24,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Tag(name = "Users", description = "Operações de gestão de usuários")
 @Validated
@@ -85,9 +82,9 @@ public class UserController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
-    public ResponseEntity<UserDTO> create(@Valid @RequestBody AdminUserCreateForm in) {
+    public ResponseEntity<UserDTO> create(@Valid @RequestBody AdminUserCreateForm in, UriComponentsBuilder uriBuilder) {
         var out = createUser.create(in.toCreateUserInput());
-        URI location = URI.create("/api/v1/users/" + out.uuid());
+        var location = uriBuilder.path("/api/v1/users/{uuid}").buildAndExpand(out.uuid()).toUri();
         return ResponseEntity.created(location).body(new UserDTO(out));
     }
 
@@ -111,9 +108,9 @@ public class UserController {
                     content = @Content(mediaType = "application/problem+json"))
     })
     @PostMapping(path = "/customer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> createCustomer(@Valid @RequestBody CustomerUserCreateForm in) {
+    public ResponseEntity<UserDTO> createCustomer(@Valid @RequestBody CustomerUserCreateForm in, UriComponentsBuilder uriBuilder) {
         var out = createUser.create(in.toCreateUserInput());
-        URI location = URI.create("/api/v1/users/" + out.uuid());
+        var location = uriBuilder.path("/api/v1/users/{uuid}").buildAndExpand(out.uuid()).toUri();
         return ResponseEntity.created(location).body(new UserDTO(out));
     }
 
@@ -225,9 +222,8 @@ public class UserController {
     })
     @PutMapping("/change-password")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal UserDetails authUser,
-                                               @Valid @RequestBody ChangePasswordForm form) {
-        changeUserPassword.changeUserPassword(form.toChangePasswordInput(((UserEntity) authUser).getUuid()));
+    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal UserEntity authUser, @Valid @RequestBody ChangePasswordForm form) {
+        changeUserPassword.changeUserPassword(form.toChangePasswordInput(authUser.getUuid()));
         return ResponseEntity.noContent().build();
     }
 
@@ -254,11 +250,8 @@ public class UserController {
     })
     @PutMapping
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<UserDTO> updateUser(@AuthenticationPrincipal UserDetails authUser,
-                                              @Valid @RequestBody UserUpdateForm form) {
-        var user = (UserEntity) authUser;
-        var roles = user.getRoles().stream().map(r -> RoleForm.valueOf(r.name())).collect(Collectors.toSet());
-        var out = updateUser.update(form.toUpdateUserInput(user.getUuid(), roles));
+    public ResponseEntity<UserDTO> updateUser(@AuthenticationPrincipal UserEntity authUser, @Valid @RequestBody UserUpdateForm form) {
+        var out = updateUser.update(form.toUpdateUserInput(authUser.getUuid()));
         return ResponseEntity.ok(new UserDTO(out));
     }
 
@@ -290,8 +283,7 @@ public class UserController {
     @PutMapping("/{uuid}")
     @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<UserDTO> updateUserByAdmin(@PathVariable("uuid") UUID uuid,
-                                                     @Valid @RequestBody AdminUserUpdateForm form) {
+    public ResponseEntity<UserDTO> updateUserByAdmin(@PathVariable("uuid") UUID uuid, @Valid @RequestBody AdminUserUpdateForm form) {
         var out = updateUser.update(form.toUpdateUserInput(uuid));
         return ResponseEntity.ok(new UserDTO(out));
     }

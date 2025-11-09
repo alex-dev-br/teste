@@ -38,7 +38,10 @@ public class AuthController {
         @ApiResponse(responseCode = "200", description = "Autenticado com sucesso",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = JwtTokenDTO.class))),
         @ApiResponse(responseCode = "401", description = "Falha ao autenticar",
-            content = @Content(mediaType = "application/problem+json"))
+            content = @Content(mediaType = "application/problem+json")),
+        @ApiResponse(responseCode = "500",
+                description = "Internal Server Error",
+                content = @Content(mediaType = "application/problem+json"))
     })
     @PostMapping
     public ResponseEntity<JwtTokenDTO> login(@RequestBody @Valid LoginForm loginForm) {

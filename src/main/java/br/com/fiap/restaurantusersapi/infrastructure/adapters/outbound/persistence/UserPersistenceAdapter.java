@@ -109,7 +109,7 @@ public record UserPersistenceAdapter(UserRepositoryJPA userRepositoryJPA)
         entity.setUpdatedAt(Instant.now());
 
         // ---- Roles: ATUALIZA SOMENTE SE vier no payload; se null, preserva as atuais ----
-        if (user.roles() != null) {
+        if (user.roles() != null && !user.roles().isEmpty()) {
             Set<RoleEntity> newRoles = user.roles().stream()
                     .map(Role::name)            // "ADMIN", "OWNER", "CUSTOMER"
                     .map(RoleEntity::valueOf)   // Enum do JPA
