@@ -4,46 +4,46 @@ spring:
       on-profile: prod
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:${DB_PORT:5432}/${DB_NAME:app}}
     username: ${SPRING_DATASOURCE_USERNAME:${DB_USER:app}}
     password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:app}}
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: validate
+
   flyway:
     enabled: true
-    baseline-on-migrate: true
+    # Em PROD (para fins de demonstração do Tech Challenge) também carregamos as migrations oficiais + seeds de exemplo
     locations: ${SPRING_FLYWAY_LOCATIONS:classpath:db/migration,classpath:db/migration-dev}
+    baseline-on-migrate: false
 
 logging:
   level:
-    root: info
-    org.hibernate.SQL: info
-
-springdoc:
-  api-docs:
-    enabled: true
-  swagger-ui:
-    enabled: false
+    # Em produção real, estes logs seriam reduzidos para evitar overhead e exposição de dados sensíveis.
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
 
 app:
   cors:
-    allowed-origins: "https://front-da-aplicacao.com"
+    # Em produção, este valor deve ser ajustado para o domínio público da aplicação.
+    allowed-origins: "http://localhost:3000"
   problem:
     base-url: "${APP_PROBLEM_BASE_URL:http://localhost:8081/erros}"
+
+springdoc:
+  swagger-ui:
+    enabled: true
 
 management:
   endpoints:
     web:
       exposure:
-        include: "health,info"
-  endpoint:
-    health:
-      show-details: "never"
+        include: "*"
 api:
   security:
     token:
-      # TO DO remover valor padrao em versoes futuras
+      # Em produção real, este valor deve ser fornecido exclusivamente por variáveis de ambiente.
       secret: ${JWT_SECURITY_TOKEN:PG/7ONpNJspUZUm315FvrtOmn9ZFWAVJJcNaoqDMRiA+n3J3HKL51ZlKYCpvnzWs0Ji5/HiFAzwAxyD/M+UADA==}
       expiration: ${JWT_EXPIRATION:3600}

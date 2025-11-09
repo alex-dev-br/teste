@@ -34,4 +34,4 @@ build/
 
 ### Segurança ###
 infra/.env
-infra/.env.prod
+

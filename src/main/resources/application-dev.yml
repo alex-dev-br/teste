@@ -18,7 +18,6 @@ spring:
     # Em DEV traz migrations oficiais + seeds/dev
     locations: ${SPRING_FLYWAY_LOCATIONS:classpath:db/migration,classpath:db/migration-dev}
     baseline-on-migrate: false
-    # >>> REMOVIDO: url, user, password (Flyway reutiliza o spring.datasource.*)
 
 logging:
   level:
