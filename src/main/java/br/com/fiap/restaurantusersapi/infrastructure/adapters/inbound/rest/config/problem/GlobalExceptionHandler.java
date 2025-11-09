@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -145,6 +144,7 @@ public class GlobalExceptionHandler {
         return pd;
     }
 
+    // 403 - Acesso negado
     @ExceptionHandler(AuthorizationDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ProblemDetail handleAccessDenied(AuthorizationDeniedException ex, HttpServletRequest request) {
@@ -158,17 +158,6 @@ public class GlobalExceptionHandler {
         // não usar invalidParams aqui; mensagem geral:
         pd.setProperty("reason", ex.getMessage());
         return pd;
-    }
-
-    // 409 - Conflito de dados (Ex.: e-mail único no banco)
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ProblemDetail handleDataIntegrityViolation(DataIntegrityViolationException ex, HttpServletRequest request) {
-        return problem(HttpStatus.CONFLICT,
-                type("data-conflict"),
-                "Data conflict",
-                "A data constraint was violated.",
-                ex, request);
     }
 
     // 422 - Regras de negócio (lista de strings)

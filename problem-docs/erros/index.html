@@ -16,7 +16,7 @@
     <h1>Tipos de erro (Problem Details)</h1>
     <p>Definição dos “problem types” usados pela API. Configure o campo <code class="k">type</code> das respostas
         para apontar para estas páginas (ex.: <code class="k">http://localhost:8081/erros/&lt;slug&gt;/</code>).
-        **Doc é estática** (tipo); as **respostas da API** são dinâmicas (ocorrência).</p>
+        <strong>Doc é estática</strong>> (tipo); as <strong>respostas da API</strong>> são dinâmicas (ocorrência).</p>
 
     <div class="grid">
         <article class="card">
@@ -60,10 +60,10 @@
         </article>
 
         <article class="card">
-            <h2><a href="/erros/data-conflict/">data-conflict</a></h2>
-            <p>Violação de restrição de dados/concorrência.</p>
+            <h2><a href="/erros/forbidden/">forbidden</a></h2>
+            <p>Operação não permitida.</p>
             <div>
-                <span class="badge badge-409">409</span> <small class="note">Handler: DataIntegrityViolationException</small>
+                <span class="badge badge-403">403</span> <small class="note">Handler: AuthorizationDeniedException</small>
             </div>
         </article>
 
@@ -93,8 +93,7 @@
     </div>
 
     <div class="hr"></div>
-<!--    <footer><small>Em produção, colocar esta página em um host público e ajustar a propriedade-->
-<!--        <code class="k">problem.base-url</code> na API para apontar para cá.</small></footer>-->
+
 </div>
 </body>
 </html>

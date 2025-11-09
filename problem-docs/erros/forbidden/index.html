@@ -2,9 +2,9 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>data-conflict • Problem Details</title>
+    <title>forbidden • Problem Details</title>
     <link rel="stylesheet" href="../../assets/style.css">
-    <link rel="canonical" href="http://localhost:8081/erros/data-conflict/">
+    <link rel="canonical" href="http://localhost:8081/erros/forbidden/">
 </head>
 <body>
 <div class="header">
@@ -13,23 +13,24 @@
     </div>
 </div>
 <div class="container">
-    <h1>data-conflict</h1>
-    <p><span class="badge badge-409">HTTP 409</span> <span class="badge">Handler: DataIntegrityViolationException</span></p>
+    <h1>forbidden</h1>
+    <p><span class="badge badge-403">HTTP 403</span> <span class="badge">Handler: AuthorizationDeniedException</span></p>
 
     <h2>Definição do tipo (estável)</h2>
     <dl class="kv">
-        <dt>Type (URI)</dt><dd><code>http://localhost:8081/erros/data-conflict/</code></dd>
-        <dt>Title (recomendado)</dt><dd><code>Data conflict</code></dd>
-        <dt>Quando usar</dt><dd>Violação de restrições/concorrência (unicidade, FK, etc.).</dd>
+        <dt>Type (URI)</dt><dd><code>http://localhost:8081/erros/forbidden/</code></dd>
+        <dt>Title (recomendado)</dt><dd><code>Operação não permitida</code></dd>
+        <dt>Quando usar</dt>
+        <dd>Usuário autenticado (token válido), mas sem permissão para executar a ação solicitada (papel/regra insuficiente).</dd>
         <dt>Extensões</dt><dd><code>timestamp</code>, <code>cause</code> (dev), <code>instance</code></dd>
     </dl>
 
     <h2>Exemplo de resposta (dinâmica)</h2>
     <pre>{
-        "type": "http://localhost:8081/erros/data-conflict",
-        "title": "Data conflict",
-        "status": 409,
-        "detail": "A data constraint was violated.",
+        "type": "http://localhost:8081/erros/forbidden",
+        "title": "Operação não permitida",
+        "status": 403,
+        "detail": "Operação não permitida, verifique as permissões de acesso.",
         "instance": "/api/v1/users",
         "timestamp": "2025-10-27T12:34:56Z"
         }
