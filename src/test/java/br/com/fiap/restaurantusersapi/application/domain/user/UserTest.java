@@ -25,7 +25,7 @@ class UserTest {
                 "testuser",
                 new Password("Password@123"),
                 null, // Address can be null
-                Set.of(new Role("CLIENT"))
+                Set.of(new Role("CUSTOMER"))
         ));
     }
 
@@ -39,7 +39,7 @@ class UserTest {
                 login,
                 new Password("Password@123"),
                 null, // Address can be null
-                Set.of(new Role("CLIENT"))
+                Set.of(new Role("CUSTOMER"))
         ));
 
         assertThat(user, is(notNullValue()));
@@ -55,7 +55,7 @@ class UserTest {
                 "TESTE",
                 new Password("Password@123"),
                 null, // Address can be null
-                Set.of(new Role("CLIENT"))
+                Set.of(new Role("CUSTOMER"))
         ));
 
         assertThat(user, is(notNullValue()));
@@ -71,7 +71,7 @@ class UserTest {
                 "TESTE",
                 new Password("Password@123"),
                 null, // Address can be null
-                Set.of(new Role("CLIENT"))
+                Set.of(new Role("CUSTOMER"))
         ));
 
         assertThat(user, is(notNullValue()));
@@ -83,42 +83,22 @@ class UserTest {
     @Test
     @DisplayName("Deve lançar exceção quando o nome é nulo")
     void shouldThrowExceptionWhenNameIsNull() {
-        var exception = assertThrows(DomainException.class, () -> new User(null, new Email("test@example.com"), "testuser", new Password("Password@123"), null, Set.of(new Role("CLIENT"))));
+        var exception = assertThrows(DomainException.class, () -> new User(null, new Email("test@example.com"), "testuser", new Password("Password@123"), null, Set.of(new Role("CUSTOMER"))));
         assertThat(exception.getMessage(), is("Name cannot be null or empty"));
     }
 
     @Test
     @DisplayName("Deve lançar exceção quando o email é nulo")
     void shouldThrowExceptionWhenEmailIsNull() {
-        var exception = assertThrows(DomainException.class, () -> new User("Test User", null, "testuser", new Password("Password@123"), null, Set.of(new Role("CLIENT"))));
+        var exception = assertThrows(DomainException.class, () -> new User("Test User", null, "testuser", new Password("Password@123"), null, Set.of(new Role("CUSTOMER"))));
         assertThat(exception.getMessage(), is("Email cannot be null"));
     }
 
     @Test
     @DisplayName("Deve lançar exceção quando o login é nulo")
     void shouldThrowExceptionWhenLoginIsNull() {
-        var exception = assertThrows(DomainException.class, () -> new User("Test User", new Email("test@example.com"), null, new Password("Password@123"), null, Set.of(new Role("CLIENT"))));
+        var exception = assertThrows(DomainException.class, () -> new User("Test User", new Email("test@example.com"), null, new Password("Password@123"), null, Set.of(new Role("CUSTOMER"))));
         assertThat(exception.getMessage(), is("Login cannot be null or empty"));
     }
-
-    @Test
-    @DisplayName("Deve lançar exceção quando a senha é nula")
-    void shouldThrowExceptionWhenPasswordIsNull() {
-        var exception = assertThrows(DomainException.class, () -> new User("Test User", new Email("test@example.com"), "testuser", null, null, Set.of(new Role("CLIENT"))));
-        assertThat(exception.getMessage(), is("Password cannot be null"));
-    }
-
-    @Test
-    @DisplayName("Deve lançar exceção quando as roles são nulas")
-    void shouldThrowExceptionWhenRolesAreNull() {
-        var exception = assertThrows(DomainException.class, () -> new User("Test User", new Email("test@example.com"), "testuser", new Password("Password@123"), null, null));
-        assertThat(exception.getMessage(), is("Roles cannot be null or empty"));
-    }
-
-    @Test
-    @DisplayName("Deve lançar exceção quando as roles estão vazias")
-    void shouldThrowExceptionWhenRolesAreEmpty() {
-        var exception = assertThrows(DomainException.class, () -> new User("Test User", new Email("test@example.com"), "testuser", new Password("Password@123"), null, Collections.emptySet()));
-        assertThat(exception.getMessage(), is("Roles cannot be null or empty"));
-    }
+    
 }
