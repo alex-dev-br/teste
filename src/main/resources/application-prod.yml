@@ -30,6 +30,8 @@ springdoc:
 app:
   cors:
     allowed-origins: "https://front-da-aplicacao.com"
+  problem:
+    base-url: "${APP_PROBLEM_BASE_URL:http://localhost:8081/erros}"
 
 management:
   endpoints:

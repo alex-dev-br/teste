@@ -29,7 +29,7 @@ app:
   cors:
     allowed-origins: "http://localhost:3000"
   problem:
-    base-url: "http://localhost:8081/erros"
+    base-url: "${APP_PROBLEM_BASE_URL:http://localhost:8081/erros}"
 
 springdoc:
   swagger-ui:
